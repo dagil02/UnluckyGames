@@ -2,7 +2,9 @@
 <html>
     
     <head>
-        <meta charset="UTF-8">
+       <mate charest="utf-8" />
+       <meta name="keywords" content="Editor.md, Markdown, Editor" />
+	   
         <title>Unlucky Games</title>
         
         <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
