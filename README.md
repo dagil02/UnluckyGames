@@ -61,37 +61,7 @@
     
   </head>
 
-<body>
 
-
-            .estiloFuenteGeneral{
-                font-family: 'Arima Madurai', cursive;
-                font-size: 20px;
-            }
-
-            .estiloContenedorText{
-            padding-top: 5px;  
-            }
-            .estiloContenedorText p{  
-                margin-left: 20px;
-            }
-            .estiloContenedorText h2{  
-                text-align: center;
-            }
-            #e {
-                color: green; 
-                border-bottom: solid 2px;
-                margin-left: 10%; margin-right: 10%;}
-            #m {
-                color: blue; 
-                border-bottom: solid 2px;
-                margin-left: 10%; margin-right: 10%;}
-            #d {
-                color: red; 
-                border-bottom: solid 2px;
-                margin-left: 10%; margin-right: 10%;}
-        </style>
-    </head>
     
     <body>
         <div class="estiloFuenteGeneral">
@@ -109,8 +79,7 @@
                 <header>
                     <h2>¿Qué es BattleFort?</h2>
                 </header>
-
-                <p>Un juego que recoge las mecánicas básicas de juegos como Fornite, y las adapta para disfrutar, de un juego más minimalista, pero sin dejar de brindar esas dinámicas que enganchan tanto. </p>
+                 <p>Un juego que recoge las mecánicas básicas de juegos como Fornite, y las adapta para disfrutar, de un juego más minimalista, pero sin dejar de brindar esas dinámicas que enganchan tanto. </p>
             </article>
         </div>
 
@@ -124,14 +93,7 @@
             </article>
         </div>
             
-        <div class="estiloContenedorText">
-            <article>       
-                <header id="m">
-                     <h2>MECÁNICAS</h2>
-                </header>
-            <p>Un juego que recoge las mecánicas básicas de juegos como Fornite, y las adapta para disfrutar, de un juego más minimalista, pero sin dejar de brindar esas dinámicas que enganchan tanto. </p>
-        </article>
-</div>
+        
 
 <div class="estiloContenedorText">
     <article>       
@@ -158,15 +120,7 @@
     </article>
 </div>
 
-        <div class="estiloContenedorText">
-            <article>
-                <header id="d">
-                     <h2>DINÁMCIAS</h2>
-                </header>
-                 <p>Gestionando las mecánicas descritas los jugadores deberán crear estrategias de juego para vencer a todos los rivales en partida. Sólo puede quedar uno. </p>
-                 <p>Los jugadores podrán cercar casillas construyendo muros, y de esa manera preparar emboscadas y acabar con sus rivales sin piedad. </p>
-            </article>
-        </div>
+        
         
     </div>
         
