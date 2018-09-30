@@ -44,8 +44,7 @@
                         <p>El jugador no podrá avanzar en dirección a una casilla ocupada por un muro, por otro jugador o por un obstáculo. </p>
                         <p>Cada jugador podrá destruir muros, y construir otros propios. Y para atacar al rival usará las diferentes armas disponibles en base al rango de alcanza de las mismas.</p>
                         <p>Todos los ítems (armas, cofres u objetos) son generados de manera aleatoria en diferentes posiciones al inicio de cada partida. </p> 
-                    </div>
-                     
+                    </div>        
                 </article>
             </div>
             <div style="margin-top: 5%;">
@@ -56,12 +55,10 @@
                     <div style="margin-left: 3%">
                         <p>Gestionando las mecánicas descritas los jugadores deberán crear estrategias de juego para vencer a todos los rivales en partida. <span style="font-family: fantasy;font-size: 25; color: red">¡Sólo puede quedar uno!</span> </p>
                         <p>Los jugadores podrán cercar casillas construyendo muros, y de esa manera preparar emboscadas y acabar con sus rivales sin piedad. </p>
-                    </div>
-                     
+                    </div>       
                 </article>
             </div>
         </div>    
     </div>
   </body>
 </html>
-
