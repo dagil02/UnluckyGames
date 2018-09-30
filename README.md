@@ -74,7 +74,7 @@
                 </group>
             </header>
 
-        <div class="estiloContenedorText">
+<div class="estiloContenedorText">
             <article>
                 <header>
                     <h2>¿Qué es BattleFort?</h2>
@@ -83,10 +83,10 @@
             </article>
         </div>
 
-        <div class="estiloContenedorText">
-            <article>
-                <header id="e">
-                     <h2>ESTÉTICA</h2>
+<div class="estiloContenedorText">
+    <article>
+        <header id="e">
+             <h2>ESTÉTICA</h2>
                 </header>
                 <p>Un extenso mapa visto desde un plano cenital fijo y dividido en varias regiones (zona boscosa, montañosa, desértica, etc.) servirá como canvas del nivel de juego. </p>
                 <p>Los diferentes sprites (personajes, armas, objetos, muros, etc.) se renderizarán en una capa superior y presentarán un estilo minimalista.</p>
