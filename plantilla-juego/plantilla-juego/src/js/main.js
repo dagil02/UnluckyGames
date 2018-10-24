@@ -23,6 +23,9 @@ var PreloaderScene = {
 
     // TODO: load here the assets for the game
     this.game.load.image('logo', 'images/phaser.png');
+    this.game.load.image('mapa', 'images/mapa.png');
+    this.game.load.image('player1', 'images/player1.png'); 
+    this.game.load.image('player2', 'images/player2.png');
   },
 
   create: function () {

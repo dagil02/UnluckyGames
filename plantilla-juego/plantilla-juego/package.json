@@ -1,9 +1,9 @@
 {
   "version": "0.0.0",
-  "name": "battlefort",
-  "author": "jossan10",
-  "license": "MIT",
-  "repository": "jossan10/Repositorio",
+  "name": "awesome-game",
+  "author": "gituser",
+  "license": "CC-BY-NC-SA-4.0",
+  "repository": "gituser/awesome-game",
   "dependencies": {
     "browserify": "*",
     "browser-sync": "*",
@@ -13,7 +13,7 @@
     "gulp-gh-pages": "*",
     "gulp-util": "*",
     "merge-stream": "*",
-    "phaser": "*",
+    "phaser": "2.6.0",
     "vinyl-source-stream": "*",
     "watchify": "*"
   }

@@ -1,7 +1,7 @@
-# BattleFort
+# Awesome game
 
-BattleFort by
-[jossan10](https://github.com/jossan10).
+Awesome game by
+[gituser](https://github.com/gituser).
 
 Initial scaffolding generated with [generator-gamejam](https://github.com/belen-albeza/generator-gamejam/).
 
@@ -22,8 +22,8 @@ npm install -g gulp
 Clone this repository and install dependencies:
 
 ```
-git clone jossan10/Repositorio
-cd Repositorio
+git clone gituser/awesome-game
+cd awesome-game
 npm install
 ```
 
