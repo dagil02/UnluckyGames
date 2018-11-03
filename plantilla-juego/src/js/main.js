@@ -1,5 +1,7 @@
 'use strict';
 
+//node_modules/.bin/gulp run
+
 var PlayScene = require('./play_scene.js');
 
 
@@ -21,15 +23,10 @@ var PreloaderScene = {
     this.loadingBar.anchor.setTo(0, 0.5);
     this.load.setPreloadSprite(this.loadingBar);
 
-    // TODO: load here the assets for the game
-    this.game.load.image('logo', 'images/phaser.png');
-    this.game.load.image('mapa', 'images/mapa.png');
-    this.game.load.image('player1', 'images/player1.png'); 
-    this.game.load.image('player2', 'images/player2.png');
-    /*this.game.load.tilemap('mario', 'images/ejm/super_mario.json', null, Phaser.Tilemap.TILED_JSON);
-    this.game.load.image('tiles', 'images/ejm/super_mario.png');*/
-    this.game.load.tilemap('mundo1', 'images/mundo1/Background.json', null, Phaser.Tilemap.TILED_JSON);
-    this.game.load.image('tiles', 'images/mundo1/mapaTiles.png');
+    // ** ASSETS DEL JUEGO **
+    //json y png del mapa
+    this.game.load.tilemap('mapa', 'images/mapas/mapa-0.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.image('tiles', 'images/mapas/mapaTiles.png');
   },
 
   create: function () {

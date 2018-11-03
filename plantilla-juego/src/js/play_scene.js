@@ -2,34 +2,27 @@
 
 var controls = {};
 
+var map;
+var layer_0, layer_1, layer_2, layer_3, layer_4;
+
   var PlayScene = {
 
   create: function () {
 
-    //EJEMPLO JESUS SPRITE MAP
-    /*var mapa = this.game.add.sprite(
-      this.game.world.centerX, this.game.world.centerY, 'mapa');
-    mapa.anchor.setTo(0.5, 0.5);
-    mapa.scale.setTo(1.78, 1.60);*/
 
-    /*var Player1 = this.game.add.sprite(
-      this.game.world.centerX, this.game.world.centerY, 'player1');
-    Player1.anchor.setTo(0.5, 0.5); //situa el ancla en el centro del sprite y comienza a pintar desde esa posición 
-    Player1.scale.setTo(0.5,0.5);
+    this.game.stage.backgroundColor = '#787878'; //fondo por defecto
+    map = this.game.add.tilemap('mapa'); //parametro: definicion clase main
+    map.addTilesetImage('tilesMap', 'tiles'); //parametros: tileset name (json), def. clase main
+    layer_0 = map.createLayer('background'); //parametros: nombre capa (json), posicion en cannvas
+    //layer.fixedToCamera = false;//desactiva la camara fija
+    layer_1 = map.createLayer('obstaculo pradera');
+    layer_2 = map.createLayer('obstaculo nieve');
+    layer_3 = map.createLayer('obstaculo desierto')
+    layer_4 = map.createLayer('collider'); //colisionadores 
 
-    //EJEMPLO MARIO TILEMAP
-    /*this.game.stage.backgroundColor = '#787878';
-    var map = this.game.add.tilemap('mario');
-    map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
-    var layer = map.createLayer('World1');
-    layer.resizeWorld();*/
 
-    this.game.stage.backgroundColor = '#787878';
-    var map = this.game.add.tilemap('mundo1');
-    map.addTilesetImage('mapaTiles', 'tiles');
-    var layer = map.createLayer('Capa de Patrones 1');
-    layer.resizeWorld();
 
+    
     
 
     /*controls = {
@@ -39,7 +32,7 @@ var controls = {};
       down: this.input.keyboard.addKey(Phaser.Keyboard.S),
     };*/
 
-  }, //is importan the character ',' inside JavaScript XD 
+  }, 
 
 
   update: function(){}
