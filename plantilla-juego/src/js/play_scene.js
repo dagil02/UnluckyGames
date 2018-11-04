@@ -22,7 +22,7 @@ var layer_0, layer_1, layer_2, layer_3, layer_4;
 
 
 
-    
+    var player = new Juugador();
     
 
     /*controls = {
@@ -35,7 +35,23 @@ var layer_0, layer_1, layer_2, layer_3, layer_4;
   }, 
 
 
-  update: function(){}
+  update: function(){
+
+    var cursor = game.input.keyboard.createCursosKeys();
+
+    if(cursor.up.isDown){
+      // añadir consecuencias en el movimiento
+    }
+    if(cursor.left.isDown){
+      // añadir consecuencias en el movimiento
+    }
+    if(cursor.down.isDown){
+      // añadir consecuencias en el movimiento
+    }
+    if(cursor.right.isDown){
+      // añadir consecuencias en el movimiento
+    }
+  }
 };
 
 module.exports = PlayScene;
