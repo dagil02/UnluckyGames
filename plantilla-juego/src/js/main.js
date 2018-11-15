@@ -3,7 +3,7 @@
 //node_modules/.bin/gulp run
 
 var PlayScene = require('./play_scene.js');
-
+var Mapa = require ('./Mapa.js');
 
 var BootScene = {
   preload: function () {
