@@ -27,9 +27,12 @@ var PreloaderScene = {
     //json y png del mapa
     this.game.load.tilemap('mapa', 'assets/mapas/mapa-0.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/mapas/mapaTiles.png');
+	
 
     //recursos
-    this.game.load.image ('arbol', 'assets/sprites/arbol.png' )
+    this.game.load.image ('arbol', 'assets/sprites/arbol.png' );
+	this.game.load.image('Casco1', 'assets/sprites/Casco1.png');
+	this.game.load.image('Casco2', 'assets/sprites/Casco2.png');
 
   },
 
