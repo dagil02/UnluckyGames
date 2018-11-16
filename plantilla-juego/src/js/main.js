@@ -3,7 +3,7 @@
 //node_modules/.bin/gulp run
 
 var PlayScene = require('./play_scene.js');
-var Mapa = require ('./Mapa.js');
+
 
 var BootScene = {
   preload: function () {
@@ -25,8 +25,12 @@ var PreloaderScene = {
 
     // ** ASSETS DEL JUEGO **
     //json y png del mapa
-    this.game.load.tilemap('mapa', 'images/mapas/mapa-0.json', null, Phaser.Tilemap.TILED_JSON);
-    this.game.load.image('tiles', 'images/mapas/mapaTiles.png');
+    this.game.load.tilemap('mapa', 'assets/mapas/mapa-0.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.image('tiles', 'assets/mapas/mapaTiles.png');
+
+    //recursos
+    this.game.load.image ('arbol', 'assets/sprites/arbol.png' )
+
   },
 
   create: function () {

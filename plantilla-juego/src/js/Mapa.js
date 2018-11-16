@@ -1,8 +1,8 @@
 'use strict';
 
 
-
 function Mapa (game){
+
 
     this.game = game;
     this.tile_Map;
@@ -31,6 +31,8 @@ Mapa.prototype.generate = function() {
    this.añadeLayer('obstaculo nieve');  
    this.añadeLayer('obstaculo desierto'); 
    this.añadeLayer('collider');
+
+   
 }
 
 
