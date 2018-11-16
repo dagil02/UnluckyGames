@@ -14,6 +14,8 @@ var mapa = require('./Mapa');
   }, 
 
   update: function(){
+
+    
   }
 
 };
