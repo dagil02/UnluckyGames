@@ -11,12 +11,12 @@ var mapa = require('./Mapa');
    this.mapa = new mapa (this.game);
    this.mapa.generate();
    //Pruebas
-   this.j1 = new Player(this.game,50,50,'Casco1');
-   this.j2 = new Player(this.game,200,200,'Casco2');
+   //this.j1 = new Player(this.game,50,50,'Casco1');
+   //j2 = new Player(this.game,200,200,'Casco2');
   }, 
 
   update: function(){
-  this.j1.muevePlayer(1,1);
+  //this.j1.muevePlayer(1,1);
     
   }
 
