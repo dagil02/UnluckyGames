@@ -11,8 +11,8 @@ var mapa = require('./Mapa');
    this.mapa = new mapa (this.game);
    this.mapa.generate();
    //Pruebas
-   //this.j1 = new Player(this.game,50,50,'Casco1');
-   //j2 = new Player(this.game,200,200,'Casco2');
+   /*this.j1 = new Player(this.game,50,50,'Casco1');
+   this.j2 = new Player(this.game,200,200,'Casco2');*/
   }, 
 
   update: function(){
@@ -29,15 +29,15 @@ module.exports = PlayScene;
 
 //Pruebas clase player
 
-function Player (game,x,y,sprite){
+/*function Player (game,x,y,sprite){
 	Phaser.Sprite.call(this,game,x,y,sprite);
 	this.game.world.addChild(this);
 }
 
 Player.prototype=Object.create(Phaser.Sprite.prototype);
-Player.constructor=Player;
+Player.prototype.constructor=Player;
 
 Player.prototype.muevePlayer = function(x,y){
 this.x += x;
 this.y += y;
-}
+}*/

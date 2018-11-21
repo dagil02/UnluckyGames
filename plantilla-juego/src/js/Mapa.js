@@ -1,6 +1,7 @@
 'use strict';
 
 
+
 function Mapa (game){
 
 
@@ -8,22 +9,22 @@ function Mapa (game){
     this.game = game;
     this.tile_Map;
     this.layer = this.game.add.group();
-
+    this.recurso = this.game.add.group(); //arbol = identificador en Preload clase Game
     
     //FUNCIONES 
-    //genera aleatorio para recursos y añade a la lista.
-    /*this.añadeRecursos = function (){
+    //genera aleatorio para recursos y añade al grupo
+    this.añadeRecursos = function (){
         var n_Recursos = 50; var n = 0;
+        var objeto = require('./Objeto');
         while (n < n_Recursos){
             
            var x = Math.floor(Math.random() * 50 );
            var y = Math.floor(Math.random() * 37 );
 
-           this.recurso_lista.push (new this.recurso(this.game));
-           this.recurso_lista[n].generate(( x * 16), ( y * 16), 'arbol');
+           this.recurso.add(new objeto(this.game, (x * 16), (y * 16), 'arbol')); 
            n++;       
         }//fin while   
-    }*/
+    }
 
     //añade el mapa de tiles precargado en el main
     this.añadeTileMap = function (str){
@@ -48,8 +49,7 @@ Mapa.prototype.generate = function() {
    this.añadeLayer('obstaculo pradera');  
    this.añadeLayer('obstaculo nieve');  
    this.añadeLayer('obstaculo desierto'); 
-   //this.añadeLayer('collider');
-
+   this.añadeRecursos();
    
    
 }

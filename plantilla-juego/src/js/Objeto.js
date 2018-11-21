@@ -1,35 +1,46 @@
 'use strict';
 
-function Objeto (game, x, y, sprite){ // extend sprite
 
+//Consturctora funciones Auxiliares
+function RandomItem (){
+	var r = Math.floor(Math.random() * 10 );
+	return r;
 }
 
-/*function Player (game,x,y,sprite){
-	Phaser.Sprite.call(this,game,x,y,sprite);
+//CLASE PADRE: Objeto
+function Objeto (game, x, y, sprite){ 
+	Phaser.Sprite.call(this, game, x, y, sprite);//hereda de sprite
 	this.game.world.addChild(this);
+
+	//atributos 
+	this.bloquea = false; 
+	this.cantidad; 
 }
-
-Player.prototype=Object.create(Phaser.Sprite.prototype);
-Player.constructor=Player;
-
-Player.prototype.muevePlayer = function(x,y){
-this.x += x;
-this.y += y;
-}*/
+//enlaza ambas propiedades prototype
+Objeto.prototype = Object.create(Phaser.Sprite.prototype);
+//corrige la propiedad constructor
+Objeto.prototype.constructor = Objeto;
 
 
-//TIPOS  QUE HEREDAN DE OBJETOS 
-function Recurso (){
-
+//CLASES HIJAS: 
+//recursos
+function Recurso (game, x, y, sprite){
+	Objeto.call(this, game, x, y, sprite); //hereda de objeto 
+  
+	//funciones 
+	this.asignaValores = function (booleano, funcionRandom) {
+		this.bloquea = booleano;
+		this.cantidad = funcionRandom;
+	}
 
 }
-//RECURSOS  PROTOTYPE 
+Recurso.prototype = Object.create (Objeto.prototype);
+Recurso.prototype.constructor = Recurso;
 
+Recurso.prototype.generate = function (){
 
-Recurso.prototype.generate = function (px, py, nombre){
-
-   
+	var randItem = new RandomItem ();
+	this.asignaValores(true, randItem);
 }
-
 
 module.exports = Recurso;
