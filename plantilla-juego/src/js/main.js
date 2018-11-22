@@ -40,6 +40,7 @@ var PreloaderScene = {
 
   create: function () {
     this.game.state.start('play');
+    
   }
 };
 

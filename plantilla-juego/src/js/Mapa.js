@@ -61,6 +61,7 @@ function Mapa (game){
     //añade entidades al grupo
     this.añadeLayer = function (str_3){
         this.layerGroup.add(this.tile_Map.createLayer(str_3));
+        
     }
 
     //convierte los elementos de la capa en colisionadores
@@ -87,6 +88,7 @@ Mapa.prototype.generate = function() {
    this.CollidesCreate('obstaculo nieve');
    this.CollidesCreate('obstaculo desierto');
 
+   
    //recursos
    this.añadeRecursos();
 }
