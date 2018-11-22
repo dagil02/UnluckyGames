@@ -29,10 +29,12 @@ var PreloaderScene = {
     this.game.load.image('tiles', 'assets/mapas/mapaTiles.png');
 	
 
-    //recursos
-    this.game.load.image ('arbol', 'assets/sprites/arbol.png' );
-	this.game.load.image('Casco1', 'assets/sprites/Casco1.png');
-	this.game.load.image('Casco2', 'assets/sprites/Casco2.png');
+    //objetos
+    this.game.load.image ('arbol', 'assets/sprites/arbol.png' ); //recursos
+
+    //jugador
+    this.game.load.image('Casco1', 'assets/sprites/Casco1.png');
+    this.game.load.image('Casco2', 'assets/sprites/Casco2.png');
 
   },
 
