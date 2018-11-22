@@ -9,15 +9,21 @@ var mapa = require('./Mapa');
   create: function () {
    //this.game.physics.startSystem(Phaser.Physics.ARCADE);
    this.mapa = new mapa (this.game);
+   this.mapa.generate();
+
    
+   //********************* *//
    //Pruebas
-   this.j1 = new Player(this.game,50,50,'Casco1');
+   //this.j1 = new Player(this.game,50,50,'Casco1');
    
    //this.game.physics.arcade.enable(j1);
    //j1.body.collideWorldbounds = true;
    //this.j2 = new Player(this.game,200,200,'Casco2');
-   this.mapa.generate();
    //this.cursors = game.input.keyboard.createCursorKeys();
+
+   //***************************** */
+   
+   
   }, 
 
   update: function(){
@@ -47,8 +53,7 @@ module.exports = PlayScene;
 
 
 //Pruebas clase player
-
-function Player (game,x,y,sprite){
+/*function Player (game,x,y,sprite){
 	Phaser.Sprite.call(this,game,x,y,sprite);
   this.game.world.addChild(this);
   //this.cursor = this.game.input.keyboard.createCursorKeys();;
@@ -77,4 +82,4 @@ Player.prototype.compruebaInput = function(){
     {
       this.muevePlayer(0,1);
     }
-}
+}*/
