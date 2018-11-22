@@ -2,7 +2,7 @@
 
 var mapa = require('./Mapa');
 
-var cursors;
+//var cursors;
 
   var PlayScene = {
 
