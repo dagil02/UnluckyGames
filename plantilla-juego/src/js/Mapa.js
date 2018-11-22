@@ -66,8 +66,8 @@ function Mapa (game){
 
     //convierte los elementos de la capa en colisionadores
     this.CollidesCreate = function (layerName){
-        //(start, stop, boolCollides, layerName) el rango se identifica con el num tiles de la capa
-        //pero probamos con colision toda la capa tileMap (boolCollides, layerName)
+        
+        //probamos con colision toda la capa tileMap (boolCollides, layerName)
         this.tile_Map.setCollision(true, layerName);
     }
 }
