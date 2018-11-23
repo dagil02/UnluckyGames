@@ -22,25 +22,5 @@ Objeto.prototype = Object.create(Phaser.Sprite.prototype);
 Objeto.prototype.constructor = Objeto;
 
 
-//CLASES HIJAS: 
-//recursos
-function Recurso (game, x, y, sprite){
-	Objeto.call(this, game, x, y, sprite); //hereda de objeto 
-  
-	//funciones 
-	this.asignaValores = function (booleano, funcionRandom) {
-		this.bloquea = booleano;
-		this.cantidad = funcionRandom;
-	}
 
-}
-Recurso.prototype = Object.create (Objeto.prototype);
-Recurso.prototype.constructor = Recurso;
-
-Recurso.prototype.generate = function (){
-
-	var randItem = new RandomItem ();
-	this.asignaValores(true, randItem);
-}
-
-module.exports = Recurso;
+module.exports = Objeto;

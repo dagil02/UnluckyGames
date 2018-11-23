@@ -12,15 +12,15 @@ function Mapa (game){
 
     this.tile_Map; //recoge el mapa de tiles
 
-    //this.layerGroup = this.game.add.group(); //capas con los patrones del mapa
-    //this.recurso = this.game.add.group(); //arbol = identificador en Preload clase Game
-    this.recurso = []; //DEPURACION!!!
+    this.layerGroup = this.game.add.group(); //capas con los patrones del mapa
+    this.recurso = this.game.add.group(); //arbol = identificador en Preload clase Game
 
     //FUNCIONES 
     //genera aleatorio para recursos y añade al grupo
-    this.añadeRecursos = function (){
-        var n_Recursos = 50; var n = 0;
-        var objeto = require('./Objeto');
+    this.añadeObjetos = function (enlace, idSprite, nObj){
+
+        var n_Recursos = nObj; var n = 0;
+        var objeto = enlace; //recoge el valor por parámetro
  
 
         while (n < n_Recursos){
@@ -33,26 +33,30 @@ function Mapa (game){
            //this.game.physics.arcade.enable(aux); //activa fisicas para comprobar la colision en la posX,Y
            this.game.physics.enable(aux, Phaser.Physics.ARCADE);
            
-           var col = (this.game.physics.arcade.collide(aux, this.layer2) || this.game.physics.arcade.collide(aux, this.layer3) || this.game.physics.arcade.collide(aux, this.layer4)); 
-           console.log ("BOOL COL: " + col);
+           var col = false; var i = 0;
+           while (!col && i < this.layerGroup.lenght){
+               col = this.game.physics.arcade.collide(aux, this.layerGroup.children[i]);
+               i++;
+           } 
+
+           console.log ("BOOL COL: " + col); //MENSAJE EN CONSOLA
+
            if (!col){
             this.recurso.enableBody = true;
             this.recurso.physicsBodyType = Phaser.Physics.ARCADE;
 
-            this.recurso.push(new objeto(this.game, (x * 16), (y * 16), 'arbol'));
+            this.recurso.create(new objeto(this.game, (x * 16), (y * 16), idSprite));
+
             n++;  
-            aux.destroy();
            }
+           aux.destroy(); //destruye la variable para que no se quede renderizada
                   
         }//fin while   
        
-        //aux.destroy();
+      
         
     }
 
-    this.NohaceNada = function() {
-        console.log ("COLISION");
-    }
 
     //añade el mapa de tiles precargado en el main
     this.añadeTileMap = function (str){
@@ -64,7 +68,7 @@ function Mapa (game){
     }
     //añade entidades al grupo
     this.añadeLayer = function (str_3){
-        this.layerGroup.add(this.tile_Map.createLayer(str_3));
+        this.layerGroup.create(this.tile_Map.createLayer(str_3));
         
     }
 
@@ -77,33 +81,32 @@ function Mapa (game){
 }
 
 Mapa.prototype.generate = function() {
+    
    this.añadeTileMap('mapa');
    this.añadeTileImg('tilesMap', 'tiles');
 
    //añadimos las entidades al grupo
    //capas del mapa
-   //NO CONSIGO ACCEDER A LOS MIEMBROS DEL GRUPO.
-   /*this.añadeLayer('background');  
+   this.añadeLayer('background');  
    this.añadeLayer('obstaculo pradera');  
    this.añadeLayer('obstaculo nieve');  
-   this.añadeLayer('obstaculo desierto'); */
-   //POR EL MOMENTO CREAMOS VARIABLES INDEPENDIENTES. 
-   this.layer = this.tile_Map.createLayer('background');
-   this.layer2 = this.tile_Map.createLayer('obstaculo pradera');
-   this.layer3 = this.tile_Map.createLayer('obstaculo nieve');
-   this.layer4 = this.tile_Map.createLayer('obstaculo desierto');
+   this.añadeLayer('obstaculo desierto'); 
 
+   
    
    //determina las colisiones
-   this.CollidesCreate('obstaculo pradera');
+  this.CollidesCreate('obstaculo pradera');
    this.CollidesCreate('obstaculo nieve');
    this.CollidesCreate('obstaculo desierto');
- 
 
 
+
+   var recursosClass = require('./recurso'); //recursos 
+   var armasClass = require('./Armas'); //armas
+   var recursoIdSprite = 'arbol'; var armasIdSprite = 'subFusil';
+   this.añadeObjetos(recursosClass, recursoIdSprite, 50);
+   this.añadeObjetos(armasClass, armasIdSprite, 12);
    
-   //recursos
-   this.añadeRecursos();
 }
 
 
