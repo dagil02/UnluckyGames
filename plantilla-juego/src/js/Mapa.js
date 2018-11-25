@@ -34,7 +34,7 @@ function Mapa (game){
            this.game.physics.enable(aux, Phaser.Physics.ARCADE);
            
            var col = false; var i = 0;
-           while (!col && i < this.layerGroup.lenght){
+           while (!col && i < this.layerGroup.length){
                col = this.game.physics.arcade.collide(aux, this.layerGroup.children[i]);
                i++;
            } 
