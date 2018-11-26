@@ -1,6 +1,6 @@
 'use strict';
 
-
+//coossdd
 
 var objeto = require('./Objeto');
 
@@ -12,12 +12,14 @@ function Armas (game, x, y, sprite){
 	//atributos 
 	this.cantidad;
 	this.balas;
+	this.alcance;
+	this.damage;
 
 	//funciones 
 	this.asignaValores = function (booleano, funcionRandom) {
 
 		this.bloquea = booleano;
-        this.balas = funcionRandom;
+		this.balas = funcionRandom;
         this.cantidad = 1;
 	}
 
