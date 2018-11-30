@@ -12,8 +12,10 @@ function Mapa (game){
 
     this.tile_Map; //recoge el mapa de tiles
 
+    this.layer_background; this.layer_obstaculo_0; this.layer_obstaculo_1; this.layer_obstaculo_2;
     this.layerGroup = this.game.add.group(); //capas con los patrones del mapa
     this.recurso = this.game.add.group(); //arbol = identificador en Preload clase Game
+
 
     //FUNCIONES 
     //genera aleatorio para recursos y añade al grupo
@@ -45,7 +47,7 @@ function Mapa (game){
             this.recurso.enableBody = true;
             this.recurso.physicsBodyType = Phaser.Physics.ARCADE;
 
-            this.recurso.create(new objeto(this.game, (x * 16), (y * 16), idSprite));
+            this.recurso.add(new objeto(this.game, (x * 16), (y * 16), idSprite));
 
             n++;  
            }
@@ -67,16 +69,23 @@ function Mapa (game){
         this.tile_Map.addTilesetImage(str_1, str_2); 
     }
     //añade entidades al grupo
-    this.añadeLayer = function (str_3){
-        this.layerGroup.create(this.tile_Map.createLayer(str_3));
+    this.añadeLayer = function (){
         
-    }
-
-    //convierte los elementos de la capa en colisionadores
-    this.CollidesCreate = function (layerName){
+        //las varibales que recogen las capas
+        //primero el background
+        this.layer_background = this.tile_Map.createLayer('background');
+        //posterior las capas de colisiones constantes
+        this.layer_obstaculo_0 = this.tile_Map.createLayer('obstaculo pradera');
+        this.tile_Map.setCollision(true, 'obstaculo pradera'); //la define como colision
+        this.layer_obstaculo_1 = this.tile_Map.createLayer('obstaculo nieve');
+        this.tile_Map.setCollision(true, 'obstaculo nieve');
+        this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo desierto');
+        this.tile_Map.setCollision(true, 'obstaculo desierto');
         
-        //probamos con colision toda la capa tileMap (boolCollides, layerName)
-        this.tile_Map.setCollision(true, layerName);
+        this.layerGroup.add(this.layer_background);
+        this.layerGroup.add(this.layer_obstaculo_0);
+        this.layerGroup.add(this.layer_obstaculo_1);
+        this.layerGroup.add(this.layer_obstaculo_2);       
     }
 }
 
@@ -85,22 +94,11 @@ Mapa.prototype.generate = function() {
    this.añadeTileMap('mapa');
    this.añadeTileImg('tilesMap', 'tiles');
 
-   //añadimos las entidades al grupo
-   //capas del mapa
-   this.añadeLayer('background');  
-   this.añadeLayer('obstaculo pradera');  
-   this.añadeLayer('obstaculo nieve');  
-   this.añadeLayer('obstaculo desierto'); 
-
-   
-   
-   //determina las colisiones
-  this.CollidesCreate('obstaculo pradera');
-   this.CollidesCreate('obstaculo nieve');
-   this.CollidesCreate('obstaculo desierto');
+   //se crean las capas, se definen como colisiones y se añaden al grupo
+   this.añadeLayer();
 
 
-
+   //se require de la clase objeto para genrar sus hijos. 
    var recursosClass = require('./recurso'); //recursos 
    var armasClass = require('./Armas'); //armas
    var recursoIdSprite = 'arbol'; var armasIdSprite = 'subFusil';
