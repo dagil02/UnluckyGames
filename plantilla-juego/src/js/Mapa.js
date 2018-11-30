@@ -1,20 +1,20 @@
 'use strict';
 
+//node_modules/.bin/gulp run
 
-//falta crear variable para controlar las phisicas
-//var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.layerName);
+
 function Mapa (game){
 
 
     //ATRIBUTOS
     this.game = game;
-    this.game.physics.startSystem(Phaser.Physics.ARCADE); //inicia el motor de físicas
 
     this.tile_Map; //recoge el mapa de tiles
 
     this.layer_background; this.layer_obstaculo_0; this.layer_obstaculo_1; this.layer_obstaculo_2;
-    this.layerGroup = this.game.add.group(); //capas con los patrones del mapa
-    this.recurso = this.game.add.group(); //arbol = identificador en Preload clase Game
+    
+    
+    
 
 
     //FUNCIONES 
@@ -32,20 +32,23 @@ function Mapa (game){
 
            //variable auxiliar. 
            var aux = this.game.add.sprite((x * 16), (y * 16), 'Casco1');
-           //this.game.physics.arcade.enable(aux); //activa fisicas para comprobar la colision en la posX,Y
-           this.game.physics.enable(aux, Phaser.Physics.ARCADE);
+           //activa físicas del objeto
+           this.game.physics.arcade.enable(aux);
+           aux.enableBody = true;
            
-           var col = false; var i = 0;
-           while (!col && i < this.layerGroup.length){
-               col = this.game.physics.arcade.collide(aux, this.layerGroup.children[i]);
+           
+           var col = false; var i = 1;
+           while (!col && i < this.tile_Map.layerGroup.length){
+               col = this.game.physics.arcade.collide(this.tile_Map.layerGroup.children[i],aux);
                i++;
            } 
+          
 
            console.log ("BOOL COL: " + col); //MENSAJE EN CONSOLA
 
            if (!col){
-            this.recurso.enableBody = true;
-            this.recurso.physicsBodyType = Phaser.Physics.ARCADE;
+            //this.recurso.enableBody = true;
+            //this.recurso.physicsBodyType = Phaser.Physics.ARCADE;
 
             this.recurso.add(new objeto(this.game, (x * 16), (y * 16), idSprite));
 
@@ -59,7 +62,6 @@ function Mapa (game){
         
     }
 
-
     //añade el mapa de tiles precargado en el main
     this.añadeTileMap = function (str){
         this.tile_Map = this.game.add.tilemap(str);
@@ -70,29 +72,51 @@ function Mapa (game){
     }
     //añade entidades al grupo
     this.añadeLayer = function (){
+
+       
         
-        //las varibales que recogen las capas
-        //primero el background
+        //º las variables recojen las capas
         this.layer_background = this.tile_Map.createLayer('background');
-        //posterior las capas de colisiones constantes
-        this.layer_obstaculo_0 = this.tile_Map.createLayer('obstaculo pradera');
-        this.tile_Map.setCollision(true, 'obstaculo pradera'); //la define como colision
-        this.layer_obstaculo_1 = this.tile_Map.createLayer('obstaculo nieve');
-        this.tile_Map.setCollision(true, 'obstaculo nieve');
-        this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo desierto');
-        this.tile_Map.setCollision(true, 'obstaculo desierto');
+        this.layer_obstaculo_0 = this.tile_Map.createLayer('obstaculo desierto'); 
+        this.layer_obstaculo_1 = this.tile_Map.createLayer('obstaculo pradera'); 
+        this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo nieve'); 
         
-        this.layerGroup.add(this.layer_background);
-        this.layerGroup.add(this.layer_obstaculo_0);
-        this.layerGroup.add(this.layer_obstaculo_1);
-        this.layerGroup.add(this.layer_obstaculo_2);       
+ 
+        this.game.physics.arcade.enable(this.layer_obstaculo_0);
+        this.game.physics.arcade.enable(this.layer_obstaculo_1);
+        this.game.physics.arcade.enable(this.layer_obstaculo_2);
+
+        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo desierto')], true, this.layer_obstaculo_0);
+        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo pradera')], true, this.layer_obstaculo_1);
+        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo nieve')], true, this.layer_obstaculo_2);
+
+        /*this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo desierto')], true, 'obstaculo desierto');
+        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo pradera')], true, 'obstaculo pradera');
+        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo nieve')], true, 'obstaculo nieve');*/
+
+        //this.tile_Map.setCollisionByExclusion([10, 11, 12], true); 
+        /*this.tile_Map.setCollisionByExclusion([11], true,  this.layer_obstaculo_1); 
+        this.tile_Map.setCollisionByExclusion([12], true,  this.layer_obstaculo_2); */
+
+
+        //º se añaden al grupo
+        this.tile_Map.layerGroup.add(this.layer_background);
+        this.tile_Map.layerGroup.add(this.layer_obstaculo_0);
+        this.tile_Map.layerGroup.add(this.layer_obstaculo_1);
+        this.tile_Map.layerGroup.add(this.layer_obstaculo_2);
+
     }
+
 }
+
 
 Mapa.prototype.generate = function() {
     
    this.añadeTileMap('mapa');
    this.añadeTileImg('tilesMap', 'tiles');
+
+   this.tile_Map.layerGroup = this.game.add.group(); //capas con los patrones del mapa
+   this.recurso = this.game.add.group(); //arbol = identificador en Preload clase Game
 
    //se crean las capas, se definen como colisiones y se añaden al grupo
    this.añadeLayer();
@@ -104,7 +128,6 @@ Mapa.prototype.generate = function() {
    var recursoIdSprite = 'arbol'; var armasIdSprite = 'subFusil';
    this.añadeObjetos(recursosClass, recursoIdSprite, 50);
    this.añadeObjetos(armasClass, armasIdSprite, 12);
-   
 }
 
 
