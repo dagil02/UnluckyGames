@@ -51,9 +51,9 @@ var mapa = require('./Mapa');
 
   render: function(){
     //DEBUG:
-    this.game.debug.text(`Debugging Body: Layers:`, (2 * 16), (38 * 16), 'yellow', 'Segoe UI');
+    /*this.game.debug.text(`Debugging Body: Layers:`, (2 * 16), (38 * 16), 'yellow', 'Segoe UI');
     this.layerDebug.debug = true;
-    this.game.debug.bodyInfo(this.layerDebug, (2 * 16), (40 * 16), 'yellow');
+    this.game.debug.bodyInfo(this.layerDebug, (2 * 16), (40 * 16), 'yellow');*/
 
   }
 

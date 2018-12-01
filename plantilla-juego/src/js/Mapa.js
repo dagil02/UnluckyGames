@@ -31,29 +31,40 @@ function Mapa (game){
            var y = Math.floor(Math.random() * 37 );
 
            //variable auxiliar. 
-           var aux = this.game.add.sprite((x * 16), (y * 16), 'Casco1');
-           //activa físicas del objeto
-           this.game.physics.arcade.enable(aux);
-           aux.enableBody = true;
+           var aux = this.game.add.sprite(x, y, 'Casco1');
            
-           
-           var col = false; var i = 1;
-           while (!col && i < this.tile_Map.layerGroup.length){
-               col = this.game.physics.arcade.collide(this.tile_Map.layerGroup.children[i],aux);
-               i++;
-           } 
+           var col = false;
+           col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
           
 
            console.log ("BOOL COL: " + col); //MENSAJE EN CONSOLA
 
-           if (!col){
-            //this.recurso.enableBody = true;
-            //this.recurso.physicsBodyType = Phaser.Physics.ARCADE;
+           if (!col){ 
+               var hijo = -1;
+               //this.recurso.physicsBodyType = Phaser.Physics.ARCADE;
+               //this.recurso.enableBody = true;
+               if (idSprite === 'arbol'){ hijo = 0; }
+               else if (idSprite === 'subFusil'){ hijo = 1; }
 
-            this.recurso.add(new objeto(this.game, (x * 16), (y * 16), idSprite));
+               if (hijo !== -1){
+                   if (hijo === 0){
+                    if (this.GrupoObjetos.children[1].x !==  x * 16 && this.GrupoObjetos.children[1].y !==  y * 16 ){
+                        this.GrupoObjetos.children[hijo].add(new objeto(this.game, x * 16, y * 16, idSprite));
+                        n++;
+                    }  
+                   }
+                   else if (hijo === 1){
+                        if (this.GrupoObjetos.children[0].x !==  x * 16 && this.GrupoObjetos.children[1].y !==  y * 16 ){
+                            this.GrupoObjetos.children[hijo].add(new objeto(this.game, x * 16, y * 16, idSprite));
+                            n++;
+                        }  
+                    }
+                }
+                
+            }
 
-            n++;  
-           }
+             
+    
            aux.destroy(); //destruye la variable para que no se quede renderizada
                   
         }//fin while   
@@ -86,13 +97,20 @@ function Mapa (game){
         this.game.physics.arcade.enable(this.layer_obstaculo_1);
         this.game.physics.arcade.enable(this.layer_obstaculo_2);
 
-        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo desierto')], true, this.layer_obstaculo_0);
-        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo pradera')], true, this.layer_obstaculo_1);
-        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo nieve')], true, this.layer_obstaculo_2);
+        /*this.layer_obstaculo_0.enableBody = true;
+        this.layer_obstaculo_1.enableBody = true;
+        this.layer_obstaculo_2.enableBody = true;
 
-        /*this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo desierto')], true, 'obstaculo desierto');
-        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo pradera')], true, 'obstaculo pradera');
-        this.tile_Map.setCollision([this.tile_Map.getLayerIndex('obstaculo nieve')], true, 'obstaculo nieve');*/
+        this.layer_obstaculo_0.body.collideWorldBounds = true;
+        this.layer_obstaculo_1.body.collideWorldBounds = true;
+        this.layer_obstaculo_2.body.collideWorldBounds = true;*/
+
+
+        this.tile_Map.setCollision(1, true, this.layer_obstaculo_0);
+        this.tile_Map.setCollision(2, true, this.layer_obstaculo_1);
+        this.tile_Map.setCollision(3, true, this.layer_obstaculo_2);
+
+
 
         //this.tile_Map.setCollisionByExclusion([10, 11, 12], true); 
         /*this.tile_Map.setCollisionByExclusion([11], true,  this.layer_obstaculo_1); 
@@ -107,6 +125,21 @@ function Mapa (game){
 
     }
 
+    //COMO NO CONSIGO LO DE LAS FUCKING COLISIONES. ACCEDO AL ARRAY DE LA CAPA Y COMPRUEBO SI ESTÁ OCUPADO
+    this.TileOcupado = function(variable, nombreCapa) {
+       var colision = false; var i = 1;
+       while (!colision && i < nombreCapa.length){
+           colision = nombreCapa[i].layer.data[variable.y][variable.x].index !== -1;
+           i++;
+       }
+
+       
+       return colision;
+
+    }
+
+
+
 }
 
 
@@ -115,11 +148,20 @@ Mapa.prototype.generate = function() {
    this.añadeTileMap('mapa');
    this.añadeTileImg('tilesMap', 'tiles');
 
+   //Grupos
    this.tile_Map.layerGroup = this.game.add.group(); //capas con los patrones del mapa
-   this.recurso = this.game.add.group(); //arbol = identificador en Preload clase Game
+   this.GrupoObjetos = this.game.add.group(); //alberga grupos
+   this.GrupoRecursos = this.game.add.group(); //arbol = identificador en Preload clase Game
+   this.GrupoArmas = this.game.add.group(); //subfusil = identificador
+   //GrupoObjetos = [GrupoRecurso, GrupoArmas,...]
+   this.GrupoObjetos.add(this.GrupoRecursos);
+   this.GrupoObjetos.add(this.GrupoArmas);
+
 
    //se crean las capas, se definen como colisiones y se añaden al grupo
    this.añadeLayer();
+
+   console.log ('POSICION TILE '+this.layer_obstaculo_0.layer.data[2][3].x);
 
 
    //se require de la clase objeto para genrar sus hijos. 
