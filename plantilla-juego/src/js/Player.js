@@ -40,7 +40,7 @@ Player.prototype.compruebaInput = function(){
       y++;
     }
 
-    var h = Math.pow(x,2) + Math.pow(y,2);
+    var h = Math.sqrt( Math.pow(x,2) + Math.pow(y,2));
 
     if (h > 1){
       x /=h;
