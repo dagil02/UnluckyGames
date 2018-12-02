@@ -34,7 +34,7 @@ var PreloaderScene = {
     this.game.load.image ('subFusil', 'assets/sprites/gun.png' ); //armas
 
     //jugador
-    this.game.load.image('Casco1', 'assets/sprites/Casco1.png');
+    this.game.load.image('Casco1', 'assets/sprites/j1.png');
     this.game.load.image('Casco2', 'assets/sprites/Casco2.png');
 
   },
