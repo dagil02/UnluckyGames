@@ -90,7 +90,8 @@ function Mapa (game){
         this.layer_background = this.tile_Map.createLayer('background');
         this.layer_obstaculo_0 = this.tile_Map.createLayer('obstaculo desierto'); 
         this.layer_obstaculo_1 = this.tile_Map.createLayer('obstaculo pradera'); 
-        this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo nieve'); 
+        this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo nieve');
+
         
  
         this.game.physics.arcade.enable(this.layer_obstaculo_0);
@@ -147,6 +148,7 @@ Mapa.prototype.generate = function() {
     
    this.añadeTileMap('mapa');
    this.añadeTileImg('tilesMap', 'tiles');
+   
 
    //Grupos
    this.tile_Map.layerGroup = this.game.add.group(); //capas con los patrones del mapa
