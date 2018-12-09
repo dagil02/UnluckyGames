@@ -33,9 +33,13 @@ function Mapa (game){
            //variable auxiliar. 
            var aux = this.game.add.sprite(x, y, 'Casco1');
            
-           var col = false;
-           col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
-          
+           var col = false; var i = 1;
+           while (!col && i < this.tile_Map.layerGroup.length){
+               col = this.game.physics.arcade.collide(aux, this.tile_Map.layerGroup.children[i]);
+               i++;
+           }
+
+           //col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
 
            console.log ("BOOL COL: " + col); //MENSAJE EN CONSOLA
 
@@ -110,7 +114,7 @@ function Mapa (game){
     //COMO NO CONSIGO LO DE LAS FUCKING COLISIONES. ACCEDO AL ARRAY DE LA CAPA Y COMPRUEBO SI ESTÁ OCUPADO
     this.TileOcupado = function(variable, nombreCapa) {
        var colision = false; var i = 1;
-       //aqui recorre el array de hijos de layerGroup
+       //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
        while (!colision && i < nombreCapa.length){
            colision = nombreCapa[i].layer.data[variable.y][variable.x].index !== -1;
            i++;
