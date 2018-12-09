@@ -83,52 +83,34 @@ function Mapa (game){
     }
     //añade entidades al grupo
     this.añadeLayer = function (){
-
-       
         
-        //º las variables recojen las capas
+        //1º las variables recojen las capas
         this.layer_background = this.tile_Map.createLayer('background');
         this.layer_obstaculo_0 = this.tile_Map.createLayer('obstaculo desierto'); 
         this.layer_obstaculo_1 = this.tile_Map.createLayer('obstaculo pradera'); 
         this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo nieve');
 
-        
- 
-        this.game.physics.arcade.enable(this.layer_obstaculo_0);
-        this.game.physics.arcade.enable(this.layer_obstaculo_1);
-        this.game.physics.arcade.enable(this.layer_obstaculo_2);
-
-        /*this.layer_obstaculo_0.enableBody = true;
-        this.layer_obstaculo_1.enableBody = true;
-        this.layer_obstaculo_2.enableBody = true;
-
-        this.layer_obstaculo_0.body.collideWorldBounds = true;
-        this.layer_obstaculo_1.body.collideWorldBounds = true;
-        this.layer_obstaculo_2.body.collideWorldBounds = true;*/
-
-
-        this.tile_Map.setCollision(1, true, this.layer_obstaculo_0);
-        this.tile_Map.setCollision(2, true, this.layer_obstaculo_1);
-        this.tile_Map.setCollision(3, true, this.layer_obstaculo_2);
-
-
-
-        //this.tile_Map.setCollisionByExclusion([10, 11, 12], true); 
-        /*this.tile_Map.setCollisionByExclusion([11], true,  this.layer_obstaculo_1); 
-        this.tile_Map.setCollisionByExclusion([12], true,  this.layer_obstaculo_2); */
-
-
-        //º se añaden al grupo
+        //2º se añaden al grupo
         this.tile_Map.layerGroup.add(this.layer_background);
         this.tile_Map.layerGroup.add(this.layer_obstaculo_0);
         this.tile_Map.layerGroup.add(this.layer_obstaculo_1);
         this.tile_Map.layerGroup.add(this.layer_obstaculo_2);
+        //se recorre el grupo saltando la capa Background
+        for (var i = 1; i < this.tile_Map.layerGroup.length; i++){
+            //3º se habilitan las físicas para cada capa
+            this.game.physics.arcade.enable(this.tile_Map.layerGroup.children[i]);
+            //4º se definen los tiles como colisiones
+            //hay que pasar el rango de index. puede: index === number || index === array
+            //Doc.Oficial: Source code: tilemap/Tilemap.js (Line 816). En caso de array su función lo recorre
+            this.tile_Map.setCollision((this.RecogeIndex(this.tile_Map.layerGroup.children[i])), true, this.tile_Map.layerGroup.children[i], true);
+        }  
 
     }
 
     //COMO NO CONSIGO LO DE LAS FUCKING COLISIONES. ACCEDO AL ARRAY DE LA CAPA Y COMPRUEBO SI ESTÁ OCUPADO
     this.TileOcupado = function(variable, nombreCapa) {
        var colision = false; var i = 1;
+       //aqui recorre el array de hijos de layerGroup
        while (!colision && i < nombreCapa.length){
            colision = nombreCapa[i].layer.data[variable.y][variable.x].index !== -1;
            i++;
@@ -138,6 +120,35 @@ function Mapa (game){
        return colision;
 
     }
+    //Método que devuelve un array de index correspondiente a cada capa. 
+    this.RecogeIndex = function(nombreCapa) {
+
+        var listaIndex = []; //lista auxiliar 
+        //función que devuelve un patrón de orden ascendente
+        function comparar (a, b){
+            return a - b;
+        }
+        //se recorre las fils/Cols del mapa patrón de tiles
+        for  (var y = 0; y < 37; y++){
+            for (var x = 0; x < 50; x++){    
+                //se recorre el array aux para determinar que no se haya incluido ya ese index    
+                var j = 0; var esta = false;
+                while ( !esta && j < listaIndex.length){
+                    esta = nombreCapa.layer.data[y][x].index == listaIndex[j];
+                    j++;
+                }
+                //lo añade al array en caso de no ser -1 y no estar previamente. 
+                if (!esta) {
+                    if (nombreCapa.layer.data[y][x].index !== -1){
+                        listaIndex.push(nombreCapa.layer.data[y][x].index);
+                    }
+                }
+                else {esta = false;} //vuelve a false para siguiente vuelta
+            }
+        }
+        //se devuelve el array ordenado.
+        return listaIndex.sort(comparar);//ordena el array de manera ascendente
+     }
 
 
 
