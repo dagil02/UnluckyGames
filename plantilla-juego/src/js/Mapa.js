@@ -173,6 +173,19 @@ Mapa.prototype.generate = function() {
    this.añadeObjetos(recursosClass, recursoIdSprite, 50);
    this.añadeObjetos(armasClass, armasIdSprite, 12);
 }
+/*Mapa.prototype.colisionaObjetos = function(player,item){
+    var boundsA = player.getBounds();
+    var boundsB = item.getBounds();
+  
+    if(Phaser.Rectangle.intersects(boundsA, boundsB)){
 
+        delete item;
+    }
+    item.x ++;
+}
+
+Mapa.prototype.compruebaColision = function(player){
+    this.GrupoObjetos.array.forEach(this.colisionaObjetos(player,item));
+}*/
 
 module.exports = Mapa;
