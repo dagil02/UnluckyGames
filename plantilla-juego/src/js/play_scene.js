@@ -13,14 +13,12 @@ var j1 = require('./Player');
 
    this.mapa = new mapa (this.game);
    this.mapa.generate();
-   this.layerDebug = this.mapa.layer_obstaculo_1;
    
+
    this.j1 = new j1(this.game,50,50,'Casco1');
 
    //this.game.camera.scale.x += 1;
    //this.game.camera.scale.y += 1;
-
-   
    
   }, 
 
@@ -34,9 +32,8 @@ var j1 = require('./Player');
 
   render: function(){
     //DEBUG:
-    /*this.game.debug.text(`Debugging Body: Layers:`, (2 * 16), (38 * 16), 'yellow', 'Segoe UI');
-    this.layerDebug.debug = true;
-    this.game.debug.bodyInfo(this.layerDebug, (2 * 16), (40 * 16), 'yellow');*/
+    //this.game.debug.text(`Debugging object: loQueSea:`, (2 * 16), (38 * 16), 'yellow', 'Segoe UI');
+ 
 
   }
 
@@ -47,4 +44,9 @@ var j1 = require('./Player');
 module.exports = PlayScene;
 
 
-
+/*this.game.debug.funDeb = function(x, y, color){
+    this.start(x, y, color);
+		this.line('bloquea: ' + this.c);
+		this.line('Cantidad: ' + this.b);
+		this.stop();
+   }*/

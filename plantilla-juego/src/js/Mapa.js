@@ -10,25 +10,57 @@ function Mapa (game){
     this.game = game;
 
     this.tile_Map; //recoge el mapa de tiles
-
+    //capas
     this.layer_background; this.layer_obstaculo_0; this.layer_obstaculo_1; this.layer_obstaculo_2;
-
-    this.Indice
     
-
     //FUNCIONES 
+
+    //------METODOS PARA LA CREACIÓN DE OBJETO------
+    //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
+     this.AñadeObjetoAux = function (x, y){
+        var esta = false; var i = 0;
+        var position = {'x': x, 'y': y };
+        //se recorre el grupo 
+        while (!esta && i < this.GrupoObjetos.children.length){
+            var j = 0;
+            while (!esta && j < this.GrupoObjetos.children[i].length){
+               esta = position ===  this.GrupoObjetos.children[i].children[j].position;
+               j++;
+            }
+            i++;
+        }
+        return esta;
+    }
+
+    //Metodo para devolve un índice de armas
+    this.Selec_Weapon = function (){
+       var idSprite_list = ['subFusil', 'pistola', 'francoTirador']; 
+       var i =  Math.floor(Math.random() * idSprite_list.length);
+       var enlace = require('./Armas');
+       
+       var weapon = { 'idSprite': idSprite_list[i], 'enlace': enlace};
+       return weapon;
+    }
+
+    //método para devolver el tipo de Objeto a crear en base al parámetro tipo string
+    this.SeleccionObjeto = function (string){
+       if (string === "recurso"){
+           var recurso = {'idSprite': 'arbol', 'enlace': require('./recurso')}; return recurso;
+       }
+       else if (string === "arma"){ return this.Selec_Weapon();}
+    }
     //genera aleatorio para recursos y añade al grupo
-    this.añadeObjetos = function (enlace, idSprite, nObj, g_obj_hijo){
+    this.añadeObjetos = function (string, nObj, group_obj_hijo){
 
         //constante auxiliar
         var tile_patron_W = this.tile_Map.width; var tile_patron_H = this.tile_Map.height;
 
         //variables de control 
         var n_Recursos = nObj; var n = 0;
-        var objeto = enlace; //recoge el valor por parámetro
-       
 
         while (n < n_Recursos){
+            //se crea el patrón de objeto en el bucle, para generar armas distintas dado el caso
+            var objeto = this.SeleccionObjeto(string);
             
            var x = Math.floor(Math.random() * tile_patron_W );
            var y = Math.floor(Math.random() * tile_patron_H);
@@ -37,28 +69,30 @@ function Mapa (game){
            var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight //recoge w/h del tile
            x = x * tile_W; y = y * tile_H; //recogen worldPosition
            var aux = this.game.add.sprite(x, y, 'Casco1');
+           //habilita físicas y body
            this.game.physics.arcade.enable(aux);
            aux.enableBody = true;
            
-           var col = false;
+           var col = false;//variable de control de colision
            col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
 
            console.log ("BOOL COL: " + col); //MENSAJE EN CONSOLA
 
            if (!col){ 
                if (!this.AñadeObjetoAux(x, y)){
-                g_obj_hijo.add(new objeto(this.game, x, y, idSprite));
-                n++;
+                   var obj_aux = new objeto.enlace(this.game, x, y, objeto.idSprite);
+                   obj_aux.generate();
+                   group_obj_hijo.add(obj_aux);
+                   n++;
                }
             }      
            aux.destroy(); //destruye la variable para que no se quede renderizada
                   
         }//fin while   
-       
-      
-        
+           
     }
 
+    //------METODOS PARA LA CREACIÓN DE TILEMAP------
     //añade el mapa de tiles precargado en el main
     this.añadeTileMap = function (str){
         this.tile_Map = this.game.add.tilemap(str);
@@ -67,44 +101,7 @@ function Mapa (game){
     this.añadeTileImg = function (str_1, str_2){
         this.tile_Map.addTilesetImage(str_1, str_2); 
     }
-    //añade entidades al grupo
-    this.añadeLayer = function (){
-        
-        //1º las variables recojen las capas
-        this.layer_background = this.tile_Map.createLayer('background');
-        this.layer_obstaculo_0 = this.tile_Map.createLayer('obstaculo desierto'); 
-        this.layer_obstaculo_1 = this.tile_Map.createLayer('obstaculo pradera'); 
-        this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo nieve');
 
-        //2º se añaden al grupo
-        this.tile_Map.layerGroup.add(this.layer_background);
-        this.tile_Map.layerGroup.add(this.layer_obstaculo_0);
-        this.tile_Map.layerGroup.add(this.layer_obstaculo_1);
-        this.tile_Map.layerGroup.add(this.layer_obstaculo_2);
-        //se recorre el grupo saltando la capa Background
-        for (var i = 1; i < this.tile_Map.layerGroup.length; i++){
-            //3º se habilitan las físicas para cada capa
-            this.game.physics.arcade.enable(this.tile_Map.layerGroup.children[i]);
-            //4º se definen los tiles como colisiones
-            //hay que pasar el rango de index. puede: index === number || index === array
-            //Doc.Oficial: Source code: tilemap/Tilemap.js (Line 816). En caso de array su función lo recorre
-            this.tile_Map.setCollision((this.RecogeIndex(this.tile_Map.layerGroup.children[i])), true, this.tile_Map.layerGroup.children[i], true);
-            //this.tile_Map.setCollisionByExclusion((this.RecogeIndex(this.tile_Map.layerGroup.children[i])), true, this.tile_Map.layerGroup.children[i], true);
-        }  
-    }
-
-    //COMO NO CONSIGO LO DE LAS FUCKING COLISIONES. ACCEDO AL ARRAY DE LA CAPA Y COMPRUEBO SI ESTÁ OCUPADO
-    this.TileOcupado = function(variable, grupoCapas) {
-       var colision = false; var i = 1;
-       //auxiliares recogen pos: se divide por el w,h del tile
-       var x = variable.x / this.tile_Map.tileWidth; var y = variable.y /this.tile_Map.tileHeight;
-       //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
-       while (!colision && i < grupoCapas.length){
-           colision = grupoCapas[i].layer.data[y][x].index !== -1;
-           i++;
-       }     
-       return colision;
-    }
     //Método que devuelve un array de index correspondiente a cada capa. 
     this.RecogeIndex = function(nombreCapa) {
         //constante aux.
@@ -136,38 +133,54 @@ function Mapa (game){
         return listaIndex.sort(comparar);//ordena el array de manera ascendente
      }
 
-     //Método que comprueba que no se va a posicionar el objeto encima de otro
-     this.AñadeObjetoAux = function (x, y){
-         var esta = false; var i = 0;
-         var position = {'x': x, 'y': y };
-         //se recorre el grupo 
-         while (!esta && i < this.GrupoObjetos.children.length){
-             var j = 0;
-             while (!esta && j < this.GrupoObjetos.children[i].length){
-                esta = position ===  this.GrupoObjetos.children[i].children[j].position;
-                j++;
-             }
-             i++;
-         }
-         return esta;
-     }
+    //añade entidades al grupo
+    this.añadeLayer = function (){
+        
+        //1º las variables recojen las capas
+        this.layer_background = this.tile_Map.createLayer('background');
+        this.layer_obstaculo_0 = this.tile_Map.createLayer('obstaculo desierto'); 
+        this.layer_obstaculo_1 = this.tile_Map.createLayer('obstaculo pradera'); 
+        this.layer_obstaculo_2 = this.tile_Map.createLayer('obstaculo nieve');
 
-     //Metodo para devolve un índice de armas
-     this.Selec_Weapon = function (){
-        var r = Math.floor(Math.random() * 10 );
-	    return r;
-     }
+        //2º se añaden al grupo
+        this.tile_Map.layerGroup.add(this.layer_background);
+        this.tile_Map.layerGroup.add(this.layer_obstaculo_0);
+        this.tile_Map.layerGroup.add(this.layer_obstaculo_1);
+        this.tile_Map.layerGroup.add(this.layer_obstaculo_2);
+        //se recorre el grupo saltando la capa Background
+        for (var i = 1; i < this.tile_Map.layerGroup.length; i++){
+            //3º se habilitan las físicas para cada capa
+            this.game.physics.arcade.enable(this.tile_Map.layerGroup.children[i]);
+            //4º se definen los tiles como colisiones
+            //hay que pasar el rango de index. puede: index === number || index === array
+            //Doc.Oficial: Source code: tilemap/Tilemap.js (Line 816). En caso de array su función lo recorre
+            this.tile_Map.setCollision((this.RecogeIndex(this.tile_Map.layerGroup.children[i])), true, this.tile_Map.layerGroup.children[i], true);
+            //this.tile_Map.setCollisionByExclusion((this.RecogeIndex(this.tile_Map.layerGroup.children[i])), true, this.tile_Map.layerGroup.children[i], true);
+        }  
+    }
+    //Comprueba si el tile está ocupado en base al valor del atributo index:
+    this.TileOcupado = function(variable, grupoCapas) {
+       var colision = false; var i = 1;
+       //auxiliares recogen pos: se divide por el w,h del tile
+       var x = variable.x / this.tile_Map.tileWidth; var y = variable.y /this.tile_Map.tileHeight;
+       //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
+       while (!colision && i < grupoCapas.length){
+           colision = grupoCapas[i].layer.data[y][x].index !== -1;
+           i++;
+       }     
+       return colision;
+    }
 
-}
+}//fin 
 
 
 Mapa.prototype.generate = function() {
     
    this.añadeTileMap('mapa');
    this.añadeTileImg('tilesMap', 'tiles');
-   
 
-   //Grupos
+   //ATRIBUTOS
+   //grupos
    this.tile_Map.layerGroup = this.game.add.group(); //capas con los patrones del mapa
    this.GrupoObjetos = this.game.add.group(); //alberga grupos
    //las armas y recursos se añaden a un grupo de físicas. habilita directamente su body
@@ -181,13 +194,9 @@ Mapa.prototype.generate = function() {
    //se crean las capas, se definen como colisiones y se añaden al grupo
    this.añadeLayer();
 
-   //se require de la clase objeto para genrar sus hijos. 
-   var recursosClass = require('./recurso'); //recursos 
-   var armasClass = require('./Armas'); //armas
-   //se añaden los idSrite para cada objeto 
-   var recursoIdSprite = 'arbol'; var armasIdSprite = 'subFusil';
-   this.añadeObjetos(recursosClass, recursoIdSprite, 50, this.GrupoRecursos);
-   this.añadeObjetos(armasClass, armasIdSprite, 12, this.GrupoArmas);
+   //se añaden los Objetos al mapa. el 1º param. es un identificador del método SeleccionObjeto
+   this.añadeObjetos("recurso", 50, this.GrupoRecursos);
+   this.añadeObjetos("arma", 12, this.GrupoArmas);
 }
 
 module.exports = Mapa;
