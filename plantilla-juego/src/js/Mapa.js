@@ -12,63 +12,62 @@ function Mapa (game){
     this.tile_Map; //recoge el mapa de tiles
 
     this.layer_background; this.layer_obstaculo_0; this.layer_obstaculo_1; this.layer_obstaculo_2;
-    
-    
-    
 
+
+    
 
     //FUNCIONES 
     //genera aleatorio para recursos y añade al grupo
     this.añadeObjetos = function (enlace, idSprite, nObj){
 
+        //constante auxiliar
+        var tile_patron_W = this.tile_Map.width; var tile_patron_H = this.tile_Map.height;
+
+        //variables de control 
         var n_Recursos = nObj; var n = 0;
         var objeto = enlace; //recoge el valor por parámetro
- 
+       
 
         while (n < n_Recursos){
             
-           var x = Math.floor(Math.random() * 50 );
-           var y = Math.floor(Math.random() * 37 );
+           var x = Math.floor(Math.random() * tile_patron_W );
+           var y = Math.floor(Math.random() * tile_patron_H);
 
            //variable auxiliar. 
+           var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight //recoge w/h del tile
+           var Aux_world_X = x * tile_W; var Aux_world_Y = y * tile_H;
            var aux = this.game.add.sprite(x, y, 'Casco1');
+           aux.worldPosition = {'x': Aux_world_X, 'y': Aux_world_Y};
+           this.game.physics.arcade.enable(aux);
+           aux.enableBody = true;
            
-           var col = false; var i = 1;
-           while (!col && i < this.tile_Map.layerGroup.length){
-               col = this.game.physics.arcade.collide(aux, this.tile_Map.layerGroup.children[i]);
-               i++;
-           }
-
-           //col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
+           var col = false;
+           col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
 
            console.log ("BOOL COL: " + col); //MENSAJE EN CONSOLA
 
            if (!col){ 
                var hijo = -1;
-               //this.recurso.physicsBodyType = Phaser.Physics.ARCADE;
-               //this.recurso.enableBody = true;
                if (idSprite === 'arbol'){ hijo = 0; }
-               else if (idSprite === 'subFusil'){ hijo = 1; }
+               else if (idSprite === 'subFusil'){ hijo = 1;}
 
                if (hijo !== -1){
                    if (hijo === 0){
-                    if (this.GrupoObjetos.children[1].x !==  x * 16 && this.GrupoObjetos.children[1].y !==  y * 16 ){
-                        this.GrupoObjetos.children[hijo].add(new objeto(this.game, x * 16, y * 16, idSprite));
+                    if (this.GrupoObjetos.children[1].worldX !==  x && this.GrupoObjetos.children[1].worldY !==  y){
+                        this.GrupoObjetos.children[hijo].add(new objeto(this.game, x, y, idSprite));
                         n++;
                     }  
                    }
                    else if (hijo === 1){
-                        if (this.GrupoObjetos.children[0].x !==  x * 16 && this.GrupoObjetos.children[1].y !==  y * 16 ){
-                            this.GrupoObjetos.children[hijo].add(new objeto(this.game, x * 16, y * 16, idSprite));
+                        if (this.GrupoObjetos.children[0].worldX !==  x && this.GrupoObjetos.children[1].worldY !==  y){
+                            this.GrupoObjetos.children[hijo].add(new objeto(this.game, x, y, idSprite));
                             n++;
+                            
                         }  
                     }
                 }
                 
-            }
-
-             
-    
+            }         
            aux.destroy(); //destruye la variable para que no se quede renderizada
                   
         }//fin while   
@@ -107,34 +106,36 @@ function Mapa (game){
             //hay que pasar el rango de index. puede: index === number || index === array
             //Doc.Oficial: Source code: tilemap/Tilemap.js (Line 816). En caso de array su función lo recorre
             this.tile_Map.setCollision((this.RecogeIndex(this.tile_Map.layerGroup.children[i])), true, this.tile_Map.layerGroup.children[i], true);
+            //this.tile_Map.setCollisionByExclusion((this.RecogeIndex(this.tile_Map.layerGroup.children[i])), true, this.tile_Map.layerGroup.children[i], true);
         }  
-
     }
 
     //COMO NO CONSIGO LO DE LAS FUCKING COLISIONES. ACCEDO AL ARRAY DE LA CAPA Y COMPRUEBO SI ESTÁ OCUPADO
     this.TileOcupado = function(variable, nombreCapa) {
        var colision = false; var i = 1;
+       //auxiliares recogen pos: se divide por el w,h del tile
+       var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight
+       //var x = variable.x / tile_W; var y = variable.y /tile_H;
+       var x = variable.x; var y = variable.y;
        //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
        while (!colision && i < nombreCapa.length){
-           colision = nombreCapa[i].layer.data[variable.y][variable.x].index !== -1;
+           colision = nombreCapa[i].layer.data[y][x].index !== -1;
            i++;
-       }
-
-       
+       }     
        return colision;
-
     }
     //Método que devuelve un array de index correspondiente a cada capa. 
     this.RecogeIndex = function(nombreCapa) {
-
+        //constante aux.
+        var tile_patron_W = this.tile_Map.width; var tile_patron_H = this.tile_Map.height;
         var listaIndex = []; //lista auxiliar 
         //función que devuelve un patrón de orden ascendente
         function comparar (a, b){
             return a - b;
         }
         //se recorre las fils/Cols del mapa patrón de tiles
-        for  (var y = 0; y < 37; y++){
-            for (var x = 0; x < 50; x++){    
+        for  (var y = 0; y <  tile_patron_H; y++){
+            for (var x = 0; x <tile_patron_W; x++){    
                 //se recorre el array aux para determinar que no se haya incluido ya ese index    
                 var j = 0; var esta = false;
                 while ( !esta && j < listaIndex.length){
@@ -154,7 +155,20 @@ function Mapa (game){
         return listaIndex.sort(comparar);//ordena el array de manera ascendente
      }
 
+     this.AñadeObjetoAux = function (grupo, x, y){
+         var esta = false; var i = 0;
+         while (!esta && i < grupo.length){
+             var j = 0;
+             while (!esta && j < grupo[i].length){
+                esta = x === 
+                j++;
+             }
+             i++;
+         }
 
+
+      
+     }
 
 }
 
@@ -168,8 +182,9 @@ Mapa.prototype.generate = function() {
    //Grupos
    this.tile_Map.layerGroup = this.game.add.group(); //capas con los patrones del mapa
    this.GrupoObjetos = this.game.add.group(); //alberga grupos
-   this.GrupoRecursos = this.game.add.group(); //arbol = identificador en Preload clase Game
-   this.GrupoArmas = this.game.add.group(); //subfusil = identificador
+   //las armas y recursos se añaden a un grupo de físicas. habilita directamente su body
+   this.GrupoRecursos = this.game.add.physicsGroup(); 
+   this.GrupoArmas = this.game.add.physicsGroup(); 
    //GrupoObjetos = [GrupoRecurso, GrupoArmas,...]
    this.GrupoObjetos.add(this.GrupoRecursos);
    this.GrupoObjetos.add(this.GrupoArmas);
@@ -178,9 +193,6 @@ Mapa.prototype.generate = function() {
    //se crean las capas, se definen como colisiones y se añaden al grupo
    this.añadeLayer();
 
-   console.log ('POSICION TILE '+this.layer_obstaculo_0.layer.data[2][3].x);
-
-
    //se require de la clase objeto para genrar sus hijos. 
    var recursosClass = require('./recurso'); //recursos 
    var armasClass = require('./Armas'); //armas
@@ -188,19 +200,5 @@ Mapa.prototype.generate = function() {
    this.añadeObjetos(recursosClass, recursoIdSprite, 50);
    this.añadeObjetos(armasClass, armasIdSprite, 12);
 }
-/*Mapa.prototype.colisionaObjetos = function(player,item){
-    var boundsA = player.getBounds();
-    var boundsB = item.getBounds();
-  
-    if(Phaser.Rectangle.intersects(boundsA, boundsB)){
-
-        delete item;
-    }
-    item.x ++;
-}
-
-Mapa.prototype.compruebaColision = function(player){
-    this.GrupoObjetos.array.forEach(this.colisionaObjetos(player,item));
-}*/
 
 module.exports = Mapa;
