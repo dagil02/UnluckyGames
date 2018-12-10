@@ -5,22 +5,29 @@
 var objeto = require('./Objeto');
 
 //armas
-function Armas (game, x, y, sprite){
+function Armas (game, x, y, sprite, indice){
 
 	objeto.call(this, game, x, y, sprite); //hereda de objeto 
 	
 	//atributos 
 	this.cantidad;
 	this.balas;
-	this.alcance;
-	this.damage;
+	this.indice = indice;
 
 	//funciones 
 	this.asignaValores = function (booleano, funcionRandom) {
 
 		this.bloquea = booleano;
 		this.balas = funcionRandom;
-        this.cantidad = 1;
+		this.cantidad = 1;
+		this.Tipo_De_Arma(this.indice);
+	}
+
+	this.Tipo_De_Arma = function (i){
+		if (i === 0){ this.tipoArma = "pistola"; this.alcance = 5;  this.damage = 10;}
+		else if (i === 1){ this.tipoArma = "Subfusil"; this.alcance = 12;  this.damage = 25;}
+		else if (i === 2){ this.tipoArma = "LanzaCohetes"; this.alcance = 14;  this.damage = 50;}
+
 	}
 
 }

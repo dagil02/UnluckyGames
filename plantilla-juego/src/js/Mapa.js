@@ -13,7 +13,7 @@ function Mapa (game){
 
     this.layer_background; this.layer_obstaculo_0; this.layer_obstaculo_1; this.layer_obstaculo_2;
 
-
+    this.Indice
     
 
     //FUNCIONES 
@@ -152,6 +152,12 @@ function Mapa (game){
          return esta;
      }
 
+     //Metodo para devolve un índice de armas
+     this.Selec_Weapon = function (){
+        var r = Math.floor(Math.random() * 10 );
+	    return r;
+     }
+
 }
 
 
@@ -178,6 +184,7 @@ Mapa.prototype.generate = function() {
    //se require de la clase objeto para genrar sus hijos. 
    var recursosClass = require('./recurso'); //recursos 
    var armasClass = require('./Armas'); //armas
+   //se añaden los idSrite para cada objeto 
    var recursoIdSprite = 'arbol'; var armasIdSprite = 'subFusil';
    this.añadeObjetos(recursosClass, recursoIdSprite, 50, this.GrupoRecursos);
    this.añadeObjetos(armasClass, armasIdSprite, 12, this.GrupoArmas);
