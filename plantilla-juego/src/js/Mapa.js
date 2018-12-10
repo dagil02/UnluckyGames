@@ -18,7 +18,7 @@ function Mapa (game){
 
     //FUNCIONES 
     //genera aleatorio para recursos y añade al grupo
-    this.añadeObjetos = function (enlace, idSprite, nObj){
+    this.añadeObjetos = function (enlace, idSprite, nObj, g_obj_hijo){
 
         //constante auxiliar
         var tile_patron_W = this.tile_Map.width; var tile_patron_H = this.tile_Map.height;
@@ -35,9 +35,8 @@ function Mapa (game){
 
            //variable auxiliar. 
            var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight //recoge w/h del tile
-           var Aux_world_X = x * tile_W; var Aux_world_Y = y * tile_H;
+           x = x * tile_W; y = y * tile_H; //recogen worldPosition
            var aux = this.game.add.sprite(x, y, 'Casco1');
-           aux.worldPosition = {'x': Aux_world_X, 'y': Aux_world_Y};
            this.game.physics.arcade.enable(aux);
            aux.enableBody = true;
            
@@ -47,27 +46,11 @@ function Mapa (game){
            console.log ("BOOL COL: " + col); //MENSAJE EN CONSOLA
 
            if (!col){ 
-               var hijo = -1;
-               if (idSprite === 'arbol'){ hijo = 0; }
-               else if (idSprite === 'subFusil'){ hijo = 1;}
-
-               if (hijo !== -1){
-                   if (hijo === 0){
-                    if (this.GrupoObjetos.children[1].worldX !==  x && this.GrupoObjetos.children[1].worldY !==  y){
-                        this.GrupoObjetos.children[hijo].add(new objeto(this.game, x, y, idSprite));
-                        n++;
-                    }  
-                   }
-                   else if (hijo === 1){
-                        if (this.GrupoObjetos.children[0].worldX !==  x && this.GrupoObjetos.children[1].worldY !==  y){
-                            this.GrupoObjetos.children[hijo].add(new objeto(this.game, x, y, idSprite));
-                            n++;
-                            
-                        }  
-                    }
-                }
-                
-            }         
+               if (!this.AñadeObjetoAux(x, y)){
+                g_obj_hijo.add(new objeto(this.game, x, y, idSprite));
+                n++;
+               }
+            }      
            aux.destroy(); //destruye la variable para que no se quede renderizada
                   
         }//fin while   
@@ -111,15 +94,13 @@ function Mapa (game){
     }
 
     //COMO NO CONSIGO LO DE LAS FUCKING COLISIONES. ACCEDO AL ARRAY DE LA CAPA Y COMPRUEBO SI ESTÁ OCUPADO
-    this.TileOcupado = function(variable, nombreCapa) {
+    this.TileOcupado = function(variable, grupoCapas) {
        var colision = false; var i = 1;
        //auxiliares recogen pos: se divide por el w,h del tile
-       var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight
-       //var x = variable.x / tile_W; var y = variable.y /tile_H;
-       var x = variable.x; var y = variable.y;
+       var x = variable.x / this.tile_Map.tileWidth; var y = variable.y /this.tile_Map.tileHeight;
        //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
-       while (!colision && i < nombreCapa.length){
-           colision = nombreCapa[i].layer.data[y][x].index !== -1;
+       while (!colision && i < grupoCapas.length){
+           colision = grupoCapas[i].layer.data[y][x].index !== -1;
            i++;
        }     
        return colision;
@@ -155,19 +136,20 @@ function Mapa (game){
         return listaIndex.sort(comparar);//ordena el array de manera ascendente
      }
 
-     this.AñadeObjetoAux = function (grupo, x, y){
+     //Método que comprueba que no se va a posicionar el objeto encima de otro
+     this.AñadeObjetoAux = function (x, y){
          var esta = false; var i = 0;
-         while (!esta && i < grupo.length){
+         var position = {'x': x, 'y': y };
+         //se recorre el grupo 
+         while (!esta && i < this.GrupoObjetos.children.length){
              var j = 0;
-             while (!esta && j < grupo[i].length){
-                esta = x === 
+             while (!esta && j < this.GrupoObjetos.children[i].length){
+                esta = position ===  this.GrupoObjetos.children[i].children[j].position;
                 j++;
              }
              i++;
          }
-
-
-      
+         return esta;
      }
 
 }
@@ -197,8 +179,8 @@ Mapa.prototype.generate = function() {
    var recursosClass = require('./recurso'); //recursos 
    var armasClass = require('./Armas'); //armas
    var recursoIdSprite = 'arbol'; var armasIdSprite = 'subFusil';
-   this.añadeObjetos(recursosClass, recursoIdSprite, 50);
-   this.añadeObjetos(armasClass, armasIdSprite, 12);
+   this.añadeObjetos(recursosClass, recursoIdSprite, 50, this.GrupoRecursos);
+   this.añadeObjetos(armasClass, armasIdSprite, 12, this.GrupoArmas);
 }
 
 module.exports = Mapa;
