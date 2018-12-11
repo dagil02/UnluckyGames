@@ -10,21 +10,53 @@ body {
   font-size: 1.6rem;
   background: #fff;
   color: #000;
+  
 }
+
+/*CONTENEDOR: MAIN-GAME*/
+.game{
+    width: 800px;
+    height:800px; 
+    /*margin: 2rem 0;
+    /margin: 2rem 0;*/
+    margin: auto;
+    margin-top: 2rem; margin-bottom: 2rem;
+    text-align: center; 
+}
+
+main {
+ 
+}
+.cont_juego{
+    display: flex;
+    justify-content:space-around;
+    flex-wrap: nowrap; 
+}
+#game{
+    width: 800px;
+    height:800px;
+    border: 5px solid blue;
+}
+
+ /*{
+    width: 800px;
+    height:200px;
+    border: 4px solid red;
+    margin-top: 500px; 
+}*/
 
 a {
   color: #c39;
 }
 
-main {
-  margin: 2rem 0;
-  text-align: center;
-}
 
-#game {
-  border: 1px solid #333;
-}
 
-footer {
+/*#game {
+  border: 5px solid rgb(51, 51, 51);
+}*/
+
+.footer {
+  padding-top: 10px;
+  object-position: bottom;
   text-align: center;
 }

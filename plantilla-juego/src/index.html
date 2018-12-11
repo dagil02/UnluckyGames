@@ -5,26 +5,31 @@
   <meta charset="utf-8">
 
   <link href="styles.css" rel="stylesheet" type="text/css">
-  <style>
-    
+  <!--<style>   
   #game {
     width: 800px;
     /*height: 592px;*/ /*patrones mapa de 16x16. (37 * 16)*/
-    height:800px;
+    height:800px; /*PROVISIONAL DEBUG*/
   }
-  </style>
+  </style>-->
 </head>
 <body>
- 
-  <main>
-    <iframe id="game" src="raw.html"></iframe>
-  </main>
-
-  <footer>
-    <p><strong>BattleFort</strong><br>
-      by <a href="http://github.com/dagil02">Daniel Gil </a> and <a href="http://github.com/jossan10">José Sánchez </a></p> 
-    <p class="license">Published under the <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike</a>
-      license.</p>
-  </footer>
+    <div class="game">
+        <main>
+            <div class="cont_juego">
+                <iframe id="game" src="raw.html">
+                    <div id="hud"></div>
+                </iframe>       
+            </div>
+        </main>
+    </div>
+    <div class="footer">
+        <footer>
+            <p><strong>BattleFort</strong><br>by <a href="http://github.com/dagil02">Daniel Gil </a> and <a href="http://github.com/jossan10">José Sánchez</a>
+            </p> 
+            <p class="license">Published under the <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike</a>license.
+            </p>
+        </footer>
+    </div>
 </body>
 </html>
