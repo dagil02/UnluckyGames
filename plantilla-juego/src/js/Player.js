@@ -8,6 +8,8 @@ function Player (game,x,y,sprite){
     this.game.world.addChild(this);
     this.cursor= this.game.input.keyboard;
     this.vel = 2;
+    this.nextFire = 0;
+    this.fireRate = 100; //velocidad de disparo
     this.balas = game.add.group();
     this.balas.enableBody = true;
     this.balas.physicsBodyType = Phaser.Physics.ARCADE;
@@ -58,12 +60,18 @@ Player.prototype.compruebaInput = function(){
 }
 
 Player.prototype.Disparo = function(x,y){
-  game.balas.forEach(function(item) {
-    item.x ++;
-  });
+ 
   
-  if (this.cursor.isDown(8)){
-   
+  if (this.cursor.isDown(65)){
+    
+        //nextFire = game.time.now + fireRate;
+
+        var bala = this.balas.getFirstDead();
+
+        bala.reset(sprite.x - 8, sprite.y - 8);
+
+        game.physics.arcade.moveToPointer(bala, 300);
+    
   }
 
 

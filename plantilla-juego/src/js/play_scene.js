@@ -25,6 +25,7 @@ var j1 = require('./Player');
   update: function(){
 
     this.j1.compruebaInput();
+    this.j1.Disparo();
 
 
     
