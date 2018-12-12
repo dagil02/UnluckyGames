@@ -3,10 +3,17 @@
 
 
 function Player (game,x,y,sprite){
+    game.physics.startSystem(Phaser.Physics.ARCADE);  
     Phaser.Sprite.call(this,game,x,y,sprite);
     this.game.world.addChild(this);
     this.cursor= this.game.input.keyboard;
     this.vel = 2;
+    this.balas = game.add.group();
+    this.balas.enableBody = true;
+    this.balas.physicsBodyType = Phaser.Physics.ARCADE;
+    this.balas.createMultiple(50, 'bullet');
+    this.balas.setAll('checkWorldBounds', true);
+    this.balas.setAll('outOfBoundsKill', true);
   }
 
 Player.prototype=Object.create(Phaser.Sprite.prototype);
@@ -50,4 +57,18 @@ Player.prototype.compruebaInput = function(){
     this.muevePlayer(x*this.vel,y*this.vel);
 }
 
+Player.prototype.Disparo = function(x,y){
+  game.balas.forEach(function(item) {
+    item.x ++;
+  });
+  
+  if (this.cursor.isDown(8)){
+   
+  }
+
+
+}
+
 module.exports = Player;
+
+//Clase Bala
