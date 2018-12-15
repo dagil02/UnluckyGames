@@ -14,6 +14,7 @@ function Player (game,x,y,sprite){
     //Inicializacion fisicas jugador
     game.physics.enable(this, Phaser.Physics.ARCADE);
     this.body.collideWorldBounds = true;
+    this.game.camera.follow(this);
     //Inicializacion pool de balas
     this.balas = game.add.group();
     this.balas.enableBody = true;
@@ -36,25 +37,25 @@ Player.prototype.compruebaInput = function(){
     var x= 0;
     var y = 0;
     //izquierda
-    if (this.cursor.isDown(37))
+    if (this.cursor.isDown(65))
     {
         x--;
         this.orientation = 3;
     }
     //derecha
-    else if (this.cursor.isDown(39))
+    else if (this.cursor.isDown(68))
     {
       x++;
       this.orientation = 1;
     }
     //arriba
-    else if (this.cursor.isDown(38))
+    else if (this.cursor.isDown(87))
     {
       y--;
       this.orientation = 0;
     }
     //abajo
-    else if (this.cursor.isDown(40))
+    else if (this.cursor.isDown(83))
     {
       y++;
       this.orientation = 2;
@@ -68,7 +69,7 @@ Player.prototype.compruebaInput = function(){
 Player.prototype.Disparo = function(x,y){
  
   
-  if (this.cursor.isDown(65)){
+  if (this.cursor.isDown(32)){
     
        
 

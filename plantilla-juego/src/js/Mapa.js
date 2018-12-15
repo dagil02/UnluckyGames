@@ -83,11 +83,12 @@ function Mapa (game){
                    var obj_aux = new objeto.enlace(this.game, x, y, objeto.idSprite);
                    obj_aux.generate();
                    group_obj_hijo.add(obj_aux);
+                   
                    n++;
                }
             }      
            aux.destroy(); //destruye la variable para que no se quede renderizada
-                  
+                
         }//fin while   
            
     }
