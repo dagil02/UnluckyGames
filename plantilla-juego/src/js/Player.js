@@ -14,6 +14,8 @@ function Player (game,x,y,sprite){
     this.balas.enableBody = true;
     this.balas.physicsBodyType = Phaser.Physics.ARCADE;
     this.balas.createMultiple(50, 'bullet');
+    this.balas.setAll('anchor.x', 0.5);
+    this.balas.setAll('anchor.y', 1);
     this.balas.setAll('checkWorldBounds', true);
     this.balas.setAll('outOfBoundsKill', true);
   }
@@ -66,11 +68,15 @@ Player.prototype.Disparo = function(x,y){
     
         //nextFire = game.time.now + fireRate;
 
-        var bala = this.balas.getFirstDead();
+       var bullet = this.balas.getFirstExists(false);
 
-        bala.reset(sprite.x - 8, sprite.y - 8);
-
-        game.physics.arcade.moveToPointer(bala, 300);
+        if (bullet)
+        {
+            //  And fire it
+            bullet.reset(this.x, this.y + 8);
+            bullet.body.velocity.y = -400;
+           
+        }
     
   }
 
