@@ -108,4 +108,3 @@ Player.prototype.Disparo = function(x,y){
 
 module.exports = Player;
 
-//Clase Bala
