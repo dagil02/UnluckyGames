@@ -60,12 +60,7 @@ Player.prototype.compruebaInput = function(){
       this.orientation = 2;
     }
 
-    /*var h = Math.sqrt( Math.pow(x,2) + Math.pow(y,2));
-
-    if (h > 1){
-      x /=h;
-      y /=h;
-    }*/
+ 
 
     this.muevePlayer(x*this.vel,y*this.vel);
 }
@@ -95,8 +90,7 @@ Player.prototype.Disparo = function(x,y){
               bullet.reset(this.x - 8, this.y + 8);
               bullet.body.velocity.x = -320;
             }
-            /*bullet.reset(this.x + 8, this.y + 8);
-            bullet.body.velocity.y = -320;*/
+         
             this.bulletTime = this.game.time.now + 200;
         }
     
