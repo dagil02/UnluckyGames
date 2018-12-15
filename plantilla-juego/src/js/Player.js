@@ -7,13 +7,18 @@ function Player (game,x,y,sprite){
     Phaser.Sprite.call(this,game,x,y,sprite);
     this.game.world.addChild(this);
     this.cursor= this.game.input.keyboard;
+    this.orientation = 0;
     this.vel = 2;
     this.nextFire = 0;
-    this.fireRate = 100; //velocidad de disparo
+    this.bulletTime = 0; //controla que no se dispare constantemente
+    //Inicializacion fisicas jugador
+    game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.body.collideWorldBounds = true;
+    //Inicializacion pool de balas
     this.balas = game.add.group();
     this.balas.enableBody = true;
     this.balas.physicsBodyType = Phaser.Physics.ARCADE;
-    this.balas.createMultiple(50, 'bullet');
+    this.balas.createMultiple(50, 'bala');
     this.balas.setAll('anchor.x', 0.5);
     this.balas.setAll('anchor.y', 1);
     this.balas.setAll('checkWorldBounds', true);
@@ -34,29 +39,33 @@ Player.prototype.compruebaInput = function(){
     if (this.cursor.isDown(37))
     {
         x--;
+        this.orientation = 3;
     }
     //derecha
-    if (this.cursor.isDown(39))
+    else if (this.cursor.isDown(39))
     {
       x++;
+      this.orientation = 1;
     }
     //arriba
-    if (this.cursor.isDown(38))
+    else if (this.cursor.isDown(38))
     {
       y--;
+      this.orientation = 0;
     }
     //abajo
-    if (this.cursor.isDown(40))
+    else if (this.cursor.isDown(40))
     {
       y++;
+      this.orientation = 2;
     }
 
-    var h = Math.sqrt( Math.pow(x,2) + Math.pow(y,2));
+    /*var h = Math.sqrt( Math.pow(x,2) + Math.pow(y,2));
 
     if (h > 1){
       x /=h;
       y /=h;
-    }
+    }*/
 
     this.muevePlayer(x*this.vel,y*this.vel);
 }
@@ -66,19 +75,33 @@ Player.prototype.Disparo = function(x,y){
   
   if (this.cursor.isDown(65)){
     
-        //nextFire = game.time.now + fireRate;
+       
 
        var bullet = this.balas.getFirstExists(false);
-
+       if (this.game.time.now > this.bulletTime){
         if (bullet)
         {
-            //  And fire it
-            bullet.reset(this.x, this.y + 8);
-            bullet.body.velocity.y = -400;
-           
+            bullet.angle = 90 * this.orientation;
+            if (this.orientation === 0){
+              bullet.reset(this.x + 8, this.y + 8);
+              bullet.body.velocity.y = -320;
+            }else if (this.orientation === 1){
+              bullet.reset(this.x + 24, this.y + 8);
+              bullet.body.velocity.x = 320;
+            }else if (this.orientation === 2){
+              bullet.reset(this.x + 8, this.y + 8);
+              bullet.body.velocity.y = 320;
+            }else if (this.orientation === 3){
+              bullet.reset(this.x - 8, this.y + 8);
+              bullet.body.velocity.x = -320;
+            }
+            /*bullet.reset(this.x + 8, this.y + 8);
+            bullet.body.velocity.y = -320;*/
+            this.bulletTime = this.game.time.now + 200;
         }
     
   }
+}
 
 
 }
