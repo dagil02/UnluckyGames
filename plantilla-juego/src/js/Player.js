@@ -9,8 +9,9 @@ function Player (game,x,y,sprite){
     this.cursor= this.game.input.keyboard;
     this.orientation = 0;
     this.vel = 2;
-    this.nextFire = 0;
+    //this.nextFire = 0;
     this.bulletTime = 0; //controla que no se dispare constantemente
+    this.wallTime = 0;
     //Inicializacion fisicas jugador
     game.physics.enable(this, Phaser.Physics.ARCADE);
     this.body.collideWorldBounds = true;
@@ -24,6 +25,13 @@ function Player (game,x,y,sprite){
     this.balas.setAll('anchor.y', 1);
     this.balas.setAll('checkWorldBounds', true);
     this.balas.setAll('outOfBoundsKill', true);
+    this.muros = game.add.group();
+    this.muros.enableBody = true;
+    //this.muros.body.inamovible = true;
+    this.muros.physicsBodyType = Phaser.Physics.ARCADE;
+    this.muros.createMultiple(100, 'muro');
+    
+ 
   }
 
 Player.prototype=Object.create(Phaser.Sprite.prototype);
@@ -66,7 +74,7 @@ Player.prototype.compruebaInput = function(){
     this.muevePlayer(x*this.vel,y*this.vel);
 }
 
-Player.prototype.Disparo = function(x,y){
+Player.prototype.Accion = function(x,y){
  
   
   if (this.cursor.isDown(32)){
@@ -96,6 +104,32 @@ Player.prototype.Disparo = function(x,y){
         }
     
   }
+}
+if (this.cursor.isDown(66)){
+
+  var wall = this.muros.getFirstExists(false);
+  if (this.game.time.now > this.wallTime){
+   if (wall)
+   {
+       wall.angle = 90 * this.orientation;
+       if (this.orientation === 0){
+         wall.reset(this.x, this.y - 16);
+        
+       }else if (this.orientation === 1){
+         wall.reset(this.x + 30, this.y);
+         
+       }else if (this.orientation === 2){
+         wall.reset(this.x+16, this.y + 32);
+         
+       }else if (this.orientation === 3){
+         wall.reset(this.x - 15, this.y+16);
+        
+       }
+    
+       this.wallTime = this.game.time.now + 500;
+   }
+
+}
 }
 
 

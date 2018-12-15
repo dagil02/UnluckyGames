@@ -17,15 +17,15 @@ var j1 = require('./Player');
 
    this.j1 = new j1(this.game,50,50,'Casco1');
 
-   this.game.camera.scale.x = 2;
-   this.game.camera.scale.y = 2;
+   /*this.game.camera.scale.x = 2;
+   this.game.camera.scale.y = 2;*/
    
   }, 
 
   update: function(){
 
     this.j1.compruebaInput();
-    this.j1.Disparo();
+    this.j1.Accion();
 
 
     

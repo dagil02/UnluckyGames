@@ -35,6 +35,7 @@ var PreloaderScene = {
     this.game.load.image ('pistola', 'assets/sprites/pistola.png' ); //armas 
     this.game.load.image ('francoTirador', 'assets/sprites/francoTirador.png' );
     this.game.load.image ('bala', 'assets/sprites/bala.png' );
+    this.game.load.image ('muro', 'assets/sprites/muro.png' );
 
     //jugador
     this.game.load.image('Casco1', 'assets/sprites/character.png');
