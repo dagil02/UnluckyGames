@@ -2,34 +2,38 @@
 
 
 
-function Player (game,x,y,sprite){
-    game.physics.startSystem(Phaser.Physics.ARCADE);  
-    Phaser.Sprite.call(this,game,x,y,sprite);
+
+function Player (game, x, y, sprite){
+
+    Phaser.Sprite.call(this, game, x, y, sprite);//hereda de sprite
     this.game.world.addChild(this);
-    this.cursor= this.game.input.keyboard;
+
+    //Atributos
+    this.cursor = this.game.input.keyboard;
     this.orientation = 0;
     this.vel = 2;
     //this.nextFire = 0;
     this.bulletTime = 0; //controla que no se dispare constantemente
     this.wallTime = 0;
+
     //Inicializacion fisicas jugador
-    game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.body.collideWorldBounds = true;
     this.game.camera.follow(this);
     //Inicializacion pool de balas
-    this.balas = game.add.group();
-    this.balas.enableBody = true;
-    this.balas.physicsBodyType = Phaser.Physics.ARCADE;
-    this.balas.createMultiple(50, 'bala');
-    this.balas.setAll('anchor.x', 0.5);
-    this.balas.setAll('anchor.y', 1);
-    this.balas.setAll('checkWorldBounds', true);
-    this.balas.setAll('outOfBoundsKill', true);
-    this.muros = game.add.group();
-    this.muros.enableBody = true;
+    this.balas_Group = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
+    //this.balas.enableBody = true;
+    //this.balas.physicsBodyType = Phaser.Physics.ARCADE;
+    //this.balas.createMultiple(50, 'bala');
+    //this.balas.setAll('anchor.x', 0.5);
+    //this.balas.setAll('anchor.y', 1);
+    //this.balas.setAll('checkWorldBounds', true);
+    //this.balas.setAll('outOfBoundsKill', true);
+    //this.muros = game.add.group();
+    //this.muros.enableBody = true;
     //this.muros.body.inamovible = true;
-    this.muros.physicsBodyType = Phaser.Physics.ARCADE;
-    this.muros.createMultiple(100, 'muro');
+    //this.muros.physicsBodyType = Phaser.Physics.ARCADE;
+    //this.muros.createMultiple(100, 'muro');
     
  
   }
@@ -71,17 +75,18 @@ Player.prototype.compruebaInput = function(){
 
  
 
-    this.muevePlayer(x*this.vel,y*this.vel);
+    this.muevePlayer( x*this.vel, y*this.vel);
 }
 
 Player.prototype.Accion = function(x,y){
  
-  
+  //tecla spacebar
   if (this.cursor.isDown(32)){
-    
-       
-
-       var bullet = this.balas.getFirstExists(false);
+       var Bala = require('./Bala');
+       var aux = new Bala(this.game, null, null, 'bala');
+       this.balas_Group.add(aux);
+       //var bullet = this.balas_Group.getFirstExists(false);
+       var bullet = this.balas_Group.getFirstExists(true);
        if (this.game.time.now > this.bulletTime){
         if (bullet)
         {
@@ -99,12 +104,12 @@ Player.prototype.Accion = function(x,y){
               bullet.reset(this.x - 8, this.y + 8);
               bullet.body.velocity.x = -320;
             }
-         
             this.bulletTime = this.game.time.now + 200;
         }
     
   }
 }
+//tecla b
 if (this.cursor.isDown(66)){
 
   var wall = this.muros.getFirstExists(false);
