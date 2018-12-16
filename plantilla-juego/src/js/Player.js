@@ -21,19 +21,19 @@ function Player (game, x, y, sprite){
     this.body.collideWorldBounds = true;
     this.game.camera.follow(this);
     //Inicializacion pool de balas
-    this.balas_Group = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
-    //this.balas.enableBody = true;
-    //this.balas.physicsBodyType = Phaser.Physics.ARCADE;
-    //this.balas.createMultiple(50, 'bala');
-    //this.balas.setAll('anchor.x', 0.5);
-    //this.balas.setAll('anchor.y', 1);
-    //this.balas.setAll('checkWorldBounds', true);
-    //this.balas.setAll('outOfBoundsKill', true);
-    //this.muros = game.add.group();
-    //this.muros.enableBody = true;
+    this.balas = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
+    this.balas.enableBody = true;
+    this.balas.physicsBodyType = Phaser.Physics.ARCADE;
+    this.balas.createMultiple(50, 'bala');
+    this.balas.setAll('anchor.x', 0.5);
+    this.balas.setAll('anchor.y', 1);
+    this.balas.setAll('checkWorldBounds', true);
+    this.balas.setAll('outOfBoundsKill', true);
+    this.muros = game.add.group();
+    this.muros.enableBody = true;
     //this.muros.body.inamovible = true;
-    //this.muros.physicsBodyType = Phaser.Physics.ARCADE;
-    //this.muros.createMultiple(100, 'muro');
+    this.muros.physicsBodyType = Phaser.Physics.ARCADE;
+    this.muros.createMultiple(100, 'muro');
     
  
   }
@@ -81,12 +81,8 @@ Player.prototype.compruebaInput = function(){
 Player.prototype.Accion = function(x,y){
  
   //tecla spacebar
-  if (this.cursor.isDown(32)){
-       var Bala = require('./Bala');
-       var aux = new Bala(this.game, null, null, 'bala');
-       this.balas_Group.add(aux);
-       //var bullet = this.balas_Group.getFirstExists(false);
-       var bullet = this.balas_Group.getFirstExists(true);
+  if (this.cursor.isDown(32)){  
+       var bullet = this.balas.getFirstExists(false);
        if (this.game.time.now > this.bulletTime){
         if (bullet)
         {
