@@ -2,22 +2,26 @@
 
 
 
-function Player (game,x,y,sprite){
-    game.physics.startSystem(Phaser.Physics.ARCADE);  
-    Phaser.Sprite.call(this,game,x,y,sprite);
+
+function Player (game, x, y, sprite){
+
+    Phaser.Sprite.call(this, game, x, y, sprite);//hereda de sprite
     this.game.world.addChild(this);
-    this.cursor= this.game.input.keyboard;
+
+    //Atributos
+    this.cursor = this.game.input.keyboard;
     this.orientation = 0;
     this.vel = 2;
     //this.nextFire = 0;
     this.bulletTime = 0; //controla que no se dispare constantemente
     this.wallTime = 0;
+
     //Inicializacion fisicas jugador
-    game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.body.collideWorldBounds = true;
     this.game.camera.follow(this);
     //Inicializacion pool de balas
-    this.balas = game.add.group();
+    this.balas = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
     this.balas.enableBody = true;
     this.balas.physicsBodyType = Phaser.Physics.ARCADE;
     this.balas.createMultiple(50, 'bala');
@@ -71,16 +75,13 @@ Player.prototype.compruebaInput = function(){
 
  
 
-    this.muevePlayer(x*this.vel,y*this.vel);
+    this.muevePlayer( x*this.vel, y*this.vel);
 }
 
 Player.prototype.Accion = function(x,y){
  
-  
-  if (this.cursor.isDown(32)){
-    
-       
-
+  //tecla spacebar
+  if (this.cursor.isDown(32)){  
        var bullet = this.balas.getFirstExists(false);
        if (this.game.time.now > this.bulletTime){
         if (bullet)
@@ -99,12 +100,12 @@ Player.prototype.Accion = function(x,y){
               bullet.reset(this.x - 8, this.y + 8);
               bullet.body.velocity.x = -320;
             }
-         
             this.bulletTime = this.game.time.now + 200;
         }
     
   }
 }
+//tecla b
 if (this.cursor.isDown(66)){
 
   var wall = this.muros.getFirstExists(false);

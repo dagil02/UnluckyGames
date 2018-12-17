@@ -7,7 +7,7 @@ var PlayScene = require('./play_scene.js');
 
 var BootScene = {
   preload: function () {
-    // load here assets required for the loading screen
+    // load here assets  required for the loading screen
     //this.game.load.image('preloader_bar', 'images/preloader_bar.png');
   },
 
@@ -29,17 +29,20 @@ var PreloaderScene = {
     this.game.load.image('tiles', 'assets/mapas/mapaTiles.png');
 	
 
-    //objetos
-    this.game.load.image ('arbol', 'assets/sprites/arbol.png' ); //recursos
-    this.game.load.image ('subFusil', 'assets/sprites/gun.png' ); //armas
-    this.game.load.image ('pistola', 'assets/sprites/pistola.png' ); //armas 
-    this.game.load.image ('francoTirador', 'assets/sprites/francoTirador.png' );
-    this.game.load.image ('bala', 'assets/sprites/bala.png' );
+    //OBJETOS
+    //recursos
+    this.game.load.image ('arbol', 'assets/sprites/arbol.png' ); 
     this.game.load.image ('muro', 'assets/sprites/muro.png' );
+    //armas
+    this.game.load.image ('subFusil', 'assets/sprites/gun.png' );
+    this.game.load.image ('pistola', 'assets/sprites/pistola.png' );
+    this.game.load.image ('francoTirador', 'assets/sprites/francoTirador.png' );
+    //balas
+    this.game.load.image ('bala', 'assets/sprites/bala.png' );
+  
 
-    //jugador
-    this.game.load.image('Casco1', 'assets/sprites/character.png');
-    this.game.load.image('Casco2', 'assets/sprites/Casco2.png');
+    //JUGADOR
+    this.game.load.image('player_1', 'assets/sprites/character.png');
 
   },
 

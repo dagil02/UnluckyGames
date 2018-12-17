@@ -15,7 +15,7 @@ var j1 = require('./Player');
    this.mapa.generate();
    
 
-   this.j1 = new j1(this.game,50,50,'Casco1');
+   this.j1 = new j1(this.game,50,50,'player_1');
 
    /*this.game.camera.scale.x = 2;
    this.game.camera.scale.y = 2;*/

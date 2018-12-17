@@ -49,6 +49,7 @@ function Mapa (game){
        }
        else if (string === "arma"){ return this.Selec_Weapon();}
     }
+
     //genera aleatorio para recursos y añade al grupo
     this.añadeObjetos = function (string, nObj, group_obj_hijo){
 
@@ -68,7 +69,7 @@ function Mapa (game){
            //variable auxiliar. 
            var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight //recoge w/h del tile
            x = x * tile_W; y = y * tile_H; //recogen worldPosition
-           var aux = this.game.add.sprite(x, y, 'Casco1');
+           var aux = this.game.add.sprite(x, y, 'arbol');
            //habilita físicas y body
            this.game.physics.arcade.enable(aux);
            aux.enableBody = true;

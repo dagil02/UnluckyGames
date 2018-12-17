@@ -1,12 +1,13 @@
 'use strict';
 
 
-
 var objeto = require('./Objeto');
 
 function Recurso (game, x, y, sprite){
     
 	objeto.call(this, game, x, y, sprite); //hereda de objeto 
+
+
 }
 Recurso.prototype = Object.create (objeto.prototype);
 Recurso.prototype.constructor = Recurso;
