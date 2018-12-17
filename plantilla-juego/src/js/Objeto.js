@@ -7,7 +7,6 @@ function Objeto (game, x, y, sprite){
 	this.game.world.addChild(this);
 
 	//ATTRIBUTE
-	this.bloquea; 
 	this.cantidad; 
 
 	//METHODS

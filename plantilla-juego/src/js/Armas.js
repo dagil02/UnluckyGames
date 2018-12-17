@@ -21,8 +21,7 @@ function Armas (game, x, y, sprite){
 	this.damage;//damage comunican con jugador y éste con bala para determinar el daño
 
 	//METHODS
-	this.asignaValores = function (booleano, funcionRandom) {
-		this.bloquea = booleano; //debe bloquear el paso
+	this.asignaValores = function (funcionRandom) {
 		this.balas_Cont = funcionRandom; //la cantidad de balas sí es aleatoria
 		this.cantidad = 1; //en este caso cantidad no depende del random
 		this.Tipo_De_Arma();
@@ -41,7 +40,10 @@ Armas.prototype.constructor = Armas;
 
 Armas.prototype.generate = function (){
 	//la función random la herda de la clase Objeto.
-	this.asignaValores(true,  this.RandomItem(10));
+	this.asignaValores(this.RandomItem(10));
+	this.game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.body.collideWorldBounds = true;
+    this.body.immovable = true;	
 }
 
 module.exports = Armas;

@@ -44,6 +44,8 @@ var PreloaderScene = {
     //JUGADOR
     this.game.load.image('player_1', 'assets/sprites/character.png');
 
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
   },
 
   create: function () {
@@ -54,12 +56,9 @@ var PreloaderScene = {
 
 
 window.onload = function () {
-  //var game = new Phaser.Game((50 * 16), (37 * 16), Phaser.AUTO, 'game');
   var game = new Phaser.Game((50 * 16), (50 * 16), Phaser.AUTO, 'game');
-
   //game.state.add('boot', BootScene);
   game.state.add('preloader', PreloaderScene);
   game.state.add('play', PlayScene);
-
   game.state.start('preloader');
 };

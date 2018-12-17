@@ -16,8 +16,9 @@ Recurso.prototype.generate = function (){
 
 	//las propiedades y la función las hereda de la clase Objeto
 	this.cantidad = this.RandomItem(10); 
-	this.bloquea = true; //debe bloquear el paso
-	
+	this.game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.body.collideWorldBounds = true;
+    this.body.immovable = true;	
 }
 
 
