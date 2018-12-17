@@ -10,6 +10,7 @@ var j1 = require('./Player');
   create: function () {
 
    this.world.setBounds(0, 0, 800, 596); //se ajusta los límites para no invadir el Hud inferior
+   
    //GENERACION DE ELEM DE JUEGO
    //mapa y recursos
    this.mapa = new mapa (this.game);
@@ -17,11 +18,26 @@ var j1 = require('./Player');
    //jugadores
    this.j1 = new j1(this.game, 200, 150, 'player_1');
   
+   this.ScreenGroup = this.game.add.group();
+   var scale = 2;
+   for (var i = 0; i < this.mapa.tile_Map.layerGroup.length   ; i++){
+    this.mapa.tile_Map.layerGroup.children[i].scale.setTo(scale, scale);
+    this.mapa.tile_Map.layerGroup.children[i].resizeWorld();
+   }
+   for (var p = 0; p < this.mapa.GrupoObjetos.length; p++){
+     for (var j = 0; j <  this.mapa.GrupoObjetos.children[p].length; j++){
+       this.mapa.GrupoObjetos.children[p].children[j].scale.setTo(scale, scale);
+     }
+  }
+    this.j1.scale.setTo(scale, scale);
+   
   }, 
 
   update: function(){
     
-    this.j1.muevePlayer();
+    this.j1.compruebaInput();
+    this.j1.Accion();
+     this.game.camera.follow(this.j1);
     //se comprueba la colisión con las capas de obstáculos fijos del mapa
     this.game.physics.arcade.collide(this.j1, this.mapa.tile_Map.layerGroup.children);
     //se recorre el grupo de Objetos y comprueba los subGrupos la colision con los obj.

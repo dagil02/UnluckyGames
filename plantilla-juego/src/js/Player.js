@@ -18,11 +18,12 @@ function Player (game, x, y, sprite){
 
     //Inicializacion fisicas jugador
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.name = 'jugador';
     this.body.collideWorldBounds = true;
-    this.game.camera.follow(this);
+    this.body.bounce.setTo(1, 1);
     //Inicializacion pool de balas
     this.balas = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
-    this.balas.enableBody = true;
+    //this.balas.enableBody = true;
     this.balas.physicsBodyType = Phaser.Physics.ARCADE;
     this.balas.createMultiple(50, 'bala');
     this.balas.setAll('anchor.x', 0.5);
@@ -42,8 +43,8 @@ Player.prototype=Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor=Player;
 
 Player.prototype.muevePlayer = function(x,y){
-this.x += x;
-this.y += y;
+this.body.x += x;
+this.body.y += y;
 }
 Player.prototype.compruebaInput = function(){
     var x= 0;
@@ -78,7 +79,7 @@ Player.prototype.compruebaInput = function(){
     this.muevePlayer( x*this.vel, y*this.vel);
 }
 
-Player.prototype.Accion = function(x,y){
+Player.prototype.Accion = function(){
  
   //tecla spacebar
   if (this.cursor.isDown(32)){  
