@@ -18,7 +18,8 @@ Recurso.prototype.generate = function (){
 	this.cantidad = this.RandomItem(10); 
 	this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.body.collideWorldBounds = true;
-    this.body.immovable = true;	
+	this.body.immovable = true;	
+	
 }
 
 
