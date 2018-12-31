@@ -14,6 +14,12 @@ function Objeto (game, x, y, sprite){
 		var r = Math.floor(Math.random() * n );
 		return r;
 	}
+
+	//funcion que define la nueva posicion cuando se ejecuta zoom y se reescala el sprite
+	this.newScalePosition = function(scale) {
+		this.worldX *= scale;
+		this.worldY *= scale;
+	}
 }
 //enlaza ambas propiedades prototype
 Objeto.prototype = Object.create(Phaser.Sprite.prototype);

@@ -1,7 +1,7 @@
 //var game = require('./play_scene.js');
 
 class Camera extends Phaser.Group {
-	constructor({x = 0, y = 0}) {
+	constructor(x, y, game) {
 		super(game);
 
 		var {world, physics, camera} = game;
@@ -41,14 +41,14 @@ class Camera extends Phaser.Group {
 		if (this.target) {
 			var {stalker, target, speed} = this;
 			var position = stalker.position;
-			var arcade   = game.physics.arcade;
+			var arcade   = this.game.physics.arcade;
 			if (!speed) position.copyFrom(target);
 			else arcade.moveToObject(stalker, target, speed);
 		}
 	}
 	zoomTo(scale, duration){
 		var bounds       = this.bounds;
-		var cameraBounds = game.camera.bounds;
+		var cameraBounds = this.game.camera.bounds;
 		var postionScale = (1 - scale) / 2;
 		var x      = bounds.width  * postionScale,
 			y      = bounds.height * postionScale,

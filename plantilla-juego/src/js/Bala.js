@@ -14,6 +14,7 @@ function Bala (game, x, y, sprite){
     this.vel = 0; //recibe el valor del arma que porta jugador 
     this.damage; //recibe el valor del arma que porta jugador 
     this.orientacion; //recibe el valor de jugador
+
     
     //METHODS
     // determina la dirección de la bala

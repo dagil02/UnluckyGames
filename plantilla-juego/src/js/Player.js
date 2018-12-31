@@ -11,7 +11,7 @@ function Player (game, x, y, sprite){
     //Atributos
     this.cursor = this.game.input.keyboard;
     this.orientation = 0;
-    this.vel = 2;
+    this.vel = 4;
     //this.nextFire = 0;
     this.bulletTime = 0; //controla que no se dispare constantemente
     this.wallTime = 0;

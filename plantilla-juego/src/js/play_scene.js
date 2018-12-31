@@ -10,8 +10,9 @@ var myCamera = require('./Camera.js');
 
   create: function () {
 
-   this.game.world.setBounds(0, 0, 800, 596);
-   this.camera.setBoundsToWorld();
+   this.game.world.setBounds(0, 0, 800, 592);
+   this.game.camera.setBoundsToWorld();
+  
    
    //GENERACION DE ELEM DE JUEGO
    //mapa y recursos
@@ -20,35 +21,16 @@ var myCamera = require('./Camera.js');
    //jugadores
    this.j1 = new j1(this.game, 200, 150, 'player_1');
 
-   var pos = {'x': 0, 'y':0};
-   var camera = new myCamera(pos);
-   this.camera = camera;
-   //this.camera.zoomTo(0);
+
+   this.zoomTo(2);
    
-;
-   /*for (var i = 0; i < this.mapa.tile_Map.layerGroup.length   ; i++){
-    this.mapa.tile_Map.layerGroup.children[i].scale.setTo(2, 2);
-    this.mapa.tile_Map.layerGroup.children[i].resizeWorld();
-   }
-
-   for (var p = 0; p < this.mapa.GrupoObjetos.length; p++){
-    for (var j = 0; j <  this.mapa.GrupoObjetos.children[p].length; j++){
-      this.mapa.GrupoObjetos.children[p].children[j].scale.setTo(2, 2);
-    }
-  }*/
-   
-   this.camera.follow(this.j1);
-
-  var i = 0;
-
    
   }, 
 
   update: function(){
-    
     this.j1.compruebaInput();
     this.j1.Accion();
-    //this.game.camera.follow(this.j1);
+  
     //se comprueba la colisión con las capas de obstáculos fijos del mapa
     this.game.physics.arcade.collide(this.j1, this.mapa.tile_Map.layerGroup.children);
     //se recorre el grupo de Objetos y comprueba los subGrupos la colision con los obj.
@@ -59,16 +41,29 @@ var myCamera = require('./Camera.js');
   },
 
   render: function(){
+
+    var y = 38;
     //DEBUG:
-    //this.game.debug.text(`Debugging object: obstaculo:`, (2 * 16), (38 * 16), 'yellow', 'Segoe UI');
-    //this.game.debug.bodyInfo(this.obstaculo,(2 * 16), (40 * 16), 'yellow', 'Segoe UI');
+    this.game.debug.text(`Debugging object: World Children`, (2 * 16), (y * 16), 'yellow', 'Segoe UI');
+    for (var i = 0; i < this.world.children.length; i++){
+      var auxY = y + (i+1);
+      var auxX = this.world.children[i].name.length;
+      this.game.debug.text(this.world.children[i].name, (2 * 16), (auxY * 16), 'yellow', 'Segoe UI');
+      this.game.debug.text(this.world.children[i].type, (auxX * 16), (auxY * 16), 'yellow', 'Segoe UI');
 
+    }
+
+  },
+
+  zoomTo: function (scale){
+    this.game.camera.follow(this.j1);
+    this.mapa.resizeLayer(scale);
+    this.j1.scale.setTo(scale);
   }
-
 
 };
 
 module.exports = PlayScene;
 
 
-
+//childObj.resize(cameraBounds.width,  cameraBounds.height ); // If a tilemap layer, resize it..

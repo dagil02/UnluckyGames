@@ -10,11 +10,11 @@ function Mapa (game){
     this.game = game;
 
     this.tile_Map; //recoge el mapa de tiles
+    
     //capas
     this.layer_background; this.layer_obstaculo_0; this.layer_obstaculo_1; this.layer_obstaculo_2;
     
     //FUNCIONES 
-
     //------METODOS PARA LA CREACIÓN DE OBJETO------
     //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
      this.AñadeObjetoAux = function (x, y){
@@ -157,6 +157,27 @@ function Mapa (game){
             this.tile_Map.layerGroup.children[i].body.bounce.setTo(1, 1);
         }  
     }
+
+    this.resizeLayer = function (scale){   
+        for (var i = 0; i < this.tile_Map.layerGroup.length; i++){
+            var tiles = this.tile_Map.layerGroup.children[i].setScale(scale, scale);
+            this.tile_Map.layerGroup.children[i].resizeWorld();   
+        }
+
+        var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight //recoge w/h del tile
+        this.GrupoObjetos.children[0].children.forEach(element => {
+            element.scale.setTo(scale);
+            element.x = (element.x / 16) * tile_W;
+            element.y = (element.y / 16) * tile_H;
+        });
+        this.GrupoObjetos.children[1].children.forEach(element => {
+            element.scale.setTo(scale);
+            element.x = (element.x / 16) * tile_W;
+            element.y = (element.y / 16) * tile_H;
+        });
+        
+    }
+
     //Comprueba si el tile está ocupado en base al valor del atributo index:
     this.TileOcupado = function(variable, grupoCapas) {
        var colision = false; var i = 1;
@@ -169,6 +190,7 @@ function Mapa (game){
        }     
        return colision;
     }
+    
 
 }//fin 
 
@@ -179,12 +201,15 @@ Mapa.prototype.generate = function() {
    this.añadeTileImg('tilesMap', 'tiles');
 
    //ATRIBUTOS
-   //grupos
    this.tile_Map.layerGroup = this.game.add.group(); //capas con los patrones del mapa
+   this.tile_Map.layerGroup.name = "layersGroup"; //esto permite identificar el objeto en depuración
    this.GrupoObjetos = this.game.add.group(); //alberga grupos
+   this.GrupoObjetos.name = "objectsGroup";
    //las armas y recursos se añaden a un grupo de físicas. habilita directamente su body
    this.GrupoRecursos = this.game.add.group(); 
-   this.GrupoArmas = this.game.add.group();
+   this.GrupoRecursos.name = "resourcesGroup";
+   this.GrupoArmas = this.game.add.group(); 
+   this.GrupoArmas.name = "weaponsGroup";
    //GrupoObjetos = [GrupoRecurso, GrupoArmas,...]
    this.GrupoObjetos.add(this.GrupoRecursos);
    this.GrupoObjetos.add(this.GrupoArmas);
@@ -195,8 +220,9 @@ Mapa.prototype.generate = function() {
 
    //se añaden los Objetos al mapa. el 1º param. es un identificador del método SeleccionObjeto
    this.añadeObjetos("recurso", 40, this.GrupoRecursos);
-   var i = 0;
    this.añadeObjetos("arma", 15, this.GrupoArmas);
 }
 
 module.exports = Mapa;
+
+

@@ -13,6 +13,7 @@ function Armas (game, x, y, sprite){
 
 	objeto.call(this, game, x, y, sprite); //hereda de objeto 
 	
+	
 	//ATTRIBUTE
 	this.balas_Cont; //contador decrementa con cada disparo
 	this.balas_image; //la imagen comunica con jugador para crear obj balas
