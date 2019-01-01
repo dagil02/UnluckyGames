@@ -9,11 +9,11 @@ mantiene los valores actuales (ejem: menos balas en el cargador) */
 var objeto = require('./Objeto');
 
 //WEAPONS
-function Armas (game, x, y, sprite){
+function Armas(game, x, y, sprite) {
 
 	objeto.call(this, game, x, y, sprite); //hereda de objeto 
-	
-	
+
+
 	//ATTRIBUTE
 	this.balas_Cont; //contador decrementa con cada disparo
 	this.balas_image; //la imagen comunica con jugador para crear obj balas
@@ -29,22 +29,22 @@ function Armas (game, x, y, sprite){
 	}
 
 	//función para determinar el tipo de arma e inicializar sus atributos
-	this.Tipo_De_Arma = function (){
-		if (this.tipoArma === "pistola"){ this.alcance = 5;  this.damage = 10; this.balas_image = 'b_Gun'}
-		else if (this.tipoArma === "Subfusil"){ this.alcance = 12;  this.damage = 25; this.balas_image = 'b_Sf'}
-		else if (this.tipoArma = "francoTirador"){this.alcance = 20;  this.damage = 50; this.balas_image = 'b_Sn'}
+	this.Tipo_De_Arma = function () {
+		if (this.tipoArma === "pistola") { this.alcance = 5; this.damage = 10; this.balas_image = 'b_Gun' }
+		else if (this.tipoArma === "Subfusil") { this.alcance = 12; this.damage = 25; this.balas_image = 'b_Sf' }
+		else if (this.tipoArma = "francoTirador") { this.alcance = 20; this.damage = 50; this.balas_image = 'b_Sn' }
 	}
 
 }
-Armas.prototype = Object.create (objeto.prototype);
+Armas.prototype = Object.create(objeto.prototype);
 Armas.prototype.constructor = Armas;
 
-Armas.prototype.generate = function (){
+Armas.prototype.generate = function () {
 	//la función random la herda de la clase Objeto.
 	this.asignaValores(this.RandomItem(10));
 	this.game.physics.enable(this, Phaser.Physics.ARCADE);
-    this.body.collideWorldBounds = true;
-	this.body.immovable = true;	
+	this.body.collideWorldBounds = true;
+	this.body.immovable = true;
 
 }
 
