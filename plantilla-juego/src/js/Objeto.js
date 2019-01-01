@@ -8,6 +8,7 @@ function Objeto(game, x, y, sprite) {
 
 	//ATTRIBUTE
 	this.cantidad;
+	this.auxScale = 1; //1 por defecto
 
 	//METHODS
 	this.RandomItem = function (n) {
@@ -16,9 +17,15 @@ function Objeto(game, x, y, sprite) {
 	}
 
 	//funcion que define la nueva posicion cuando se ejecuta zoom y se reescala el sprite
-	this.newScalePosition = function (scale) {
-		//this.worldX *= scale;
-		//this.worldY *= scale;
+	//interesa que nazca la superClass, para activarlo con cada shot Bullet. 
+	this.resizeObject = function (scale) {
+		var aux = this.auxScale; //aux recoge el último escalar
+		this.auxScale = scale; //el atributo de la clase recoge el nuevo escalar
+		this.scale.setTo(scale);
+		this.x = this.x / aux;
+		this.x = this.x * scale;
+		this.y = this.y / aux;
+		this.y = this.y * scale;
 	}
 }
 //enlaza ambas propiedades prototype

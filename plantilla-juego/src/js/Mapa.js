@@ -224,19 +224,11 @@ Mapa.prototype.generate = function () {
     //objetos: recuperan dim. según anterior escalar y redimensionan según el nuevo escalar
     //recursos
     this.GrupoObjetos.children[0].children.forEach(element => {
-        element.scale.setTo(scale);
-        element.x = element.x / aux; 
-        element.x = element.x * scale;
-        element.y = element.y / aux;   
-        element.y = element.y * scale;
+        element.resizeObject(scale);
     });
     //armas
     this.GrupoObjetos.children[1].children.forEach(element => {
-        element.scale.setTo(scale);
-        element.x = element.x / aux; 
-        element.x = element.x * scale;
-        element.y = element.y / aux;   
-        element.y = element.y * scale;
+       element.resizeObject(scale);
     });
 
 }
