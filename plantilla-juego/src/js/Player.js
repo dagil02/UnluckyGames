@@ -8,7 +8,9 @@ function Player(game, x, y, sprite) {
   this.cursor = this.game.input.keyboard;
   this.orientation = 0;
   this.vel = 4;
-  //this.nextFire = 0;
+
+  this.auxScale = 1; //1 por defecto. función Prototype resizePlayer
+
   this.bulletTime = 0; //controla que no se dispare constantemente
   this.wallTime = 0;
 
@@ -111,6 +113,17 @@ Player.prototype.Accion = function() {
       }
     }
   }
+};
+
+//redimensiona los objetos según parámetro.
+Player.prototype.resizePlayer = function(scale) {
+  var aux = this.auxScale; //aux recoge el último escalar
+  this.auxScale = scale; //el atributo de la clase recoge el nuevo escalar
+  this.scale.setTo(scale);
+  this.x = this.x / aux;
+  this.x = this.x * scale;
+  this.y = this.y / aux;
+  this.y = this.y * scale;
 };
 
 module.exports = Player;

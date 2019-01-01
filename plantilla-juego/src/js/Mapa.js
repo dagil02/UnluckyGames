@@ -14,6 +14,9 @@ function Mapa(game) {
     //capas
     this.layer_background; this.layer_obstaculo_0; this.layer_obstaculo_1; this.layer_obstaculo_2;
 
+    //gestion escalar: 1 por defecto. se usa en el método Prototype.LayerResize
+    this.auxScale = 1;
+
     //FUNCIONES 
     //------METODOS PARA LA CREACIÓN DE OBJETO------
     //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
@@ -208,39 +211,32 @@ Mapa.prototype.generate = function () {
  //redimensiona los objetos según parámetro. 
  Mapa.prototype.resizeLayer = function (scale) {
 
-    //1º se recoge el t.width,t.heigt antes de ser modificado
-    //la función devuelve un array con los tiles dentro del rango seleccionado (x, y, width, height). vale cualquiera de ellos
-    var tiles = this.tile_Map.layerGroup.children[0].getTiles(0, 0, 800, 592);
-    var t_width = tiles[0].width; var t_height = tiles[0].height; //tam actual depende de scale
+    var aux = this.auxScale; //aux recoge el último escalar 
+    this.auxScale = scale; //el atributo de la clase recoge el nuevo escalar
 
-    //constante auxiliar
-    var tile_W = this.tile_Map.tileWidth; var tile_H = this.tile_Map.tileHeight //siempre 16*16
-    //si el tam es por defecto, se actualiza en base a la escala
-    if (t_width === tile_W && t_height === tile_H){
-        t_width*= scale;
-        t_height*= scale;
-    }
-    else{
-        t_width = tile_W;
-        t_height = tile_H;
-    }
 
+    //T.Map.layer escala en base al parámetro y se redimensiona al mundo
     for (var i = 0; i < this.tile_Map.layerGroup.length; i++) {
         var tiles = this.tile_Map.layerGroup.children[i].setScale(scale, scale);
         this.tile_Map.layerGroup.children[i].resizeWorld();
     }
 
+    //objetos: recuperan dim. según anterior escalar y redimensionan según el nuevo escalar
     //recursos
     this.GrupoObjetos.children[0].children.forEach(element => {
         element.scale.setTo(scale);
+        element.x = element.x / aux; 
         element.x = element.x * scale;
+        element.y = element.y / aux;   
         element.y = element.y * scale;
     });
     //armas
     this.GrupoObjetos.children[1].children.forEach(element => {
-        /*element.scale.setTo(scale);
-        element.x = (element.x / tile_W) * scale
-        element.y = (element.y / t_height) * scale*/
+        element.scale.setTo(scale);
+        element.x = element.x / aux; 
+        element.x = element.x * scale;
+        element.y = element.y / aux;   
+        element.y = element.y * scale;
     });
 
 }
