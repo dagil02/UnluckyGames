@@ -3,7 +3,7 @@
 //node_modules/.bin/gulp run
 
 var PlayScene = require('./play_scene.js');
-
+var Menu = require('./StartScreen.js');
 
 var BootScene = {
   preload: function () {
@@ -50,10 +50,13 @@ var PreloaderScene = {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
+
+
+    this.game.load.image('Menu', 'assets/sprites/menu.png');
   },
 
   create: function () {
-    this.game.state.start('play');
+    this.game.state.start('Menu');
 
   }
 };
@@ -64,5 +67,6 @@ window.onload = function () {
   game.state.add('boot', BootScene);
   game.state.add('preloader', PreloaderScene);
   game.state.add('play', PlayScene);
+  game.state.add('Menu', Menu);
   game.state.start('boot');
 };
