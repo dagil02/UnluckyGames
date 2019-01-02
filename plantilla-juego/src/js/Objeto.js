@@ -4,11 +4,13 @@
 //PHATHER CLASS: OBJECT
 function Objeto(game, x, y, sprite) {
 	Phaser.Sprite.call(this, game, x, y, sprite);//hereda de sprite
+	
 	this.game.world.addChild(this);
 
 	//ATTRIBUTE
 	this.cantidad;
 	this.auxScale = 1; //1 por defecto
+	this.name = sprite; //el nombre dependerá del tipo de objeto. más para depurar 
 
 	//METHODS
 	this.RandomItem = function (n) {

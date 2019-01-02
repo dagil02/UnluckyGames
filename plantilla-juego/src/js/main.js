@@ -24,6 +24,9 @@ var PreloaderScene = {
   preload: function () {
 
 
+    //motor de físicas
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
     // ** ASSETS DEL JUEGO **
     //json y png del mapa
     this.game.load.tilemap('mapa', 'assets/mapas/mapa-0.json', null, Phaser.Tilemap.TILED_JSON);
@@ -46,9 +49,10 @@ var PreloaderScene = {
 
 
     //JUGADOR
-    this.game.load.image('player_1', 'assets/sprites/character.png');
+    this.game.load.image('player_1', 'assets/sprites/character.png'); //posPlayer.png
+    this.game.load.image('posIni', 'assets/sprites/posPlayer.png');
 
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    
 
   },
 

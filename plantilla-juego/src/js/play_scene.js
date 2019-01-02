@@ -38,7 +38,9 @@ var PlayScene = {
     
 
     //jugadores
-    this.j1 = new j1(this.game, 200, 150, "player_1");
+    var pos1 = {'x': 144, 'y': 80};
+    this.j1 = new j1(this.game, pos1.x, pos1.y, "player_1");
+
 
   },
 
@@ -51,8 +53,8 @@ var PlayScene = {
       this.zoomTo(1);
     }
     
-    this.j1.compruebaInput();
-    this.j1.Accion();
+    //this.j1.compruebaInput();
+    //this.j1.Accion();
 
     this.checkCollision();
    
@@ -62,10 +64,12 @@ var PlayScene = {
   render: function() {
     var y = 38;
   
-    this.game.debug.text( `Debugging object: HUD TEST`, 32, 610, "yellow", "Segoe UI");
-    this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
-    this.game.debug.spriteInfo(this.hud, 400, 640, "yellow");
-    this.game.debug.text( this.boolScale, 32, 750, "yellow", "Segoe UI");
+    this.game.debug.text( `Debugging object: POSICIONES TEST`, 32, 610, "yellow", "Segoe UI");
+    //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
+    //this.game.debug.spriteInfo(this.hud, 400, 640, "yellow");
+    //this.game.debug.text( this.boolScale, 32, 750, "yellow", "Segoe UI");
+    //this.game.debug.pointer( this.game.input.mousePointer, 32, 650, "yellow");
+
    
   },
 

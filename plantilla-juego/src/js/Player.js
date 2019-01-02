@@ -2,74 +2,61 @@
 
 function Player(game, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite); //hereda de sprite
+  
+  
+  //ATTRIBUTE
   this.game.world.addChild(this);
 
-  //Atributos
-  this.cursor = this.game.input.keyboard;
+  this.name = "jugador";
+
+  //input
+  this.inputAux = this.game.input.keyboard;
   this.orientation = 0;
   this.vel = 4;
 
+  //scale
   this.auxScale = 1; //1 por defecto. función Prototype resizePlayer
 
+  //shot and build
   this.bulletTime = 0; //controla que no se dispare constantemente
   this.wallTime = 0;
 
-  //Inicializacion fisicas jugador
+  //physics
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
-  this.name = "jugador";
   this.body.collideWorldBounds = true;
   this.body.bounce.setTo(1, 1);
-  //Inicializacion pool de balas
-  this.balas = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
-  //this.balas.enableBody = true;
-  this.balas.physicsBodyType = Phaser.Physics.ARCADE;
-  this.balas.createMultiple(50, "bala");
-  this.balas.setAll("anchor.x", 0.5);
-  this.balas.setAll("anchor.y", 1);
-  this.balas.setAll("checkWorldBounds", true);
-  this.balas.setAll("outOfBoundsKill", true);
-  this.muros = game.add.group();
-  this.muros.enableBody = true;
-  //this.muros.body.inamovible = true;
-  this.muros.physicsBodyType = Phaser.Physics.ARCADE;
-  this.muros.createMultiple(100, "muro");
+
+  
+ 
 }
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 
-Player.prototype.muevePlayer = function(x, y) {
-  this.body.x += x;
-  this.body.y += y;
-};
-Player.prototype.compruebaInput = function() {
-  var x = 0;
-  var y = 0;
-  //izquierda
-  if (this.cursor.isDown(65)) {
-    x--;
-    this.orientation = 3;
-  }
-  //derecha
-  else if (this.cursor.isDown(68)) {
-    x++;
-    this.orientation = 1;
-  }
-  //arriba
-  else if (this.cursor.isDown(87)) {
-    y--;
-    this.orientation = 0;
-  }
-  //abajo
-  else if (this.cursor.isDown(83)) {
-    y++;
-    this.orientation = 2;
-  }
 
-  this.muevePlayer(x * this.vel, y * this.vel);
+
+
+
+
+//redimensiona los objetos según parámetro.
+Player.prototype.resizePlayer = function(scale) {
+  var aux = this.auxScale; //aux recoge el último escalar
+  this.auxScale = scale; //el atributo de la clase recoge el nuevo escalar
+  this.scale.setTo(scale);
+  this.x = this.x / aux;
+  this.x = this.x * scale;
+  this.y = this.y / aux;
+  this.y = this.y * scale;
 };
 
-Player.prototype.Accion = function() {
+module.exports = Player;
+
+
+
+
+
+
+/**Player.prototype.Accion = function() {
   //tecla spacebar
   if (this.cursor.isDown(32)) {
     var bullet = this.balas.getFirstExists(false);
@@ -113,17 +100,55 @@ Player.prototype.Accion = function() {
       }
     }
   }
-};
+}; */
 
-//redimensiona los objetos según parámetro.
-Player.prototype.resizePlayer = function(scale) {
-  var aux = this.auxScale; //aux recoge el último escalar
-  this.auxScale = scale; //el atributo de la clase recoge el nuevo escalar
-  this.scale.setTo(scale);
-  this.x = this.x / aux;
-  this.x = this.x * scale;
-  this.y = this.y / aux;
-  this.y = this.y * scale;
-};
 
-module.exports = Player;
+
+/**Player.prototype.compruebaInput = function() {
+  var x = 0;
+  var y = 0;
+  //izquierda
+  if (this.cursor.isDown(65)) {
+    x--;
+    this.orientation = 3;
+  }
+  //derecha
+  else if (this.cursor.isDown(68)) {
+    x++;
+    this.orientation = 1;
+  }
+  //arriba
+  else if (this.cursor.isDown(87)) {
+    y--;
+    this.orientation = 0;
+  }
+  //abajo
+  else if (this.cursor.isDown(83)) {
+    y++;
+    this.orientation = 2;
+  }
+
+  this.muevePlayer(x * this.vel, y * this.vel);
+}; */
+
+/**Player.prototype.muevePlayer = function(x, y) {
+  this.body.x += x;
+  this.body.y += y;
+}; */
+
+
+/**Inicializacion pool de balas
+  //this.balas = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
+  //this.balas.enableBody = true; */
+
+  /** this.balas.physicsBodyType = Phaser.Physics.ARCADE;
+  this.balas.createMultiple(50, "bala");
+  this.balas.setAll("anchor.x", 0.5);
+  this.balas.setAll("anchor.y", 1);
+  this.balas.setAll("checkWorldBounds", true);
+  this.balas.setAll("outOfBoundsKill", true);
+  this.muros = game.add.group();
+  this.muros.enableBody = true;
+  //this.muros.body.inamovible = true;
+  this.muros.physicsBodyType = Phaser.Physics.ARCADE;
+  this.muros.createMultiple(100, "muro"); */
