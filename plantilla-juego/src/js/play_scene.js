@@ -25,6 +25,9 @@ var PlayScene = {
     this.inputAux = this.game.input.keyboard;
     this.key1 = Phaser.KeyCode.ONE;
     this.key2 = Phaser.KeyCode.TWO;
+    this.key3 = Phaser.KeyCode.THREE;
+
+
 
   
     //GENERACION DE ELEM DE JUEGO
@@ -33,39 +36,30 @@ var PlayScene = {
     this.mapa.generate();
     this.mapa.resizeLayer(1); //ajusta el mapa al mundo. //necesario para usar el hud
 
-    //this.recogeI = this.mapa.RecogeIndex( this.mapa.tile_Map.layerGroup.children[1]);
-    this.mapa.tile_Map.layerGroup.children[1].debug = true;
-    
 
     //jugadores
-    this.j1 = new j1(this.game, 200, 150, "player_1");
+    var pos1 = {'x': 144, 'y': 80};
+    this.j1 = new j1(this.game, pos1.x, pos1.y, "player_1");
+
+
+
 
   },
 
   update: function() {
-
-    if (this.inputAux.isDown(this.key1)){
-      this.zoomTo(2);
-    }
-    else if (this.inputAux.isDown(this.key2)){
-      this.zoomTo(1);
-    }
-    
-    this.j1.compruebaInput();
-    this.j1.Accion();
-
-    this.checkCollision();
-   
+    this.checkInput();
    
   },
 
   render: function() {
     var y = 38;
   
-    this.game.debug.text( `Debugging object: HUD TEST`, 32, 610, "yellow", "Segoe UI");
-    this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
-    this.game.debug.spriteInfo(this.hud, 400, 640, "yellow");
-    this.game.debug.text( this.boolScale, 32, 750, "yellow", "Segoe UI");
+    this.game.debug.text( `Debugging object: POSICIONES TEST`, 32, 610, "yellow", "Segoe UI");
+    //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
+    this.game.debug.spriteInfo(this.j1, 400, 640, "yellow");
+    //this.game.debug.text( this.boolScale, 32, 750, "yellow", "Segoe UI");
+    //this.game.debug.pointer( this.game.input.mousePointer, 32, 650, "yellow");
+
    
   },
 
@@ -117,19 +111,22 @@ var PlayScene = {
     this.game.world.bringToTop(this.hud);
   },
 
-  checkCollision: function () {
 
-    //se comprueba la colisión con las capas de obstáculos fijos del mapa
-    this.game.physics.arcade.collide(
-      this.j1,
-      this.mapa.tile_Map.layerGroup.children
-    );
-    //se recorre el grupo de Objetos y comprueba los subGrupos la colision con los obj.
-    for (var i = 0; i < this.mapa.GrupoObjetos.length; i++) {
-      this.game.physics.arcade.collide(
-        this.j1,
-        this.mapa.GrupoObjetos.children[i].children
-      );
+
+  checkInput: function () {
+
+
+    if (this.inputAux.isDown(this.key1)) {
+      this.zoomTo(2);
+    }
+    else if (this.inputAux.isDown(this.key2)) {
+      this.zoomTo(1);
+    }
+    else {
+        var layerGr = this.mapa.tile_Map.layerGroup.children;
+        var objGr = this.mapa.GrupoObjetos;
+        this.j1.checkInput(layerGr, objGr);
+        
     }
   }
 };

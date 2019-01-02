@@ -17,6 +17,10 @@ function Mapa(game) {
     //gestion escalar: 1 por defecto. se usa en el método Prototype.LayerResize
     this.auxScale = 1;
 
+    //constante pos player
+    //desierto; niveve; praderaTop; praderaButton
+    this.iniPlayerPos = [{'x': 32 , 'y': 560}, {'x': 688, 'y': 64}, {'x': 640, 'y': 512}];
+
     //FUNCIONES 
     //------METODOS PARA LA CREACIÓN DE OBJETO------
     //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
@@ -30,6 +34,11 @@ function Mapa(game) {
                 esta = position === this.GrupoObjetos.children[i].children[j].position;
                 j++;
             }
+            i++;
+        }
+        i = 0;
+        while (!esta && i< this.iniPlayerPos.length){
+            esta = position === this.iniPlayerPos[i];
             i++;
         }
         return esta;
@@ -205,6 +214,12 @@ Mapa.prototype.generate = function () {
     //se añaden los Objetos al mapa. el 1º param. es un identificador del método SeleccionObjeto
     this.añadeObjetos("recurso", 40, this.GrupoRecursos);
     this.añadeObjetos("arma", 15, this.GrupoArmas);
+
+    this.iniPosPlayerGroup = this.game.add.group();
+    for (var i = 0; i < this.iniPlayerPos.length; i++){
+        var sprite = this.game.add.sprite(this.iniPlayerPos[i].x, this.iniPlayerPos[i].y, 'posIni');
+        this.iniPosPlayerGroup.add( sprite);
+    }
 }
 
 
