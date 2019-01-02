@@ -214,11 +214,11 @@ Mapa.prototype.generate = function () {
     var aux = this.auxScale; //aux recoge el último escalar 
     this.auxScale = scale; //el atributo de la clase recoge el nuevo escalar
 
-
     //T.Map.layer escala en base al parámetro y se redimensiona al mundo
     for (var i = 0; i < this.tile_Map.layerGroup.length; i++) {
         var tiles = this.tile_Map.layerGroup.children[i].setScale(scale, scale);
         this.tile_Map.layerGroup.children[i].resizeWorld();
+        
     }
 
     //objetos: recuperan dim. según anterior escalar y redimensionan según el nuevo escalar

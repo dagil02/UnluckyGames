@@ -8,6 +8,7 @@ var PlayScene = require('./play_scene.js');
 var BootScene = {
   preload: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    //this.scale.setMinMax(800, 592, 1600, 1184);
     this.scale.setMinMax(800, 592, 1600, 1184);
     //this.scale.pageAlignHorizontally = true;
     //this.scale.pageAlignVertically = true;
@@ -27,6 +28,9 @@ var PreloaderScene = {
     //json y png del mapa
     this.game.load.tilemap('mapa', 'assets/mapas/mapa-0.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/mapas/mapaTiles.png');
+
+    //hud
+    this.game.load.image('hud2', 'assets/canvas/hud.png');
 
 
     //OBJETOS
@@ -56,7 +60,7 @@ var PreloaderScene = {
 
 
 window.onload = function () {
-  var game = new Phaser.Game((50 * 16), (37 * 16), Phaser.AUTO, 'game');
+  var game = new Phaser.Game((50 * 16), (50 * 16), Phaser.AUTO, 'game');
   game.state.add('boot', BootScene);
   game.state.add('preloader', PreloaderScene);
   game.state.add('play', PlayScene);
