@@ -16,7 +16,8 @@ function Player(game, x, y, sprite) {
   this.key4 = Phaser.KeyCode.S;
 
   this.orientation = 0;
-  this.vel = 4;
+  this.velMove = 300; //controla el tiempo de desplazamiento
+  this.timeMove = 0;
 
   //scale
   this.auxScale = 1; //1 por defecto. función Prototype resizePlayer
@@ -44,9 +45,12 @@ Player.prototype.resizePlayer = function(scale) {
 };
 
 //el movimiento se realiza por tile: incrementa/decrem. en base al w/h actual del sprite
-Player.prototype.checkInput = function(l, o) {
-  var pos = { x: 0, y: 0 };
+Player.prototype.checkInput = function(mapa, obj) {
+  var pos = { 'x': 0, 'y': 0 };
+  var posPrevia = { 'x': 0, 'y': 0 };
   var boolcheck = false;
+  this.mapa = mapa;
+  this.obj = obj;
 
   var x = this.game.world.bounds.width - this.width * 2; //lím. derch
   var y = this.game.world.bounds.height - this.height * 2; //lím inferior
@@ -57,6 +61,7 @@ Player.prototype.checkInput = function(l, o) {
 
     if (this.body.y >= this.height) {
       pos.y -= this.width;
+      posPrevia.y -= (this.width  / this.auxScale);
       boolcheck = true;
     }
   }
@@ -65,6 +70,7 @@ Player.prototype.checkInput = function(l, o) {
     this.orientation = 1;
     if (this.body.x <= x) {
       pos.x += this.width;
+      posPrevia.x += (this.width  / this.auxScale);
       boolcheck = true;
     }
   }
@@ -74,6 +80,7 @@ Player.prototype.checkInput = function(l, o) {
     this.orientation = 2;
     if (this.body.y <= y) {
       pos.y += this.width;
+      posPrevia.y += (this.width  / this.auxScale);
       boolcheck = true;
     }
   }
@@ -82,38 +89,50 @@ Player.prototype.checkInput = function(l, o) {
     this.orientation = 3;
     if (this.body.x >= this.width) {
       pos.x -= this.width;
+      posPrevia.x -= (this.width  / this.auxScale);
       boolcheck = true;
     }
   }
   if (boolcheck) {
-    this.movePlayer(pos, l, o);
+    this.movePlayer(this.mapa, this.obj, pos, posPrevia);
     boolcheck = false;
   }
 };
 
-Player.prototype.movePlayer = function(position, l, o) {
+Player.prototype.movePlayer = function(mapa, obj, position) {
+  //recogen el valor actual antes del cambio
   var X = this.body.x;
-  var Y = this.body.y; //recogen el valor actual antes del cambio
+  var Y = this.body.y; 
+
+
+  //simula el siguiente paso
   this.body.x += position.x;
   this.body.y += position.y;
+
   //si existe colision no modifica la pos actual
-  if (this.compruebaColision(l, o)) {
+  if (this.compruebaColision(mapa, obj)) {
     this.body.x = X;
     this.body.y = Y;
+  } else {
+    if (this.game.time.now > this.timeMove) {
+      this.timeMove = this.game.time.now + this.velMove;
+    } else {
+      this.body.x = X;
+      this.body.y = Y;
+    }
   }
 };
 
-Player.prototype.compruebaColision = function(l, o) {
+Player.prototype.compruebaColision = function(mapa, obj) {
   var bool = false;
-  //se comprueba la colisión con las capas de obstáculos fijos del mapa
-  if (this.game.physics.arcade.collide(this, l)) {
-    bool = true;
-  }
+  bool = mapa.compruebaColision(this);
   //se recorre el grupo de Objetos y comprueba los subGrupos la colision con los obj.
-  var i = 0;
-  while (!bool & (i < o.length)) {
-    bool = this.game.physics.arcade.collide(this, o.children[i].children);
-    i++;
+  if (!bool) {
+    var i = 0;
+    while (!bool && i < obj.length) {
+      bool = this.game.physics.arcade.collide(this, obj.children[i].children);
+      i++;
+    }
   }
   return bool;
 };
