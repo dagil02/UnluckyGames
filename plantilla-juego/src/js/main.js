@@ -3,15 +3,13 @@
 //node_modules/.bin/gulp run
 
 var PlayScene = require('./play_scene.js');
-
+var Menu = require('./StartScreen.js');
 
 var BootScene = {
   preload: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    //this.scale.setMinMax(800, 592, 1600, 1184);
     this.scale.setMinMax(800, 592, 1600, 1184);
-    //this.scale.pageAlignHorizontally = true;
-    //this.scale.pageAlignVertically = true;
+    
   },
 
   create: function () {
@@ -54,10 +52,13 @@ var PreloaderScene = {
 
     
 
+
+
+    this.game.load.image('Menu', 'assets/sprites/menu.png');
   },
 
   create: function () {
-    this.game.state.start('play');
+    this.game.state.start('Menu');
 
   }
 };
@@ -68,5 +69,6 @@ window.onload = function () {
   game.state.add('boot', BootScene);
   game.state.add('preloader', PreloaderScene);
   game.state.add('play', PlayScene);
+  game.state.add('Menu', Menu);
   game.state.start('boot');
 };
