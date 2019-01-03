@@ -23,20 +23,26 @@ function Mapa(game) {
   //FUNCIONES
   //------METODOS PARA LA CREACIÓN DE OBJETO------
 
-  //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto 
-  this.AñadeObjetoAux = function (aux) {
+  //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
+  this.AñadeObjetoAux = function(aux) {
     var esta = false;
     //tomará acierto si existe colisión entre objetos (armas/recursos) y posiciones player
     esta =
-      this.game.physics.arcade.collide(aux, this.GrupoObjetos.children[0].children) ||
-      this.game.physics.arcade.collide(aux,this.GrupoObjetos.children[1].children) || 
+      this.game.physics.arcade.collide(
+        aux,
+        this.GrupoObjetos.children[0].children
+      ) ||
+      this.game.physics.arcade.collide(
+        aux,
+        this.GrupoObjetos.children[1].children
+      ) ||
       this.game.physics.arcade.collide(aux, this.plyGroup.children);
 
-    if (this.game.physics.arcade.collide(aux,this.plyGroup.children)){
+    if (this.game.physics.arcade.collide(aux, this.plyGroup.children)) {
       console.log("COLISION: " + esta);
     }
 
-      return esta;
+    return esta;
   };
 
   //Metodo para devolve un índice de armas
@@ -253,7 +259,7 @@ Mapa.prototype.resizeLayer = function(scale) {
   });
 };
 
-//comunica con class: Player
+//recibe mensaje class: Player
 Mapa.prototype.compruebaColision = function(player) {
   var bool = false;
   //recogen la posición real de body
@@ -274,5 +280,29 @@ Mapa.prototype.compruebaColision = function(player) {
   player.body.y = Y;
   return bool;
 };
+
+//recibe mensaje de class: Player. busca el arma en la orientación y colision con player
+//la vuelve invisible y sin físicas, y la solapa al body de player
+Mapa.prototype.armedPlayer = function (player){
+
+}
+
+//recibe mensaje de class: Player. busca y destruye el recurso en orientación y colision
+//y sube el contador de recursos de player
+Mapa.prototype.plasyerResources = function (player) {
+  //orientacion: 0 = arr, 1 = der, 2 = abaj, 3 = izq
+  if (player.orientation === 0) {
+    var Y = player.body.y - player.body.height;
+    var resource = this.game.physics.arcade.getObjectsAtLocation(player.body.x, Y, this.GrupoRecursos);
+    if (resource.length >= 1){
+      player.resources = resource[0].cantidad;
+      resource[0].destroy();
+    }
+  }
+
+}
+
+
+
 
 module.exports = Mapa;

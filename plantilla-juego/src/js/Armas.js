@@ -46,6 +46,10 @@ Armas.prototype.generate = function () {
 	this.body.collideWorldBounds = true;
 	this.body.immovable = true;
 
+};
+
+Armas.prototype.Shot = function () {
+	this.balas_Cont--;
 }
 
 module.exports = Armas;

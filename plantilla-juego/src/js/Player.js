@@ -10,10 +10,14 @@ function Player(game, x, y, sprite) {
 
   //input
   this.inputAux = this.game.input.keyboard;
+  //deslpazamiento: izq, arrib, derch, abajo.
   this.key1 = Phaser.KeyCode.A;
   this.key2 = Phaser.KeyCode.W;
   this.key3 = Phaser.KeyCode.D;
   this.key4 = Phaser.KeyCode.S;
+  //objetos: recoger, soltar
+  this.key5 = Phaser.KeyCode.P;
+  this.key6 = Phaser.KeyCode.O;
 
   this.orientation = 0;
   this.velMove = 300; //controla el tiempo de desplazamiento
@@ -27,6 +31,7 @@ function Player(game, x, y, sprite) {
   this.auxScale = 1; //1 por defecto. función Prototype resizePlayer
 
   //shot and build
+  this.resources = 0; //contador de recursos
 
   //physics
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -48,8 +53,30 @@ Player.prototype.resizePlayer = function(scale) {
   this.y = this.y * scale;
 };
 
+Player.prototype.checkInput = function (mapa, obj) {
+  //desplazamiento y orientacion
+  if (
+    this.inputAux.isDown(this.key1) ||
+    this.inputAux.isDown(this.key2) ||
+    this.inputAux.isDown(this.key3) ||
+    this.inputAux.isDown(this.key4)
+  ) {
+    this.checkMove(mapa, obj);
+    //objetos: recoger y soltar
+  } else if (
+    this.inputAux.isDown(this.key5) ||
+    this.inputAux.isDown(this.key6)
+  ) {
+    if (this.inputAux.isDown(this.key5)) {
+      mapa.plasyerResources(this);
+    }
+
+  }
+};
+
+//gestiona el input por desplazamiento
 //el movimiento se realiza por tile: incrementa/decrem. en base al w/h actual del sprite
-Player.prototype.checkInput = function(mapa, obj) {
+Player.prototype.checkMove = function(mapa, obj) {
   //recogen la posición según input
   var pos = { x: 0, y: 0 };
   var posPrevia = { x: 0, y: 0 };

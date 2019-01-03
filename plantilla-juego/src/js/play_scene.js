@@ -64,15 +64,15 @@ var PlayScene = {
   render: function() {
     var y = 38;
 
-    /*this.game.debug.text(
-      `Debugging object: POSICIONES TEST`,
+    this.game.debug.text(
+      `Debugging object: PLAYER TEST`,
       32,
       610,
       "yellow",
       "Segoe UI"
-    );*/
+    );
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
-    //this.game.debug.text( this.boolScale, 32, 750, "yellow", "Segoe UI");
+    this.game.debug.text(this.playerGroup.children[0].resources, 32,640, "yellow", "Segoe UI");
   },
 
   zoomTo: function(scale) {
