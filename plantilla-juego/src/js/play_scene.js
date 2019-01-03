@@ -54,11 +54,28 @@ var PlayScene = {
     this.objGr = this.mapa.GrupoObjetos;
 
     this.game.world.bringToTop(this.playerGroup);
+
+    //Variable que controla la pausa
+    this.pause = false;
   },
 
   update: function() {
     //this.game.physics.arcade.collide(this.j1, this.mapa.tile_Map.layerGroup.children);
+    if (!this.pause){
     this.checkInput();
+    }
+    else{
+      if (this.inputAux.isDown(27)){
+        this.pause = false;
+        this.game.state.start('Menu');
+        
+      }else if (this.inputAux.isDown(13)){
+        this.pause = false;
+       
+        
+      }
+
+    }
   },
 
   render: function() {
@@ -131,6 +148,22 @@ var PlayScene = {
     } else {
       this.playerGroup.children[0].checkInput(this.mapa, this.objGr);
     }
+    if (this.inputAux.isDown(27)){
+      this.pause = true;
+      this.startPause();
+    }
+  },
+
+  startPause: function(){
+    var Pause;
+    
+
+    
+    
+    Pause = this.game.add.sprite(game.world.centerX, game.world.centerY+100, 'Pausa');
+    Pause.alpha = 0.3;
+    Pause.anchor.setTo(0.5,0.5);
+
   }
 };
 
