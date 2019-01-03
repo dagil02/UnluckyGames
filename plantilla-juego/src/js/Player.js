@@ -19,6 +19,10 @@ function Player(game, x, y, sprite) {
   this.velMove = 300; //controla el tiempo de desplazamiento
   this.timeMove = 0;
 
+  //recoge la prox pos de player y la divide por la escala actual.
+  //siempre obtendremos un valor de +-16 (tile: 16x16)
+  this.POSPREVIA;
+
   //scale
   this.auxScale = 1; //1 por defecto. función Prototype resizePlayer
 
@@ -46,12 +50,14 @@ Player.prototype.resizePlayer = function(scale) {
 
 //el movimiento se realiza por tile: incrementa/decrem. en base al w/h actual del sprite
 Player.prototype.checkInput = function(mapa, obj) {
-  var pos = { 'x': 0, 'y': 0 };
-  var posPrevia = { 'x': 0, 'y': 0 };
-  var boolcheck = false;
-  this.mapa = mapa;
-  this.obj = obj;
+  //recogen la posición según input
+  var pos = { x: 0, y: 0 };
+  var posPrevia = { x: 0, y: 0 };
 
+  //define la llamada a movePlayer()
+  var boolcheck = false;
+
+  //worldBounds
   var x = this.game.world.bounds.width - this.width * 2; //lím. derch
   var y = this.game.world.bounds.height - this.height * 2; //lím inferior
 
@@ -61,7 +67,7 @@ Player.prototype.checkInput = function(mapa, obj) {
 
     if (this.body.y >= this.height) {
       pos.y -= this.width;
-      posPrevia.y -= (this.width  / this.auxScale);
+      posPrevia.y -= this.height / this.auxScale;
       boolcheck = true;
     }
   }
@@ -70,7 +76,7 @@ Player.prototype.checkInput = function(mapa, obj) {
     this.orientation = 1;
     if (this.body.x <= x) {
       pos.x += this.width;
-      posPrevia.x += (this.width  / this.auxScale);
+      posPrevia.x += this.width / this.auxScale;
       boolcheck = true;
     }
   }
@@ -80,7 +86,7 @@ Player.prototype.checkInput = function(mapa, obj) {
     this.orientation = 2;
     if (this.body.y <= y) {
       pos.y += this.width;
-      posPrevia.y += (this.width  / this.auxScale);
+      posPrevia.y += this.height / this.auxScale;
       boolcheck = true;
     }
   }
@@ -89,31 +95,37 @@ Player.prototype.checkInput = function(mapa, obj) {
     this.orientation = 3;
     if (this.body.x >= this.width) {
       pos.x -= this.width;
-      posPrevia.x -= (this.width  / this.auxScale);
+      posPrevia.x -= this.width / this.auxScale;
       boolcheck = true;
     }
   }
+  //si existe entrada de teclado
   if (boolcheck) {
-    this.movePlayer(this.mapa, this.obj, pos, posPrevia);
+    //la variable de ámbito local simula la siguiente pos en base al escalar y lo pasa al atributo de la clase
+    posPrevia.x = this.body.x + posPrevia.x;
+    posPrevia.y = this.body.y + posPrevia.y;
+    this.POSPREVIA = posPrevia; //comunica con class: Map mediante parámetro en método this.compruebaColision(...)
+
+    this.movePlayer(mapa, obj, pos);
     boolcheck = false;
   }
 };
 
-Player.prototype.movePlayer = function(mapa, obj, position) {
+Player.prototype.movePlayer = function(mapa, obj, posT) {
   //recogen el valor actual antes del cambio
   var X = this.body.x;
-  var Y = this.body.y; 
-
+  var Y = this.body.y;
 
   //simula el siguiente paso
-  this.body.x += position.x;
-  this.body.y += position.y;
+  this.body.x += posT.x;
+  this.body.y += posT.y;
 
   //si existe colision no modifica la pos actual
   if (this.compruebaColision(mapa, obj)) {
     this.body.x = X;
     this.body.y = Y;
   } else {
+    //gestiona un timeCounter para regular la velocidad de desplazamiento
     if (this.game.time.now > this.timeMove) {
       this.timeMove = this.game.time.now + this.velMove;
     } else {
@@ -125,15 +137,18 @@ Player.prototype.movePlayer = function(mapa, obj, position) {
 
 Player.prototype.compruebaColision = function(mapa, obj) {
   var bool = false;
-  bool = mapa.compruebaColision(this);
-  //se recorre el grupo de Objetos y comprueba los subGrupos la colision con los obj.
-  if (!bool) {
-    var i = 0;
-    while (!bool && i < obj.length) {
-      bool = this.game.physics.arcade.collide(this, obj.children[i].children);
-      i++;
-    }
+  //se recorre el grupo de Objetos y comprueba los subGrupos la colision con los obj
+  var i = 0;
+  while (!bool && i < obj.length) {
+    bool = this.game.physics.arcade.collide(this, obj.children[i].children);
+    i++;
   }
+  //si no existe colision con objs llama a la función de la class: Map
+  if (!bool) {
+    //this.POSPREVIA se usará en caso de que auxScale === 2
+    bool = mapa.compruebaColision(this);
+  }
+
   return bool;
 };
 

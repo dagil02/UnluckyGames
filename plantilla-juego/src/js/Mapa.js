@@ -17,36 +17,26 @@ function Mapa(game) {
   //gestion escalar: 1 por defecto. se usa en el método Prototype.LayerResize
   this.auxScale = 1;
 
-  //constante pos player
-  //desierto; niveve; praderaTop; praderaButton
-  this.iniPlayerPos = [
-    { x: 32, y: 560 },
-    { x: 688, y: 64 },
-    { x: 640, y: 512 }
-  ];
+  //posciones jugadores
+  this.plyGroup = this.game.add.group();
 
   //FUNCIONES
   //------METODOS PARA LA CREACIÓN DE OBJETO------
-  //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
-  this.AñadeObjetoAux = function(x, y) {
+
+  //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto 
+  this.AñadeObjetoAux = function (aux) {
     var esta = false;
-    var i = 0;
-    var position = { x: x, y: y };
-    //se recorre el grupo
-    while (!esta && i < this.GrupoObjetos.children.length) {
-      var j = 0;
-      while (!esta && j < this.GrupoObjetos.children[i].length) {
-        esta = position === this.GrupoObjetos.children[i].children[j].position;
-        j++;
-      }
-      i++;
+    //tomará acierto si existe colisión entre objetos (armas/recursos) y posiciones player
+    esta =
+      this.game.physics.arcade.collide(aux, this.GrupoObjetos.children[0].children) ||
+      this.game.physics.arcade.collide(aux,this.GrupoObjetos.children[1].children) || 
+      this.game.physics.arcade.collide(aux, this.plyGroup.children);
+
+    if (this.game.physics.arcade.collide(aux,this.plyGroup.children)){
+      console.log("COLISION: " + esta);
     }
-    i = 0;
-    while (!esta && i < this.iniPlayerPos.length) {
-      esta = position === this.iniPlayerPos[i];
-      i++;
-    }
-    return esta;
+
+      return esta;
   };
 
   //Metodo para devolve un índice de armas
@@ -91,13 +81,18 @@ function Mapa(game) {
       var tile_H = this.tile_Map.tileHeight; //recoge w/h del tile
       x = x * tile_W;
       y = y * tile_H; //recogen worldPosition
+      //se genera un nuevo sprite auxiliar
       var aux = this.game.add.sprite(x, y, "arbol");
+      //se activan sus físicas
+      this.game.physics.enable(aux, Phaser.Physics.ARCADE);
+      aux.body.collideWorldBounds = true;
+      aux.body.checkCollision = true;
 
       var col = false; //variable de control de colision
       col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
 
       if (!col) {
-        if (!this.AñadeObjetoAux(x, y)) {
+        if (!this.AñadeObjetoAux(aux)) {
           var obj_aux = new objeto.enlace(this.game, x, y, objeto.idSprite);
           obj_aux.generate();
           group_obj_hijo.add(obj_aux);
@@ -206,7 +201,7 @@ function Mapa(game) {
 } //cierre constructora
 
 //****** */PROTOTYPE METHODS *******
-Mapa.prototype.generate = function() {
+Mapa.prototype.generate = function(plGr) {
   this.añadeTileMap("mapa");
   this.añadeTileImg("tilesMap", "tiles");
 
@@ -227,19 +222,11 @@ Mapa.prototype.generate = function() {
   //se crean las capas, se definen como colisiones y se añaden al grupo
   this.añadeLayer();
 
+  //posJUGADORES
+  this.plyGroup = plGr;
   //se añaden los Objetos al mapa. el 1º param. es un identificador del método SeleccionObjeto
   this.añadeObjetos("recurso", 40, this.GrupoRecursos);
   this.añadeObjetos("arma", 15, this.GrupoArmas);
-
-  this.iniPosPlayerGroup = this.game.add.group();
-  for (var i = 0; i < this.iniPlayerPos.length; i++) {
-    var sprite = this.game.add.sprite(
-      this.iniPlayerPos[i].x,
-      this.iniPlayerPos[i].y,
-      "posIni"
-    );
-    this.iniPosPlayerGroup.add(sprite);
-  }
 
   this.resizeLayer(1); //por defecto, para ajustar el hud y el mapa al mundo
 };
@@ -266,13 +253,25 @@ Mapa.prototype.resizeLayer = function(scale) {
   });
 };
 
+//comunica con class: Player
 Mapa.prototype.compruebaColision = function(player) {
   var bool = false;
-
+  //recogen la posición real de body
+  var X = player.body.x;
+  var Y = player.body.y;
+  //si el escalar actual es 2 (32x32) simula una posición según escalar 1 (16x16)
+  if (this.auxScale === 2) {
+    //de esa manera el body rect the player no sobrepasa los collide del tileMapLayer
+    player.body.x = player.POSPREVIA.x;
+    player.body.y = player.POSPREVIA.y;
+  }
   bool = this.game.physics.arcade.collide(
     player,
     this.tile_Map.layerGroup.children
   );
+  //body debe volver a su valor real.
+  player.body.x = X;
+  player.body.y = Y;
   return bool;
 };
 
