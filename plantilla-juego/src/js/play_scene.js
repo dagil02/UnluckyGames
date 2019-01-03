@@ -66,10 +66,11 @@ var PlayScene = {
     this.checkInput();
     }
     else{
+      //La tecla enter manda al menu inicial
       if (this.inputAux.isDown(13)){
         this.pause = false;
         this.game.state.start('Menu');
-        
+        //la barra espaciadora reanuda el juego
       }else if (this.inputAux.isDown(32)){
         this.pause = false;
        this.endPause();
@@ -149,6 +150,7 @@ var PlayScene = {
     } else {
       this.playerGroup.children[0].checkInput(this.mapa, this.objGr);
     }
+    //la tecla esc activa el menu de pausa
     if (this.inputAux.isDown(27)){
       this.pause = true;
       this.startPause();
@@ -161,18 +163,13 @@ var PlayScene = {
 
     
     
-    this.Pause = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, 'Pausa');
+    this.Pause = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'Pausa');
     this.Pause.alpha = 0.7;
     this.Pause.anchor.setTo(0.5,0.5);
 
   },
   endPause: function(){
-    
-    
-
-    
-    
-    
+   //Hace transparente el menu de pausa
     this.Pause.alpha = 0;
     
 
