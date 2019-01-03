@@ -2,7 +2,6 @@
 
 var mapa = require("./Mapa");
 var player = require("./Player");
-var myCamera = require("./Camera.js");
 
 //var cursors;
 
