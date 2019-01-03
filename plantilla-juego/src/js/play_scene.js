@@ -55,8 +55,9 @@ var PlayScene = {
 
     this.game.world.bringToTop(this.playerGroup);
 
-    //Variable que controla la pausa
+    //Variables que controlan la pausa
     this.pause = false;
+    var Pause;
   },
 
   update: function() {
@@ -65,13 +66,13 @@ var PlayScene = {
     this.checkInput();
     }
     else{
-      if (this.inputAux.isDown(27)){
+      if (this.inputAux.isDown(13)){
         this.pause = false;
         this.game.state.start('Menu');
         
-      }else if (this.inputAux.isDown(13)){
+      }else if (this.inputAux.isDown(32)){
         this.pause = false;
-       
+       this.endPause();
         
       }
 
@@ -155,14 +156,25 @@ var PlayScene = {
   },
 
   startPause: function(){
-    var Pause;
+   
     
 
     
     
-    Pause = this.game.add.sprite(game.world.centerX, game.world.centerY+100, 'Pausa');
-    Pause.alpha = 0.3;
-    Pause.anchor.setTo(0.5,0.5);
+    this.Pause = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, 'Pausa');
+    this.Pause.alpha = 0.7;
+    this.Pause.anchor.setTo(0.5,0.5);
+
+  },
+  endPause: function(){
+    
+    
+
+    
+    
+    
+    this.Pause.alpha = 0;
+    
 
   }
 };

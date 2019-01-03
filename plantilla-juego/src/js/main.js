@@ -55,6 +55,7 @@ var PreloaderScene = {
 
 
     this.game.load.image('Menu', 'assets/sprites/menu.png');
+    this.game.load.image('Pausa', 'assets/sprites/pausa.png');
   },
 
   create: function () {
