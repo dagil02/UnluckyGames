@@ -8,10 +8,8 @@ var Menu = require('./StartScreen.js');
 var BootScene = {
   preload: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    //this.scale.setMinMax(800, 592, 1600, 1184);
     this.scale.setMinMax(800, 592, 1600, 1184);
-    //this.scale.pageAlignHorizontally = true;
-    //this.scale.pageAlignVertically = true;
+    
   },
 
   create: function () {
