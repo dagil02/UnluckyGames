@@ -1,7 +1,7 @@
 "use strict";
 
 var mapa = require("./Mapa");
-var j1 = require("./Player");
+var player = require("./Player");
 var myCamera = require("./Camera.js");
 
 //var cursors;
@@ -27,20 +27,33 @@ var PlayScene = {
     this.key3 = Phaser.KeyCode.THREE;
 
     //GENERACION DE ELEM DE JUEGO
+    //jugadores
+    this.playerGroup = this.game.add.group();
+    //desierto; niveve; praderaTop; praderaButton
+    this.playerPos = [
+      { x: 128, y: 96 },
+      { x: 32, y: 560 },
+      { x: 688, y: 64 },
+      { x: 640, y: 512 }
+    ];
+    for (var i = 0; i < this.playerPos.length; i++) {
+      this.playerGroup.add(
+        new player(
+          this.game,
+          this.playerPos[i].x,
+          this.playerPos[i].y,
+          "player_1"
+        )
+      );
+    }
     //mapa y recursos
     this.mapa = new mapa(this.game);
-    this.mapa.generate();
+    this.mapa.generate(this.playerGroup);
 
-    //la variable recoge los grupos de físicas de tilemap método checkInput() ¡no permite pasar el mapa como tal!
-    this.layerGr =  this.mapa.tile_Map.layerGroup.children;
+    //la variable recoge los grupos de físicas de obj. parametro en this.checkInput()
     this.objGr = this.mapa.GrupoObjetos;
 
-    this.layerGr[1].debug = true;
-    //this.recogeInd = this.layerGr[1].getTiles(0, 0, 800, 592, true);
-
-    //jugadores
-    var pos1 = { x: 144, y: 80 };
-    this.j1 = new j1(this.game, pos1.x, pos1.y, "player_1");
+    this.game.world.bringToTop(this.playerGroup);
   },
 
   update: function() {
@@ -59,9 +72,7 @@ var PlayScene = {
       "Segoe UI"
     );*/
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
-    this.game.debug.bodyInfo(this.j1, 400, 640, "yellow");
     //this.game.debug.text( this.boolScale, 32, 750, "yellow", "Segoe UI");
-  
   },
 
   zoomTo: function(scale) {
@@ -79,10 +90,13 @@ var PlayScene = {
     var auxCamera_H = this.hud.height + this.previousWorld_H; //eje: worldH 1184 + 208 = 1392; así permite a la cam sobrepasar los límites del mundo
 
     //gestion de la camara
-    this.game.camera.follow(this.j1);
+    this.game.camera.follow( this.playerGroup.children[0]);
     //se invoca a los método de los gameObjects
     this.mapa.resizeLayer(scale);
-    this.j1.resizePlayer(scale);
+    //this.playerGroup.children[0].resizePlayer(scale);
+    this.playerGroup.forEach(element => {
+      element.resizePlayer(scale);
+    });
     //gestión del mundo para permitir rendrizado del hud fuera de los límites. así el jugador puede llegar al linde sin ser obstaculizado por el z-depth
     this.game.world.setBounds(0, 0, this.previousWorld_W, this.previousWorld_H);
 
@@ -115,7 +129,7 @@ var PlayScene = {
     } else if (this.inputAux.isDown(this.key2)) {
       this.zoomTo(1);
     } else {
-      this.j1.checkInput(this.mapa, this.objGr);
+      this.playerGroup.children[0].checkInput(this.mapa, this.objGr);
     }
   }
 };
