@@ -19,8 +19,6 @@ function Mapa(game) {
 
   //posciones jugadores
   this.plyGroup = this.game.add.group();
-  //grupo de muros construidos
-  this.wallGroup = this.game.add.group();
 
   //FUNCIONES
   //------METODOS PARA LA CREACIÓN DE OBJETO------
@@ -38,8 +36,12 @@ function Mapa(game) {
         aux,
         this.GrupoObjetos.children[1].children
       ) ||
-      this.game.physics.arcade.collide(aux, this.wallGroup.children);
+      this.game.physics.arcade.collide(
+        aux,
+        this.GrupoObjetos.children[2].children
+      );
     //como el método también lo usa la construccion de muros, evita no devolver false en caso de coincidir con una pos inicial de juegador
+    //porque este método también se usa después de la creación del mapa
     if (!esta && aux.name !== "wall") {
       esta = this.game.physics.arcade.collide(aux, this.plyGroup.children);
     }
@@ -77,6 +79,7 @@ function Mapa(game) {
     var n_Recursos = nObj;
     var n = 0;
 
+    this.choque = 0;
     while (n < n_Recursos) {
       //se crea el patrón de objeto en el bucle, para generar armas distintas dado el caso
       var objeto = this.SeleccionObjeto(string);
@@ -94,12 +97,17 @@ function Mapa(game) {
       this.game.physics.enable(aux, Phaser.Physics.ARCADE);
       aux.body.collideWorldBounds = true;
       aux.body.checkCollision = true;
+      aux.body.x = aux.x;
+      aux.body.y = aux.y;
 
       var col = false; //variable de control de colision
       col = this.TileOcupado(aux, this.tile_Map.layerGroup.children);
       //recogen worldPosition
       x = x * tile_W;
       y = y * tile_H;
+      //aux debe incrementar para comprobar la colision con otros recurso/armas
+      aux.body.x = x;
+      aux.body.y = y;
 
       if (!col) {
         if (!this.AñadeObjetoAux(aux)) {
@@ -222,9 +230,13 @@ Mapa.prototype.generate = function(plGr) {
   this.GrupoRecursos.name = "resourcesGroup";
   this.GrupoArmas = this.game.add.group();
   this.GrupoArmas.name = "weaponsGroup";
-  //GrupoObjetos = [GrupoRecurso, GrupoArmas,...]
+  //grupo de muros construidos
+  this.wallGroup = this.game.add.group();
+  this.wallGroup.name = "wallsGroup";
+  //GrupoObjetos = [GrupoRecurso, GrupoArmas, GrupoMuros,...]
   this.GrupoObjetos.add(this.GrupoRecursos);
   this.GrupoObjetos.add(this.GrupoArmas);
+  this.GrupoObjetos.add(this.wallGroup);
 
   //se crean las capas, se definen como colisiones y se añaden al grupo
   this.añadeLayer();
@@ -297,9 +309,9 @@ Mapa.prototype.PlayerObjectCheckCollision = function(player) {
     i++;
   }
   //2º con los builds
-  if (!bool) {
+  /* if (!bool) {
     bool = this.game.physics.arcade.collide(player, this.wallGroup.children);
-  }
+  }*/
   return bool;
 };
 
@@ -314,10 +326,11 @@ Mapa.prototype.añadeWall = function(player) {
   //se comprueba la colisión con las colisiones constantes del mapa
   var XY = { x: wall.x / wall.width, y: wall.y / wall.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
   bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
-  //en caso de no haber colision comprueba que no exista con armas o recursos
+
+  //en caso de no haber colision comprueba que no exista con armas, recursos o muros
   if (!bool && !this.AñadeObjetoAux(wall)) {
-    this.wallGroup.add(wall); //los jugadores comprueban si colisionan con el grupo
-    this.game.world.bringToTop(this.wallGroup);
+    this.wallGroup.add(wall);
+    player.walkCont--; //construir muros decrementa los pasos en 1
     return true;
   } else {
     wall.destroy();
@@ -331,43 +344,53 @@ Mapa.prototype.armedPlayer = function(player) {};
 
 //recibe mensaje de class: Player. busca y destruye el recurso en orientación y colision
 //y sube el contador de recursos de player
-Mapa.prototype.plasyerResources = function(player) {
+Mapa.prototype.plasyerPickUpObject = function(player) {
   //orientacion: 0 = arr, 1 = der, 2 = abaj, 3 = izq
-  var resource;
-  if (player.orientation === 0) {
-    var Y = player.body.y - player.body.height;
-    resource = this.game.physics.arcade.getObjectsAtLocation(
-      player.body.x,
-      Y,
-      this.GrupoRecursos
-    );
-  } else if (player.orientation === 1) {
-    var X = player.body.x + player.body.height;
-    resource = this.game.physics.arcade.getObjectsAtLocation(
-      X,
-      player.body.y,
-      this.GrupoRecursos
-    );
-  } else if (player.orientation === 2) {
-    var Y = player.body.y + player.body.height;
-    resource = this.game.physics.arcade.getObjectsAtLocation(
-      player.body.x,
-      Y,
-      this.GrupoRecursos
-    );
-  } else if (player.orientation === 3) {
-    var X = player.body.x - player.body.height;
-    resource = this.game.physics.arcade.getObjectsAtLocation(
-      X,
-      player.body.y,
-      this.GrupoRecursos
-    );
-  }
+  var resource = [];
+  var i = 0;
+  var bool = false;
+  while (!bool && i < this.GrupoObjetos.length) {
+    if (player.orientation === 0) {
+      var Y = player.body.y - player.body.height;
+      resource = this.game.physics.arcade.getObjectsAtLocation(
+        player.body.x,
+        Y,
+        this.GrupoObjetos.children[i]
+      );
+    } else if (player.orientation === 1) {
+      var X = player.body.x + player.body.height;
+      resource = this.game.physics.arcade.getObjectsAtLocation(
+        X,
+        player.body.y,
+        this.GrupoObjetos.children[i]
+      );
+    } else if (player.orientation === 2) {
+      var Y = player.body.y + player.body.height;
+      resource = this.game.physics.arcade.getObjectsAtLocation(
+        player.body.x,
+        Y,
+        this.GrupoObjetos.children[i]
+      );
+    } else if (player.orientation === 3) {
+      var X = player.body.x - player.body.height;
+      resource = this.game.physics.arcade.getObjectsAtLocation(
+        X,
+        player.body.y,
+        this.GrupoObjetos.children[i]
+      );
+    }
+    bool = resource.length >= 1;
+    i++;
+  } //cierre while
 
   if (resource.length >= 1) {
     if (resource[0].name === "resource") {
       player.resources += resource[0].cantidad;
       resource[0].destroy();
+      player.walkCont -= player.walk_ResourceScale;
+    } else if (resource[0].name === "wall") {
+      resource[0].destroy();
+      player.walkCont -= player.walk_WallScale;
     } else if (resource[0].name === "weapon") {
       //falta definir la lógica
     }
