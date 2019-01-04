@@ -4,6 +4,7 @@
 
 var PlayScene = require('./play_scene.js');
 var Menu = require('./StartScreen.js');
+var Creditos = require('./Creditos.js');
 
 var BootScene = {
   preload: function () {
@@ -56,6 +57,7 @@ var PreloaderScene = {
 
     this.game.load.image('Menu', 'assets/sprites/menu.png');
     this.game.load.image('Pausa', 'assets/sprites/pausa.png');
+    this.game.load.image('FondoCreditos', 'assets/sprites/creditos.png');
   },
 
   create: function () {
@@ -71,5 +73,7 @@ window.onload = function () {
   game.state.add('preloader', PreloaderScene);
   game.state.add('play', PlayScene);
   game.state.add('Menu', Menu);
+  game.state.add('CreditScene', Creditos);
+
   game.state.start('boot');
 };
