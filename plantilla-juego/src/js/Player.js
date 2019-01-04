@@ -1,6 +1,7 @@
 "use strict";
 
-//jugador tiene un contador de pasos que determina el final del turno.
+
+//jugador tiene un contador de pasos que determina el final del turno. 
 //los pasos decrementan cuando recoge recursos "árboles" y cuando destruye muros.
 //los pasos decrementan en base a un escalar dependiendo del tipo de arma que lleva
 
@@ -11,13 +12,12 @@ function Player(game, x, y, sprite) {
   this.game.world.addChild(this);
 
   this.name = "jugador";
-  this.life = 100; //contador de vida 
 
   //gestion del turno
-  this.walkCont = 100; //los pasos se resetean con cada turno.
+  this.walkCont = 100; //los pasos se resetean con cada turno. 
   this.walk_WallScale = 4;
   this.walk_ResourceScale = 3;
-  //walk_WeaponScale se recoge del atributo currentWeapon. dado que su valor depende del arma
+  this.walk_WeaponScale; //la define el arma actual.
 
   //input
   this.inputAux = this.game.input.keyboard;
@@ -26,7 +26,7 @@ function Player(game, x, y, sprite) {
   this.key2 = Phaser.KeyCode.W;
   this.key3 = Phaser.KeyCode.D;
   this.key4 = Phaser.KeyCode.S;
-  //objetos: pick and drop
+  //objetos: recoger, soltar
   this.key5 = Phaser.KeyCode.P; //recoger arma o recurso
   this.key7 = Phaser.KeyCode.U; //soltar arma
   //builds
@@ -50,15 +50,23 @@ function Player(game, x, y, sprite) {
   this.wallGroup = this.game.add.group();
   this.bulletGroup = this.game.add.group();
 
-  //weapon
-  this.currentWeapon;
-
   //physics
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
   this.body.collideWorldBounds = true;
   this.body.bounce.setTo(1, 1);
   this.body.x = this.x;
   this.body.y = this.y;
+
+  //Efectos de sonido
+  var SonidoDisparo;
+  var SonidoRecurso;
+  var SonidoPasos;
+  var SonidoMuros;
+  
+  this.SonidoDisparo = this.game.add.audio('Disparo',1,false);
+  this.SonidoRecurso = this.game.add.audio('Recursos',1,false);
+  this.SonidoPasos = this.game.add.audio('Pasos',0.1,false);
+  this.SonidoMuros = this.game.add.audio('Muro',0.5,false);
 }
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -95,12 +103,17 @@ Player.prototype.checkInput = function(mapa, obj) {
     this.inputAux.isDown(this.key6)
   ) {
     if (this.inputAux.isDown(this.key5)) {
+      this.SonidoRecurso.play();
       mapa.plasyerPickUpObject(this);
     } else {
+      
       this.buildWall(mapa);
     }
-  } else if (this.inputAux.isDown(this.key8)) {
+  }
+  else if (this.inputAux.isDown(this.key8)){
+    this.SonidoDisparo.play();
     this.shotBullet();
+    
   }
 };
 
@@ -182,6 +195,7 @@ Player.prototype.movePlayer = function(mapa, posT) {
     this.body.x = X;
     this.body.y = Y;
   } else {
+    this.SonidoPasos.play();
     //gestiona un timeCounter para regular la velocidad de desplazamiento
     //y decrementa los pasos le jugador
     if (this.game.time.now > this.timeMove) {
@@ -214,6 +228,7 @@ Player.prototype.buildWall = function(mapa) {
     //controla el tiempo de creación
     if (this.game.time.now > this.timeMove) {
       if (mapa.añadeWall(this)) {
+        this.SonidoMuros.play();
         this.resources--;
         this.timeMove = this.game.time.now + this.velMove;
       }
@@ -222,36 +237,32 @@ Player.prototype.buildWall = function(mapa) {
 };
 
 //construeye la bala y ésta establece su propia lógica en base a los atributos de player
-Player.prototype.shotBullet = function() {
-  //1º comprueba que el jugador esté armado
-  if (this.currentWeapon) {
-    //2º que el tiemerCount alcance el límite fijado
-    if (this.game.time.now > this.timeMove) {
-      //3º que el arma tenga balas en la recamara. Shot: devuelve true y decrementa las balas en la recamara
-      if (this.currentWeapon.Shot()) {
-        //se genera la bala y se establece su lógica de movimiento
-        var bullet = require("./Bala");
-        var shot = new bullet(this.game, this.x, this.y, "bala");
-        shot.generate(this);
-        shot.move();//establece la lógica mov
-        this.bulletGroup.add(shot);
-        this.game.world.bringToTop(this.bulletGroup);
-        this.timeMove = this.game.time.now + this.velMove;
-      }
-    }
+Player.prototype.shotBullet = function () {
+
+  if (this.game.time.now > this.timeMove) {
+    var bullet = require("./Bala");
+    var shot = new bullet(this.game, this.x, this.y, 'bala');
+    shot.generate(this);
+    shot.move();
+    this.bulletGroup.add(shot);
+    this.game.world.bringToTop(this.bulletGroup);
+    this.timeMove = this.game.time.now + this.velMove;
   }
+
 };
 
-//comunica con class: PlayScene y Mapa y gestiona la destrucción de la bala y sus llamadas según colisión
-Player.prototype.bulletUpdate = function(mapa) {
-  if (this.bulletGroup.length > 0) {
+//comunica con PlayScene y gestiona la destrucción de la bala y sus llamadas según colisión
+Player.prototype.bulletUpdate  = function(){
+  if (this.bulletGroup.length > 0){
     this.bulletGroup.forEach(element => {
-      if (element.limiteAlcance() || mapa.PlayerObjectCheckCollision(element)) {
-        element.destroy();
-      }
-      //else {element.move();}
+       if (element.limiteAlcance()){
+         element.destroy();
+       }
     });
   }
-};
+ 
+}
+
+
 
 module.exports = Player;
