@@ -58,6 +58,11 @@ var PreloaderScene = {
     this.game.load.image('Menu', 'assets/sprites/menu.png');
     this.game.load.image('Pausa', 'assets/sprites/pausa.png');
     this.game.load.image('FondoCreditos', 'assets/sprites/creditos.png');
+  
+  
+  //Musica y sonidos
+    this.game.load.audio('AudioMenu', ['assets/musica/Menu_mp3.mp3', 'assets/musica/Menu_ogg.ogg']);
+  
   },
 
   create: function () {

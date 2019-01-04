@@ -4,11 +4,16 @@ var startScreen =  {
     create:function (game) {
 
         var MainMenu;
+        var Music;
         this.cursor = this.game.input.keyboard;
 
       
         MainMenu = game.add.sprite(400, 500, 'Menu');
         MainMenu.anchor.setTo(0.5,1);
+        Music = game.add.audio('AudioMenu',0.4,true);
+       
+        Music.play();
+      
         
     },
 
