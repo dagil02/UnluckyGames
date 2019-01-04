@@ -58,15 +58,19 @@ var PlayScene = {
     this.pause = false;
     var Pause;
 
+    //Musica
+    var MusicaFondo;
+    this.MusicaFondo = this.game.add.audio('AudioJuego',0.05,true);
+       
+    this.MusicaFondo.play();
+
+    
   },
 
   update: function() {
-   
     if (!this.pause) {
-      this.checkInput(); //gestiona el input de cada jugador en su turno
-      this.playerGroup.children[0].bulletUpdate(this.mapa);  
-    
-       //gestiona las colisiones de balas y su llamada a destrucción
+      this.checkInput();
+      this.playerGroup.children[0].bulletUpdate();
     } else {
       //La tecla enter manda al menu inicial
       if (this.inputAux.isDown(13)) {
@@ -84,7 +88,7 @@ var PlayScene = {
     var y = 38;
 
     this.game.debug.text(
-      `PLAYER TESTING: `,
+      `Debugging object: PLAYER TEST`,
       32,
       610,
       "yellow",
@@ -99,25 +103,6 @@ var PlayScene = {
       "yellow",
       "Segoe UI"
     );
-
-    if (this.playerGroup.children[0].currentWeapon){
-      this.game.debug.text(
-        `Debugging object: CURRENT WEAPON: ` +  this.playerGroup.children[0].currentWeapon.tipoArma,
-        350,
-        610,
-        "yellow",
-        "Segoe UI"
-      );
-      this.game.debug.text(
-        "balas: " + this.playerGroup.children[0].currentWeapon.balas_Cont + " damage: " + 
-        this.playerGroup.children[0].currentWeapon.damage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
-        350,
-        640,
-        "yellow",
-        "Segoe UI"
-      );
-    }
-    
     //this.game.debug.text("", 32, 660, "yellow", "Segoe UI");
   },
 
@@ -196,10 +181,7 @@ var PlayScene = {
   endPause: function() {
     //Hace transparente el menu de pausa
     this.Pause.alpha = 0;
-  },
-
+  }
 };
-
-
 
 module.exports = PlayScene;
