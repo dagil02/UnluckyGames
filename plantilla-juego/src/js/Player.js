@@ -45,6 +45,15 @@ function Player(game, x, y, sprite) {
   this.body.bounce.setTo(1, 1);
   this.body.x = this.x;
   this.body.y = this.y;
+
+  //Efectos de sonido
+  var SonidoDisparo;
+  var SonidoRecurso;
+  var SonidoPasos;
+  
+  this.SonidoDisparo = this.game.add.audio('Disparo',1,false);
+  this.SonidoRecurso = this.game.add.audio('Recursos',1,false);
+  this.SonidoPasos = this.game.add.audio('Pasos',0.1,false);
 }
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -83,11 +92,14 @@ Player.prototype.checkInput = function(mapa, obj) {
     if (this.inputAux.isDown(this.key5)) {
       mapa.plasyerResources(this);
     } else {
+      this.SonidoRecurso.play();
       this.buildWall(mapa);
     }
   }
   else if (this.inputAux.isDown(this.key8)){
+    this.SonidoDisparo.play();
     this.shotBullet();
+    
   }
 };
 
@@ -169,6 +181,7 @@ Player.prototype.movePlayer = function(mapa, posT) {
     this.body.x = X;
     this.body.y = Y;
   } else {
+    this.SonidoPasos.play();
     //gestiona un timeCounter para regular la velocidad de desplazamiento
     if (this.game.time.now > this.timeMove) {
       this.timeMove = this.game.time.now + this.velMove;

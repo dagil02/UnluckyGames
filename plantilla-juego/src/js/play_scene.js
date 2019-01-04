@@ -63,6 +63,8 @@ var PlayScene = {
     this.MusicaFondo = this.game.add.audio('AudioJuego',0.05,true);
        
     this.MusicaFondo.play();
+
+    
   },
 
   update: function() {
