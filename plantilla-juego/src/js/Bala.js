@@ -22,27 +22,37 @@ Bala.prototype.constructor = Bala;
 
 //METHODS
 // determina la dirección de la bala
-Bala.prototype.direction = function(player) {
+Bala.prototype.direction = function (player) {
   this.orientation = player.orientation;
   var dir = { x: 0, y: 0 }; //coordenadas de retorno
-  //0:arriba; 1:derecha; 2:abajo; 3:izquierda
+  //0:arriba; //el sprite, en 0 grados, apunta hacia arriba  
   if (this.orientation === 0) {
     dir.y = -1 * this.height;
     this.alcance = this.y + (this.alcance * dir.y); //alcance obtiene la posición donde debe destruirse
     this.vel *= -1;
     this.vel_Y = true;
+    this.angle = 0;
+    //1:derecha;
   } else if (this.orientation === 1) {
     dir.x = 1 * this.width;
     this.alcance = this.x + (this.alcance * dir.x);
-  } else if (this.orientation === 2) {
+    this.angle = 90; //rotación del sprite
+    this.anchor.setTo(0, 1);
+  } //2:abajo;
+  else if (this.orientation === 2) {
     dir.y = 1 * this.height;
     this.alcance = this.y + (this.alcance * dir.y);
     this.vel_Y = true;
-  } else if (this.orientation === 3) {
+    this.angle = 180;
+    this.anchor.setTo(1, 1);
+  }
+  //3:izquierda
+  else if (this.orientation === 3) {
     dir.x = -1 * this.width;
     this.vel *= -1;
     this.alcance = this.x + (this.alcance * dir.x);
-    
+    this.angle = -90;
+    this.anchor.setTo(1, 0);
   }
   return dir;
 };
@@ -51,12 +61,14 @@ Bala.prototype.generate = function(player) {
   //alcance y el daño lo recoge de Player (atributo: armaActual)
   //this.damage = player.armaActual.damage;
   //this.alcance = player.armaActual.alcance;
-  this.alcance = 2;
+  this.alcance = 10;
 
   //physics
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
   this.body.collideWorldBounds = true;
   this.body.checkCollision = true;
+
+  
 
   //si se crea con la escala aumentada debe redimensionarse
   if (this.auxScale !== player.auxScale) {
@@ -64,6 +76,7 @@ Bala.prototype.generate = function(player) {
     //como el método ya diplica una posición presupuesta de 16*16 hay que dividir
     this.x /= player.auxScale;
     this.y /= player.auxScale;
+    this.vel *= 2; //duplica la velocidad para regular según escalar
   }
   //se recoge la nueva pos que será un tile por delante del jugador
   var dir = this.direction(player);
@@ -83,13 +96,29 @@ Bala.prototype.move = function () {
 };
 
 //de actualizará en el update, si llega al límite sin colsionar con algo se destruirá.
-Bala.prototype.limiteAlcance = function() {
-  if (this.x === this.alcance || this.y === this.alcance) {
-   return true;
+Bala.prototype.limiteAlcance = function () {
+  var bool = false;
+
+  //si colisiona con los límites del mapa
+  if (this.body.checkWorldBounds()) {
+    bool = true;
   }
-  else { 
-    return false;
-  } 
+  else {
+    if (this.orientation === 0) {
+      bool = this.y <= this.alcance;
+    }
+    else if (this.orientation === 3) {
+      bool = this.x <= this.alcance;
+    }
+    else if (this.orientation === 1) {
+      bool = this.x >= this.alcance;
+    }
+    else {
+      bool = this.y >= this.alcance;
+    }
+  }
+
+  return bool;
 };
 
 
