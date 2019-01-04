@@ -14,7 +14,7 @@ function Objeto(game, x, y, sprite) {
 
 	//METHODS
 	this.RandomItem = function (n) {
-		var r = Math.floor(Math.random() * n);
+		var r = Math.floor((Math.random() * n )+ 1); //random [1 - n]
 		return r;
 	}
 

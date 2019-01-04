@@ -296,7 +296,7 @@ Mapa.prototype.playerCheckLayerCollision = function(player) {
   player.body.y = Y;
   return bool;
 };
-//comunica con class: player y devuelve el mensaje de sí el objeto choca con un hijo de Grupo de objetos
+//comunica con class: player y devuelve el mensaje de sí el objeto (bala/player) choca con un hijo de Grupo de objetos
 Mapa.prototype.PlayerObjectCheckCollision = function(player) {
   var bool = false;
   var i = 0;
@@ -304,17 +304,20 @@ Mapa.prototype.PlayerObjectCheckCollision = function(player) {
   while (!bool && i < this.GrupoObjetos.length) {
     bool = this.game.physics.arcade.collide(
       player,
-      this.GrupoObjetos.children[i].children
+      this.GrupoObjetos.children[i].children, this.CallBackCollision
     );
     i++;
   }
-  //2º con los builds
-  /* if (!bool) {
-    bool = this.game.physics.arcade.collide(player, this.wallGroup.children);
-  }*/
   return bool;
 };
-
+//método callback invocado desde la función arcade.collide
+Mapa.prototype.CallBackCollision = function(obj, colObj){
+  if (obj.name === 'bullet'){
+    if (colObj.name === "resource" || colObj.name === "wall"){
+      colObj.destroy(); //destruye el recurso
+    }
+  }
+}
 //comunica con class: player. Jugador manda la orden de construir. y espera true o false
 Mapa.prototype.añadeWall = function(player) {
   var bool = false;
@@ -340,7 +343,20 @@ Mapa.prototype.añadeWall = function(player) {
 
 //recibe mensaje de class: Player. busca el arma en la orientación y colision con player
 //la vuelve invisible y sin físicas, y la solapa al body de player
-Mapa.prototype.armedPlayer = function(player) {};
+Mapa.prototype.armedPlayer = function(player, weapon) {
+  //reacondicia las físicas
+  weapon.body.collideWorldBounds = false;
+  weapon.body.immovable = false;
+  weapon.body.checkCollision = false;
+  //overlapa los sprites
+  weapon.position = player.position;
+  player.currentWeapon = weapon;//el atributo recoge los valores del arma para gestionarlos desde class: Player
+  //weapon.alpha = 0; //lo vuelve invisible 
+
+  
+  
+
+};
 
 //recibe mensaje de class: Player. busca y destruye el recurso en orientación y colision
 //y sube el contador de recursos de player
@@ -392,7 +408,7 @@ Mapa.prototype.plasyerPickUpObject = function(player) {
       resource[0].destroy();
       player.walkCont -= player.walk_WallScale;
     } else if (resource[0].name === "weapon") {
-      //falta definir la lógica
+      this.armedPlayer(player,  resource[0]);
     }
   }
 };
