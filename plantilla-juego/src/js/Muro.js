@@ -42,6 +42,7 @@ Muro.prototype.generate = function (player) {
     //physics
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.body.collideWorldBounds = true;
+    this.body.immovable = true;	
     this.body.checkCollision = true;
     //si se crea con la escala aumentada debe redimensionarse
     if (this.auxScale !== player.auxScale) {

@@ -20,7 +20,7 @@ function Player(game, x, y, sprite) {
   this.key6 = Phaser.KeyCode.O;
 
   this.orientation = 0;
-  this.velMove = 300; //controla el tiempo de desplazamiento
+  this.velMove = 200; //controla el tiempo de desplazamiento
   this.timeMove = 0;
 
   //recoge la prox pos de player y la divide por la escala actual.
@@ -174,11 +174,11 @@ Player.prototype.movePlayer = function(mapa, posT) {
 Player.prototype.compruebaColision = function(mapa) {
   var bool = false;
   //primero verifica que no choque con un recurso o arma
-  bool = mapa.objectCheckCollision(this);
+  bool = mapa.PlayerObjectCheckCollision(this);
   //si no existe colision con objs llama a la función de la class: Map
   if (!bool) {
     //this.POSPREVIA se usará en caso de que auxScale === 2
-    bool = mapa.playerCheckCollision(this);
+    bool = mapa.playerCheckLayerCollision(this);
   }
 
   return bool;

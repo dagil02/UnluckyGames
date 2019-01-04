@@ -28,7 +28,7 @@ function Mapa(game) {
   //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
   this.AñadeObjetoAux = function (aux) {
     var esta = false;
-    //tomará acierto si existe colisión entre objetos (armas/recursos) y posiciones player
+    //tomará acierto si existe colisión entre objetos (armas/recursos/muros construidos) y posiciones player
     esta =
       this.game.physics.arcade.collide(
         aux,
@@ -37,12 +37,15 @@ function Mapa(game) {
       this.game.physics.arcade.collide(
         aux,
         this.GrupoObjetos.children[1].children
-      ) ||
-      this.game.physics.arcade.collide(aux, this.plyGroup.children);
-
-    if (this.game.physics.arcade.collide(aux, this.plyGroup.children)) {
-      console.log("COLISION: " + esta);
-    }
+      ) ||  this.game.physics.arcade.collide(
+        aux,
+        this.wallGroup.children
+      );
+      //como el método también lo usa la construccion de muros, evita no devolver false en caso de coincidir con una pos inicial de juegador
+      if (!esta && aux.name !== "wall"){
+        esta = this.game.physics.arcade.collide(aux, this.plyGroup.children);
+      }
+      
 
     return esta;
   };
@@ -262,7 +265,7 @@ Mapa.prototype.resizeLayer = function (scale) {
 };
 
 //recibe mensaje class: Player
-Mapa.prototype.playerCheckCollision = function (player) {
+Mapa.prototype.playerCheckLayerCollision = function (player) {
   var bool = false;
   //recogen la posición real de body
   var X = player.body.x;
@@ -283,13 +286,18 @@ Mapa.prototype.playerCheckCollision = function (player) {
   return bool;
 };
 //comunica con class: player y devuelve el mensaje de sí el objeto choca con un hijo de Grupo de objetos
-Mapa.prototype.objectCheckCollision = function (player) {
+Mapa.prototype.PlayerObjectCheckCollision = function (player) {
 
   var bool = false;
   var i = 0;
+  //1º comprueba la colisión con armas y recursos
   while (!bool && i < this.GrupoObjetos.length) {
     bool = this.game.physics.arcade.collide(player, this.GrupoObjetos.children[i].children);
     i++;
+  }
+  //2º con los builds
+  if (!bool){
+    bool = this.game.physics.arcade.collide(player, this.wallGroup.children);
   }
   return bool;
 };
