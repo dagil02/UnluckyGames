@@ -66,6 +66,7 @@ var PreloaderScene = {
     this.game.load.audio('Disparo', ['assets/musica/Disparo_mp3.mp3', 'assets/musica/Disparo_ogg.ogg']);
     this.game.load.audio('Recursos', ['assets/musica/recursos_mp3.mp3', 'assets/musica/recursos_ogg.ogg']);
     this.game.load.audio('Pasos', ['assets/musica/Pasos_mp3.mp3', 'assets/musica/Pasos_ogg.ogg']);
+    this.game.load.audio('Muro', ['assets/musica/Muro_mp3.mp3', 'assets/musica/Muro_ogg.ogg']);
   
   },
 

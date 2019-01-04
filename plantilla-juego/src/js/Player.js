@@ -61,10 +61,12 @@ function Player(game, x, y, sprite) {
   var SonidoDisparo;
   var SonidoRecurso;
   var SonidoPasos;
+  var SonidoMuros;
   
   this.SonidoDisparo = this.game.add.audio('Disparo',1,false);
   this.SonidoRecurso = this.game.add.audio('Recursos',1,false);
   this.SonidoPasos = this.game.add.audio('Pasos',0.1,false);
+  this.SonidoMuros = this.game.add.audio('Muro',0.5,false);
 }
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -101,9 +103,10 @@ Player.prototype.checkInput = function(mapa, obj) {
     this.inputAux.isDown(this.key6)
   ) {
     if (this.inputAux.isDown(this.key5)) {
+      this.SonidoRecurso.play();
       mapa.plasyerPickUpObject(this);
     } else {
-      this.SonidoRecurso.play();
+      
       this.buildWall(mapa);
     }
   }
@@ -225,6 +228,7 @@ Player.prototype.buildWall = function(mapa) {
     //controla el tiempo de creación
     if (this.game.time.now > this.timeMove) {
       if (mapa.añadeWall(this)) {
+        this.SonidoMuros.play();
         this.resources--;
         this.timeMove = this.game.time.now + this.velMove;
       }
