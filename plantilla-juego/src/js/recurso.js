@@ -6,7 +6,7 @@ var objeto = require('./Objeto');
 function Recurso (game, x, y, sprite){
     
 	objeto.call(this, game, x, y, sprite); //hereda de objeto 
-	this.name = "resource"
+	this.name = "resource";
 
 }
 Recurso.prototype = Object.create (objeto.prototype);
