@@ -47,7 +47,8 @@ Bala.prototype.AsignaValores = function(v, o, d) {
 //genera la lógica del objeto,
 //¿¿¿que se gestiona en el método action del jugador, invocado en el Update de PlayScene???
 Bala.prototype.generate = function() {
-  this.position = (this.position + this.direction()) * this.vel;
+  //this.position = (this.position + this.direction()) * this.vel;
+  //this.body.x = this.x; this.body.y = this.y;
 };
 
 module.exports = Bala;

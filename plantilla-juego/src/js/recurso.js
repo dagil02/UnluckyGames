@@ -18,6 +18,7 @@ Recurso.prototype.generate = function (){
 	this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.body.collideWorldBounds = true;
 	this.body.immovable = true;	
+	this.body.x = this.x; this.body.y = this.y;
 	
 }
 

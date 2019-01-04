@@ -91,6 +91,7 @@ var PlayScene = {
     );
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
     this.game.debug.text(this.playerGroup.children[0].resources, 32,640, "yellow", "Segoe UI");
+    //this.game.debug.text("", 32, 660, "yellow", "Segoe UI");
   },
 
   zoomTo: function(scale) {

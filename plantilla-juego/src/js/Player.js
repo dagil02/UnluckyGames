@@ -32,11 +32,14 @@ function Player(game, x, y, sprite) {
 
   //shot and build
   this.resources = 0; //contador de recursos
+  this.wallGroup = this.game.add.group();
 
   //physics
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
   this.body.collideWorldBounds = true;
   this.body.bounce.setTo(1, 1);
+  this.body.x = this.x;
+  this.body.y = this.y;
 }
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -51,9 +54,14 @@ Player.prototype.resizePlayer = function(scale) {
   this.x = this.x * scale;
   this.y = this.y / aux;
   this.y = this.y * scale;
+
+  //redimensiona los objetos en la mochila
+  this.wallGroup.forEach(element => {
+    element.resizeObject(scale);
+  });
 };
 
-Player.prototype.checkInput = function (mapa, obj) {
+Player.prototype.checkInput = function(mapa, obj) {
   //desplazamiento y orientacion
   if (
     this.inputAux.isDown(this.key1) ||
@@ -61,7 +69,7 @@ Player.prototype.checkInput = function (mapa, obj) {
     this.inputAux.isDown(this.key3) ||
     this.inputAux.isDown(this.key4)
   ) {
-    this.checkMove(mapa, obj);
+    this.checkMove(mapa);
     //objetos: recoger y soltar
   } else if (
     this.inputAux.isDown(this.key5) ||
@@ -69,14 +77,15 @@ Player.prototype.checkInput = function (mapa, obj) {
   ) {
     if (this.inputAux.isDown(this.key5)) {
       mapa.plasyerResources(this);
+    } else {
+      this.buildWall(mapa);
     }
-
   }
 };
 
 //gestiona el input por desplazamiento
 //el movimiento se realiza por tile: incrementa/decrem. en base al w/h actual del sprite
-Player.prototype.checkMove = function(mapa, obj) {
+Player.prototype.checkMove = function(mapa) {
   //recogen la posición según input
   var pos = { x: 0, y: 0 };
   var posPrevia = { x: 0, y: 0 };
@@ -133,12 +142,12 @@ Player.prototype.checkMove = function(mapa, obj) {
     posPrevia.y = this.body.y + posPrevia.y;
     this.POSPREVIA = posPrevia; //comunica con class: Map mediante parámetro en método this.compruebaColision(...)
 
-    this.movePlayer(mapa, obj, pos);
+    this.movePlayer(mapa, pos);
     boolcheck = false;
   }
 };
 
-Player.prototype.movePlayer = function(mapa, obj, posT) {
+Player.prototype.movePlayer = function(mapa, posT) {
   //recogen el valor actual antes del cambio
   var X = this.body.x;
   var Y = this.body.y;
@@ -148,7 +157,7 @@ Player.prototype.movePlayer = function(mapa, obj, posT) {
   this.body.y += posT.y;
 
   //si existe colision no modifica la pos actual
-  if (this.compruebaColision(mapa, obj)) {
+  if (this.compruebaColision(mapa)) {
     this.body.x = X;
     this.body.y = Y;
   } else {
@@ -162,86 +171,31 @@ Player.prototype.movePlayer = function(mapa, obj, posT) {
   }
 };
 
-Player.prototype.compruebaColision = function(mapa, obj) {
+Player.prototype.compruebaColision = function(mapa) {
   var bool = false;
-  //se recorre el grupo de Objetos y comprueba los subGrupos la colision con los obj
-  var i = 0;
-  while (!bool && i < obj.length) {
-    bool = this.game.physics.arcade.collide(this, obj.children[i].children);
-    i++;
-  }
+  //primero verifica que no choque con un recurso o arma
+  bool = mapa.objectCheckCollision(this);
   //si no existe colision con objs llama a la función de la class: Map
   if (!bool) {
     //this.POSPREVIA se usará en caso de que auxScale === 2
-    bool = mapa.compruebaColision(this);
+    bool = mapa.playerCheckCollision(this);
   }
 
   return bool;
 };
 
+//jugador manda la orden a class: mapa. en caso de devolver true, decrementa los recursos en mochila y reactiva el timer
+Player.prototype.buildWall = function(mapa) {
+  //siempre que existan existencias en la mochila
+  if (this.resources > 0) {
+    //controla el tiempo de creación
+    if (this.game.time.now > this.timeMove) {
+      if (mapa.añadeWall(this)) {
+        this.resources--;
+        this.timeMove = this.game.time.now + this.velMove;
+      }
+    }
+  }
+};
+
 module.exports = Player;
-
-/**Player.prototype.Accion = function() {
-  //tecla spacebar
-  if (this.cursor.isDown(32)) {
-    var bullet = this.balas.getFirstExists(false);
-    if (this.game.time.now > this.bulletTime) {
-      if (bullet) {
-        bullet.angle = 90 * this.orientation;
-        if (this.orientation === 0) {
-          bullet.reset(this.x + 8, this.y + 8);
-          bullet.body.velocity.y = -320;
-        } else if (this.orientation === 1) {
-          bullet.reset(this.x + 24, this.y + 8);
-          bullet.body.velocity.x = 320;
-        } else if (this.orientation === 2) {
-          bullet.reset(this.x + 8, this.y + 8);
-          bullet.body.velocity.y = 320;
-        } else if (this.orientation === 3) {
-          bullet.reset(this.x - 8, this.y + 8);
-          bullet.body.velocity.x = -320;
-        }
-        this.bulletTime = this.game.time.now + 200;
-      }
-    }
-  }
-  //tecla b
-  if (this.cursor.isDown(66)) {
-    var wall = this.muros.getFirstExists(false);
-    if (this.game.time.now > this.wallTime) {
-      if (wall) {
-        wall.angle = 90 * this.orientation;
-        if (this.orientation === 0) {
-          wall.reset(this.x, this.y - 16);
-        } else if (this.orientation === 1) {
-          wall.reset(this.x + 30, this.y);
-        } else if (this.orientation === 2) {
-          wall.reset(this.x + 16, this.y + 32);
-        } else if (this.orientation === 3) {
-          wall.reset(this.x - 15, this.y + 16);
-        }
-
-        this.wallTime = this.game.time.now + 500;
-      }
-    }
-  }
-}; */
-
-/**Inicializacion pool de balas
-  //this.balas = this.game.add.physicsGroup(); //un grupo de físicas activa el body de los obj añadidos
-  //this.balas.enableBody = true; */
-
-/** this.balas.physicsBodyType = Phaser.Physics.ARCADE;
-  this.balas.createMultiple(50, "bala");
-  this.balas.setAll("anchor.x", 0.5);
-  this.balas.setAll("anchor.y", 1);
-  this.balas.setAll("checkWorldBounds", true);
-  this.balas.setAll("outOfBoundsKill", true);
-  this.muros = game.add.group();
-  this.muros.enableBody = true;
-  //this.muros.body.inamovible = true;
-  this.muros.physicsBodyType = Phaser.Physics.ARCADE;
-  this.muros.createMultiple(100, "muro"); */
-
-//this.bulletTime = 0; //controla que no se dispare constantemente
-//this.wallTime = 0;

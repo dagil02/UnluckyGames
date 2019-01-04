@@ -19,12 +19,14 @@ function Mapa(game) {
 
   //posciones jugadores
   this.plyGroup = this.game.add.group();
+  //grupo de muros construidos
+  this.wallGroup = this.game.add.group();
 
   //FUNCIONES
   //------METODOS PARA LA CREACIÓN DE OBJETO------
 
   //Método que comprueba que no se va a posicionar el objeto encima de otro. se invoca dentro de AñadeObjeto
-  this.AñadeObjetoAux = function(aux) {
+  this.AñadeObjetoAux = function (aux) {
     var esta = false;
     //tomará acierto si existe colisión entre objetos (armas/recursos) y posiciones player
     esta =
@@ -46,7 +48,7 @@ function Mapa(game) {
   };
 
   //Metodo para devolve un índice de armas
-  this.Selec_Weapon = function() {
+  this.Selec_Weapon = function () {
     var idSprite_list = ["subFusil", "pistola", "francoTirador"];
     var i = Math.floor(Math.random() * idSprite_list.length);
     var enlace = require("./Armas");
@@ -56,7 +58,7 @@ function Mapa(game) {
   };
 
   //método para devolver el tipo de Objeto a crear en base al parámetro tipo string
-  this.SeleccionObjeto = function(string) {
+  this.SeleccionObjeto = function (string) {
     if (string === "recurso") {
       var recurso = { idSprite: "arbol", enlace: require("./recurso") };
       return recurso;
@@ -66,7 +68,7 @@ function Mapa(game) {
   };
 
   //genera aleatorio para recursos y añade al grupo
-  this.añadeObjetos = function(string, nObj, group_obj_hijo) {
+  this.añadeObjetos = function (string, nObj, group_obj_hijo) {
     //constante auxiliar
     var tile_patron_W = this.tile_Map.width;
     var tile_patron_H = this.tile_Map.height;
@@ -112,16 +114,16 @@ function Mapa(game) {
 
   //------METODOS PARA LA CREACIÓN DE TILEMAP------
   //añade el mapa de tiles precargado en el main
-  this.añadeTileMap = function(str) {
+  this.añadeTileMap = function (str) {
     this.tile_Map = this.game.add.tilemap(str);
   };
   //añade la img de patrones
-  this.añadeTileImg = function(str_1, str_2) {
+  this.añadeTileImg = function (str_1, str_2) {
     this.tile_Map.addTilesetImage(str_1, str_2);
   };
 
   //Método que devuelve un array de index correspondiente a cada capa.
-  this.RecogeIndex = function(nombreCapa) {
+  this.RecogeIndex = function (nombreCapa) {
     //constante aux.
     var tile_patron_W = this.tile_Map.width;
     var tile_patron_H = this.tile_Map.height;
@@ -155,7 +157,7 @@ function Mapa(game) {
   };
 
   //añade entidades al grupo
-  this.añadeLayer = function() {
+  this.añadeLayer = function () {
     //1º LAS VAR RECOGEN LAS CAPAS
     this.layer_background = this.tile_Map.createLayer("background");
     this.layer_obstaculo_0 = this.tile_Map.createLayer("obstaculo desierto");
@@ -191,7 +193,7 @@ function Mapa(game) {
   };
 
   //Comprueba si el tile está ocupado en base al valor del atributo index:
-  this.TileOcupado = function(variable, grupoCapas) {
+  this.TileOcupado = function (variable, grupoCapas) {
     var colision = false;
     var i = 1;
     //auxiliares recogen pos: se divide por el w,h del tile
@@ -207,7 +209,7 @@ function Mapa(game) {
 } //cierre constructora
 
 //****** */PROTOTYPE METHODS *******
-Mapa.prototype.generate = function(plGr) {
+Mapa.prototype.generate = function (plGr) {
   this.añadeTileMap("mapa");
   this.añadeTileImg("tilesMap", "tiles");
 
@@ -238,7 +240,7 @@ Mapa.prototype.generate = function(plGr) {
 };
 
 //redimensiona los objetos según parámetro.
-Mapa.prototype.resizeLayer = function(scale) {
+Mapa.prototype.resizeLayer = function (scale) {
   var aux = this.auxScale; //aux recoge el último escalar
   this.auxScale = scale; //el atributo de la clase recoge el nuevo escalar
 
@@ -260,7 +262,7 @@ Mapa.prototype.resizeLayer = function(scale) {
 };
 
 //recibe mensaje class: Player
-Mapa.prototype.compruebaColision = function(player) {
+Mapa.prototype.playerCheckCollision = function (player) {
   var bool = false;
   //recogen la posición real de body
   var X = player.body.x;
@@ -280,12 +282,45 @@ Mapa.prototype.compruebaColision = function(player) {
   player.body.y = Y;
   return bool;
 };
+//comunica con class: player y devuelve el mensaje de sí el objeto choca con un hijo de Grupo de objetos
+Mapa.prototype.objectCheckCollision = function (player) {
+
+  var bool = false;
+  var i = 0;
+  while (!bool && i < this.GrupoObjetos.length) {
+    bool = this.game.physics.arcade.collide(player, this.GrupoObjetos.children[i].children);
+    i++;
+  }
+  return bool;
+};
+
+//comunica con class: player. Jugador manda la orden de construir. y espera true o false
+Mapa.prototype.añadeWall = function(player){
+
+  var bool = false;
+
+  var muro = require("./Muro");
+  var wall = new muro (this.game, player.x, player.y, "muro");
+  wall.generate(player);
+
+  //se comprueba la colisión con las colisiones constantes del mapa
+  bool = this.TileOcupado(wall, this.tile_Map.layerGroup.children);
+  //en caso de no haber colision comprueba que no exista con armas o recursos
+  if (!bool && !this.AñadeObjetoAux(wall)){
+    this.wallGroup.add (wall); //los jugadores comprueban si colisionan con el grupo 
+    this.game.world.bringToTop(this.wallGroup);
+    return true;
+  }
+  else {
+    wall.destroy();
+    return false;
+  }
+  
+}
 
 //recibe mensaje de class: Player. busca el arma en la orientación y colision con player
 //la vuelve invisible y sin físicas, y la solapa al body de player
-Mapa.prototype.armedPlayer = function (player){
-
-}
+Mapa.prototype.armedPlayer = function (player) { };
 
 //recibe mensaje de class: Player. busca y destruye el recurso en orientación y colision
 //y sube el contador de recursos de player
@@ -293,16 +328,52 @@ Mapa.prototype.plasyerResources = function (player) {
   //orientacion: 0 = arr, 1 = der, 2 = abaj, 3 = izq
   if (player.orientation === 0) {
     var Y = player.body.y - player.body.height;
-    var resource = this.game.physics.arcade.getObjectsAtLocation(player.body.x, Y, this.GrupoRecursos);
-    if (resource.length >= 1){
-      player.resources = resource[0].cantidad;
+    var resource = this.game.physics.arcade.getObjectsAtLocation(
+      player.body.x,
+      Y,
+      this.GrupoRecursos
+    );
+    if (resource.length >= 1) {
+      player.resources += resource[0].cantidad;
       resource[0].destroy();
     }
   }
-
-}
-
-
-
+  if (player.orientation === 1) {
+    var X = player.body.x + player.body.height;
+    var resource = this.game.physics.arcade.getObjectsAtLocation(
+      X,
+      player.body.y,
+      this.GrupoRecursos
+    );
+    if (resource.length >= 1) {
+      player.resources += resource[0].cantidad;
+      resource[0].destroy();
+    }
+  }
+  if (player.orientation === 2) {
+    var Y = player.body.y + player.body.height;
+    var resource = this.game.physics.arcade.getObjectsAtLocation(
+      player.body.x,
+      Y,
+      this.GrupoRecursos
+    );
+    if (resource.length >= 1) {
+      player.resources += resource[0].cantidad;
+      resource[0].destroy();
+    }
+  }
+  if (player.orientation === 3) {
+    var X = player.body.x - player.body.height;
+    var resource = this.game.physics.arcade.getObjectsAtLocation(
+      X,
+      player.body.y,
+      this.GrupoRecursos
+    );
+    if (resource.length >= 1) {
+      player.resources += resource[0].cantidad;
+      resource[0].destroy();
+    }
+  }
+};
 
 module.exports = Mapa;
