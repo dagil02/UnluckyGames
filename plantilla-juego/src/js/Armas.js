@@ -21,6 +21,7 @@ function Armas(game, x, y, sprite) {
 	this.tipoArma = sprite; //sprite es un tipo string. sirve para inicializar el arma según su tipo
 	this.alcance;//comunica con jugador y determina si se puede disparar o no
 	this.damage;//damage comunican con jugador y éste con bala para determinar el daño
+	this.walk_WeaponScale; //será el escalar que resta pasos al jugador con cada disparo
 
 	//METHODS
 	this.asignaValores = function (funcionRandom) {
@@ -31,9 +32,9 @@ function Armas(game, x, y, sprite) {
 
 	//función para determinar el tipo de arma e inicializar sus atributos
 	this.Tipo_De_Arma = function () {
-		if (this.tipoArma === "pistola") { this.alcance = 5; this.damage = 10; this.balas_image = 'b_Gun' }
-		else if (this.tipoArma === "Subfusil") { this.alcance = 12; this.damage = 25; this.balas_image = 'b_Sf' }
-		else if (this.tipoArma = "francoTirador") { this.alcance = 20; this.damage = 50; this.balas_image = 'b_Sn' }
+		if (this.tipoArma === "pistola") { this.alcance = 5; this.damage = 10; this.balas_image = 'b_Gun'; this.walk_WeaponScale = 1;}
+		else if (this.tipoArma === "Subfusil") { this.alcance = 10; this.damage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3;}
+		else if (this.tipoArma = "francoTirador") { this.alcance = 20; this.damage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6;}
 	}
 
 }
@@ -50,8 +51,13 @@ Armas.prototype.generate = function () {
 
 };
 
+//comunica con class: Player. como la tiene asociada al atributo currentWeapon, éste hace la llamada
 Armas.prototype.Shot = function () {
-	this.balas_Cont--;
+	if (this.balas_Cont >=1){
+		this.balas_Cont--;
+		return true;
+	}
+	else return false;	
 }
 
 module.exports = Armas;
