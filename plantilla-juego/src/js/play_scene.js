@@ -88,7 +88,8 @@ var PlayScene = {
     );
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
     this.game.debug.text(
-      this.playerGroup.children[0].resources,
+      "resources: " + this.playerGroup.children[0].resources + " walks: " + 
+      this.playerGroup.children[0].walkCont,
       32,
       640,
       "yellow",

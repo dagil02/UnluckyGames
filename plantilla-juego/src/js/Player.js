@@ -1,5 +1,10 @@
 "use strict";
 
+
+//jugador tiene un contador de pasos que determina el final del turno. 
+//los pasos decrementan cuando recoge recursos "árboles" y cuando destruye muros.
+//los pasos decrementan en base a un escalar dependiendo del tipo de arma que lleva
+
 function Player(game, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite); //hereda de sprite
 
@@ -7,6 +12,12 @@ function Player(game, x, y, sprite) {
   this.game.world.addChild(this);
 
   this.name = "jugador";
+
+  //gestion del turno
+  this.walkCont = 100; //los pasos se resetean con cada turno. 
+  this.walk_WallScale = 4;
+  this.walk_ResourceScale = 3;
+  this.walk_WeaponScale; //la define el arma actual.
 
   //input
   this.inputAux = this.game.input.keyboard;
@@ -81,7 +92,7 @@ Player.prototype.checkInput = function(mapa, obj) {
     this.inputAux.isDown(this.key6)
   ) {
     if (this.inputAux.isDown(this.key5)) {
-      mapa.plasyerResources(this);
+      mapa.plasyerPickUpObject(this);
     } else {
       this.buildWall(mapa);
     }
@@ -170,7 +181,9 @@ Player.prototype.movePlayer = function(mapa, posT) {
     this.body.y = Y;
   } else {
     //gestiona un timeCounter para regular la velocidad de desplazamiento
+    //y decrementa los pasos le jugador
     if (this.game.time.now > this.timeMove) {
+      this.walkCont--;
       this.timeMove = this.game.time.now + this.velMove;
     } else {
       this.body.x = X;
@@ -206,6 +219,7 @@ Player.prototype.buildWall = function(mapa) {
   }
 };
 
+//construeye la bala y ésta establece su propia lógica en base a los atributos de player
 Player.prototype.shotBullet = function () {
 
   if (this.game.time.now > this.timeMove) {
@@ -220,6 +234,7 @@ Player.prototype.shotBullet = function () {
 
 };
 
+//comunica con PlayScene y gestiona la destrucción de la bala y sus llamadas según colisión
 Player.prototype.bulletUpdate  = function(){
   if (this.bulletGroup.length > 0){
     this.bulletGroup.forEach(element => {
