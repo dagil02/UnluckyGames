@@ -62,6 +62,7 @@ var PreloaderScene = {
   
   //Musica y sonidos
     this.game.load.audio('AudioMenu', ['assets/musica/Menu_mp3.mp3', 'assets/musica/Menu_ogg.ogg']);
+    this.game.load.audio('AudioJuego', ['assets/musica/Juego_mp3.mp3', 'assets/musica/Juego_ogg.ogg']);
   
   },
 

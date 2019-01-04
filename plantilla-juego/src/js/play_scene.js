@@ -57,6 +57,12 @@ var PlayScene = {
     //Variables que controlan la pausa
     this.pause = false;
     var Pause;
+
+    //Musica
+    var MusicaFondo;
+    this.MusicaFondo = this.game.add.audio('AudioJuego',0.05,true);
+       
+    this.MusicaFondo.play();
   },
 
   update: function() {
