@@ -12,6 +12,7 @@ var objeto = require('./Objeto');
 function Armas(game, x, y, sprite) {
 
 	objeto.call(this, game, x, y, sprite); //hereda de objeto 
+	this.name = "weapon";
 
 
 	//ATTRIBUTE

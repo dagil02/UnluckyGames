@@ -16,8 +16,12 @@ function Player(game, x, y, sprite) {
   this.key3 = Phaser.KeyCode.D;
   this.key4 = Phaser.KeyCode.S;
   //objetos: recoger, soltar
-  this.key5 = Phaser.KeyCode.P;
+  this.key5 = Phaser.KeyCode.P; //recoger arma o recurso
+  this.key7 = Phaser.KeyCode.U; //soltar arma
+  //builds
   this.key6 = Phaser.KeyCode.O;
+  //shots
+  this.key8 = Phaser.KeyCode.SPACEBAR;
 
   this.orientation = 0;
   this.velMove = 200; //controla el tiempo de desplazamiento
@@ -33,6 +37,7 @@ function Player(game, x, y, sprite) {
   //shot and build
   this.resources = 0; //contador de recursos
   this.wallGroup = this.game.add.group();
+  this.bulletGroup = this.game.add.group();
 
   //physics
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -80,6 +85,9 @@ Player.prototype.checkInput = function(mapa, obj) {
     } else {
       this.buildWall(mapa);
     }
+  }
+  else if (this.inputAux.isDown(this.key8)){
+    this.shotBullet();
   }
 };
 
@@ -197,5 +205,32 @@ Player.prototype.buildWall = function(mapa) {
     }
   }
 };
+
+Player.prototype.shotBullet = function () {
+
+  if (this.game.time.now > this.timeMove) {
+    var bullet = require("./Bala");
+    var shot = new bullet(this.game, this.x, this.y, 'bala');
+    shot.generate(this);
+    shot.move();
+    this.bulletGroup.add(shot);
+    this.game.world.bringToTop(this.bulletGroup);
+    this.timeMove = this.game.time.now + this.velMove;
+  }
+
+};
+
+Player.prototype.bulletUpdate  = function(){
+  if (this.bulletGroup.length > 0){
+    this.bulletGroup.forEach(element => {
+       if (element.limiteAlcance()){
+         element.destroy();
+       }
+    });
+  }
+ 
+}
+
+
 
 module.exports = Player;

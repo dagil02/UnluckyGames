@@ -334,52 +334,47 @@ Mapa.prototype.armedPlayer = function (player) { };
 //y sube el contador de recursos de player
 Mapa.prototype.plasyerResources = function (player) {
   //orientacion: 0 = arr, 1 = der, 2 = abaj, 3 = izq
+  var resource;
   if (player.orientation === 0) {
     var Y = player.body.y - player.body.height;
-    var resource = this.game.physics.arcade.getObjectsAtLocation(
+    resource = this.game.physics.arcade.getObjectsAtLocation(
       player.body.x,
       Y,
       this.GrupoRecursos
     );
-    if (resource.length >= 1) {
-      player.resources += resource[0].cantidad;
-      resource[0].destroy();
-    }
   }
-  if (player.orientation === 1) {
+  else if (player.orientation === 1) {
     var X = player.body.x + player.body.height;
-    var resource = this.game.physics.arcade.getObjectsAtLocation(
+    resource = this.game.physics.arcade.getObjectsAtLocation(
       X,
       player.body.y,
       this.GrupoRecursos
     );
-    if (resource.length >= 1) {
-      player.resources += resource[0].cantidad;
-      resource[0].destroy();
-    }
   }
-  if (player.orientation === 2) {
+  else if (player.orientation === 2) {
     var Y = player.body.y + player.body.height;
-    var resource = this.game.physics.arcade.getObjectsAtLocation(
+    resource = this.game.physics.arcade.getObjectsAtLocation(
       player.body.x,
       Y,
       this.GrupoRecursos
     );
-    if (resource.length >= 1) {
-      player.resources += resource[0].cantidad;
-      resource[0].destroy();
-    }
   }
-  if (player.orientation === 3) {
+  else if (player.orientation === 3) {
     var X = player.body.x - player.body.height;
-    var resource = this.game.physics.arcade.getObjectsAtLocation(
+    resource = this.game.physics.arcade.getObjectsAtLocation(
       X,
       player.body.y,
       this.GrupoRecursos
     );
-    if (resource.length >= 1) {
+  }
+
+  if (resource.length >= 1) {
+    if (resource[0].name === "resource"){
       player.resources += resource[0].cantidad;
       resource[0].destroy();
+    }
+    else if (resource[0].name === "weapon"){
+      //falta definir la lógica 
     }
   }
 };

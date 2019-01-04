@@ -60,22 +60,19 @@ var PlayScene = {
   },
 
   update: function() {
-    //this.game.physics.arcade.collide(this.j1, this.mapa.tile_Map.layerGroup.children);
-    if (!this.pause){
-    this.checkInput();
-    }
-    else{
+    if (!this.pause) {
+      this.checkInput();
+      this.playerGroup.children[0].bulletUpdate();
+    } else {
       //La tecla enter manda al menu inicial
-      if (this.inputAux.isDown(13)){
+      if (this.inputAux.isDown(13)) {
         this.pause = false;
-        this.game.state.start('Menu');
+        this.game.state.start("Menu");
         //la barra espaciadora reanuda el juego
-      }else if (this.inputAux.isDown(32)){
+      } else if (this.inputAux.isDown(32)) {
         this.pause = false;
-       this.endPause();
-        
+        this.endPause();
       }
-
     }
   },
 
@@ -90,7 +87,13 @@ var PlayScene = {
       "Segoe UI"
     );
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
-    this.game.debug.text(this.playerGroup.children[0].resources, 32,640, "yellow", "Segoe UI");
+    this.game.debug.text(
+      this.playerGroup.children[0].resources,
+      32,
+      640,
+      "yellow",
+      "Segoe UI"
+    );
     //this.game.debug.text("", 32, 660, "yellow", "Segoe UI");
   },
 
@@ -109,7 +112,7 @@ var PlayScene = {
     var auxCamera_H = this.hud.height + this.previousWorld_H; //eje: worldH 1184 + 208 = 1392; así permite a la cam sobrepasar los límites del mundo
 
     //gestion de la camara
-    this.game.camera.follow( this.playerGroup.children[0]);
+    this.game.camera.follow(this.playerGroup.children[0]);
     //se invoca a los método de los gameObjects
     this.mapa.resizeLayer(scale);
     //this.playerGroup.children[0].resizePlayer(scale);
@@ -151,28 +154,24 @@ var PlayScene = {
       this.playerGroup.children[0].checkInput(this.mapa, this.objGr);
     }
     //la tecla esc activa el menu de pausa
-    if (this.inputAux.isDown(27)){
+    if (this.inputAux.isDown(27)) {
       this.pause = true;
       this.startPause();
     }
   },
 
-  startPause: function(){
-   
-    
-
-    
-    
-    this.Pause = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'Pausa');
+  startPause: function() {
+    this.Pause = this.game.add.sprite(
+      this.game.world.centerX,
+      this.game.world.centerY,
+      "Pausa"
+    );
     this.Pause.alpha = 0.7;
-    this.Pause.anchor.setTo(0.5,0.5);
-
+    this.Pause.anchor.setTo(0.5, 0.5);
   },
-  endPause: function(){
-   //Hace transparente el menu de pausa
+  endPause: function() {
+    //Hace transparente el menu de pausa
     this.Pause.alpha = 0;
-    
-
   }
 };
 

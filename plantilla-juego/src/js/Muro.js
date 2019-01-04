@@ -3,12 +3,11 @@
 var objeto = require("./Objeto");
 
 function Muro(game, x, y, sprite) {
-    objeto.call(this, game, x, y, sprite); //hereda de objeto
+  objeto.call(this, game, x, y, sprite); //hereda de objeto
 
-    //ATTRIBUTES
-    this.orientation; //recibe el valor de jugador
-    this.name = "wall";
-
+  //ATTRIBUTES
+  this.orientation; //recibe el valor de jugador
+  this.name = "wall";
 }
 Muro.prototype = Object.create(objeto.prototype);
 Muro.prototype.constructor = Muro;
@@ -37,23 +36,25 @@ Muro.prototype.direction = function(player) {
 };
 
 //genera la lógica del objeto,
-Muro.prototype.generate = function (player) {
-
-    //physics
-    this.game.physics.enable(this, Phaser.Physics.ARCADE);
-    this.body.collideWorldBounds = true;
-    this.body.immovable = true;	
-    this.body.checkCollision = true;
-    //si se crea con la escala aumentada debe redimensionarse
-    if (this.auxScale !== player.auxScale) {
-        this.resizeObject(player.auxScale);
-        //como el método ya diplica una posición presupuesta de 16*16 hay que dividir
-        this.x /= player.auxScale; this.y /= player.auxScale;
-    }
-    //se recoge la nueva pos que será un tile por delante del jugador
-    var pos = this.direction(player);
-    this.x += pos.x; this.y += pos.y;
-    this.body.x = this.x; this.body.y = this.y;
+Muro.prototype.generate = function(player) {
+  //physics
+  this.game.physics.enable(this, Phaser.Physics.ARCADE);
+  this.body.collideWorldBounds = true;
+  this.body.immovable = true;
+  this.body.checkCollision = true;
+  //si se crea con la escala aumentada debe redimensionarse
+  if (this.auxScale !== player.auxScale) {
+    this.resizeObject(player.auxScale);
+    //como el método ya diplica una posición presupuesta de 16*16 hay que dividir
+    this.x /= player.auxScale;
+    this.y /= player.auxScale;
+  }
+  //se recoge la nueva pos que será un tile por delante del jugador
+  var dir = this.direction(player);
+  this.x += dir.x;
+  this.y += dir.y;
+  this.body.x = this.x;
+  this.body.y = this.y;
 };
 
 module.exports = Muro;
