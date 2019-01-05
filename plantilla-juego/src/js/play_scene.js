@@ -128,7 +128,7 @@ var PlayScene = {
       this.game.debug.text(
 
         "balas: " + this.playerGroup.children[0].currentWeapon.balas_Cont + " damage: " + 
-        this.playerGroup.children[0].currentWeapon.damage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
+        this.playerGroup.children[0].currentWeapon.weaponDamage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
         350,
         640,
         "yellow",
