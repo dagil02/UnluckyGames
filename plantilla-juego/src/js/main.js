@@ -5,6 +5,7 @@
 var PlayScene = require('./play_scene.js');
 var Menu = require('./StartScreen.js');
 var Creditos = require('./Creditos.js');
+var SelectPlayers = require('./SelectPlayers.js');
 
 var BootScene = {
   preload: function () {
@@ -58,6 +59,10 @@ var PreloaderScene = {
     this.game.load.image('Menu', 'assets/sprites/menu.png');
     this.game.load.image('Pausa', 'assets/sprites/pausa.png');
     this.game.load.image('FondoCreditos', 'assets/sprites/creditos.png');
+    this.game.load.image('FondoSelectPlayers', 'assets/sprites/fondoSelectPlayers.png');
+    this.game.load.image('Button1', 'assets/sprites/Button1.png');
+    this.game.load.image('Button2', 'assets/sprites/Button2.png');
+    this.game.load.image('Button3', 'assets/sprites/Button3.png');
   
   
   //Musica y sonidos
@@ -71,7 +76,7 @@ var PreloaderScene = {
   },
 
   create: function () {
-    this.game.state.start('Menu');
+    this.game.state.start('SPScene');
 
   }
 };
@@ -84,6 +89,7 @@ window.onload = function () {
   game.state.add('play', PlayScene);
   game.state.add('Menu', Menu);
   game.state.add('CreditScene', Creditos);
+  game.state.add('SPScene', SelectPlayers);
 
   game.state.start('boot');
 };
