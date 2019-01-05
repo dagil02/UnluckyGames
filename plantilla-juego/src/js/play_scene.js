@@ -6,7 +6,7 @@ var player = require("./Player");
 //var cursors;
 
 var PlayScene = {
-  create: function() {
+  create: function () {
     //World
     this.game.world.setBounds(0, 0, 800, 592);
     this.game.camera.setBoundsToWorld();
@@ -60,34 +60,37 @@ var PlayScene = {
 
     //Musica
     var MusicaFondo;
-    this.MusicaFondo = this.game.add.audio('AudioJuego',0.05,true);
-       
+    this.MusicaFondo = this.game.add.audio('AudioJuego', 0.05, true);
+
     this.MusicaFondo.play();
 
-    
+    //fin del juego
+    this.endGame = false;
   },
 
-  update: function() {
-   
-    if (!this.pause) {
-      this.checkInput(); //gestiona el input de cada jugador en su turno
-      this.playerGroup.children[0].bulletUpdate(this.mapa);  
-    
-       //gestiona las colisiones de balas y su llamada a destrucción
-    } else {
-      //La tecla enter manda al menu inicial
-      if (this.inputAux.isDown(13)) {
-        this.pause = false;
-        this.game.state.start("Menu");
-        //la barra espaciadora reanuda el juego
-      } else if (this.inputAux.isDown(32)) {
-        this.pause = false;
-        this.endPause();
+  update: function () {
+    if (!this.endGame) {
+      if (!this.pause) {
+        this.checkInput(); //gestiona el input de cada jugador en su turno
+        this.playerGroup.children[0].bulletUpdate(this.mapa);
+
+        //gestiona las colisiones de balas y su llamada a destrucción
+      } else {
+        //La tecla enter manda al menu inicial
+        if (this.inputAux.isDown(13)) {
+          this.pause = false;
+          this.game.state.start("Menu");
+          //la barra espaciadora reanuda el juego
+        } else if (this.inputAux.isDown(32)) {
+          this.pause = false;
+          this.endPause();
+        }
       }
     }
+    this.game.state.start("CreditScene");
   },
 
-  render: function() {
+  render: function () {
     var y = 38;
 
     this.game.debug.text(
@@ -99,7 +102,7 @@ var PlayScene = {
     );
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
     this.game.debug.text(
-      "resources: " + this.playerGroup.children[0].resources + " walks: " + 
+      "resources: " + this.playerGroup.children[0].resources + " walks: " +
       this.playerGroup.children[0].walkCont,
       32,
       640,
@@ -107,16 +110,16 @@ var PlayScene = {
       "Segoe UI"
     );
 
-    if (this.playerGroup.children[0].currentWeapon){
+    if (this.playerGroup.children[0].currentWeapon) {
       this.game.debug.text(
-        `Debugging object: CURRENT WEAPON: ` +  this.playerGroup.children[0].currentWeapon.tipoArma,
+        `Debugging object: CURRENT WEAPON: ` + this.playerGroup.children[0].currentWeapon.tipoArma,
         350,
         610,
         "yellow",
         "Segoe UI"
       );
       this.game.debug.text(
-        "balas: " + this.playerGroup.children[0].currentWeapon.balas_Cont + " damage: " + 
+        "balas: " + this.playerGroup.children[0].currentWeapon.balas_Cont + " damage: " +
         this.playerGroup.children[0].currentWeapon.damage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
         350,
         640,
@@ -124,11 +127,11 @@ var PlayScene = {
         "Segoe UI"
       );
     }
-    
+
     //this.game.debug.text("", 32, 660, "yellow", "Segoe UI");
   },
 
-  zoomTo: function(scale) {
+  zoomTo: function (scale) {
     //escalar
     var auxScale = this.previousScale; //auxiliar para recoger el escalar previo
     this.boolScale = this.previousScale === 2;
@@ -159,7 +162,7 @@ var PlayScene = {
     }
   },
 
-  HudScale: function() {
+  HudScale: function () {
     if (this.game.camera.x > 0 || this.game.camera.y > 0) {
       if (this.game.camera.x > 0) {
         this.hud.x = this.game.camera.x;
@@ -176,7 +179,7 @@ var PlayScene = {
     this.game.world.bringToTop(this.hud);
   },
 
-  checkInput: function() {
+  checkInput: function () {
     if (this.inputAux.isDown(this.key1)) {
       this.zoomTo(2);
     } else if (this.inputAux.isDown(this.key2)) {
@@ -191,7 +194,7 @@ var PlayScene = {
     }
   },
 
-  startPause: function() {
+  startPause: function () {
     this.Pause = this.game.add.sprite(
       this.game.world.centerX,
       this.game.world.centerY,
@@ -200,7 +203,7 @@ var PlayScene = {
     this.Pause.alpha = 0.7;
     this.Pause.anchor.setTo(0.5, 0.5);
   },
-  endPause: function() {
+  endPause: function () {
     //Hace transparente el menu de pausa
     this.Pause.alpha = 0;
   },
