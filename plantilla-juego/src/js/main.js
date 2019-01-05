@@ -76,7 +76,7 @@ var PreloaderScene = {
   },
 
   create: function () {
-    this.game.state.start('SPScene');
+    this.game.state.start('Menu');
 
   }
 };

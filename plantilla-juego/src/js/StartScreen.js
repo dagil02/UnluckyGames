@@ -22,7 +22,7 @@ var startScreen =  {
         if (this.cursor.isDown(13)) {
             this.Music.mute = true;
 
-            this.state.start('play');
+            this.state.start('SPScene');
           }
 
     },
