@@ -48,15 +48,17 @@ var PlayScene = {
     this.turno = 0; //variable
     //******************************************************************* */
 
+
     //******************* GENERACION DE ELEM DE JUEGO *******************
     //JUGADORES
+
     this.playerGroup = this.game.add.group();
     //desierto; niveve; praderaTop; praderaButton
     this.playerPos = [
       { x: 128, y: 96 },
-      { x: 32, y: 560 },
-      { x: 688, y: 64 },
-      { x: 640, y: 512 }
+      { x: 640, y: 512 },
+      { x: 688, y: 64  },
+      { x: 32, y: 560 }
     ];
     //se crean los jugadores y se meten en el grupo
     var numAparecidos = [];
@@ -82,6 +84,7 @@ var PlayScene = {
       }
       var rPos = this.playerPos[r];
       this.playerGroup.add(new player(this.game, rPos.x, rPos.y, "player_1"));
+
     }
     //contador de pasos. CONSTANTE
     this.playerWalkCont = 50;
