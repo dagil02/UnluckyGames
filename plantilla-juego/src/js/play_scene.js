@@ -224,9 +224,9 @@ var PlayScene = {
 
     this.turno++;
     if (this.turno === this.numPlayers) {
-      this.turno = 100;
+      this.turno = 0;
     }
-    this.playerGroup.children[this.turno].walkCont = 10;
+    this.playerGroup.children[this.turno].walkCont = 100;
   },
   compruebaTurno: function () {
     if (this.playerGroup.children[this.turno].walkCont <= 0) {

@@ -14,7 +14,7 @@ function Player(game, x, y, sprite) {
   this.life = 100; //contador de vida 
 
   //gestion del turno
-  this.walkCont = 10; //los pasos se resetean con cada turno.
+  this.walkCont = 100; //los pasos se resetean con cada turno.
   this.walk_WallScale = 4;
   this.walk_ResourceScale = 3;
   //walk_WeaponScale se recoge del atributo currentWeapon. dado que su valor depende del arma
