@@ -59,7 +59,18 @@ function Player(game, x, y, sprite) {
   this.body.bounce.setTo(1, 1);
   this.body.x = this.x;
   this.body.y = this.y;
+//efectos de sonido
+  var SonidoDisparo;
+  var SonidoRecurso;
+  var SonidoPasos;
+  var SonidoMuros;
+  
+  this.SonidoDisparo = this.game.add.audio('Disparo',1,false);
+  this.SonidoRecurso = this.game.add.audio('Recursos',1,false);
+  this.SonidoPasos = this.game.add.audio('Pasos',0.1,false);
+  this.SonidoMuros = this.game.add.audio('Muro',0.5,false);
 }
+
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
