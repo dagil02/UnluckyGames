@@ -243,15 +243,22 @@ Player.prototype.shotBullet = function() {
 };
 
 //comunica con class: PlayScene y Mapa y gestiona la destrucción de la bala y sus llamadas según colisión
-Player.prototype.bulletUpdate = function(mapa) {
+Player.prototype.bulletUpdate = function (mapa) {
   if (this.bulletGroup.length > 0) {
     this.bulletGroup.forEach(element => {
       if (element.limiteAlcance() || mapa.PlayerObjectCheckCollision(element)) {
         element.destroy();
       }
-      //else {element.move();}
+      else {
+        var XY = {'x': this.game.math.roundTo(element.x /element.width, 0), 'y':this.game.math.roundTo(element.y /element.height, 0)};
+        if (mapa.TileOcupado(XY, mapa.tile_Map.layerGroup.children)){
+          element.destroy();
+        }
+      }
     });
   }
 };
 
 module.exports = Player;
+
+

@@ -14,6 +14,7 @@ function Mapa(game) {
   this.layer_obstaculo_1;
   this.layer_obstaculo_2;
 
+
   //gestion escalar: 1 por defecto. se usa en el método Prototype.LayerResize
   this.auxScale = 1;
 
@@ -182,10 +183,10 @@ function Mapa(game) {
     //se recorre el grupo saltando la capa Background
     for (var i = 1; i < this.tile_Map.layerGroup.length; i++) {
       //3º SE HABILITA LA FÍSICA PARA CADA CAPA
-      this.game.physics.enable(
+      /*this.game.physics.enable(
         this.tile_Map.layerGroup.children[i],
         Phaser.Physics.ARCADE
-      );
+      );*/
       //4º SE DEFINE LAS COLISIONES PARA LOS TILES
       //hay que pasar el rango de index. puede: index === number || index === array
       //Doc.Oficial: Source code: tilemap/Tilemap.js (Line 816). En caso de array su función lo recorre
@@ -196,14 +197,17 @@ function Mapa(game) {
         true
       );
       //5º SE HABILITAN LOS ATRIBUTOS DEL PHYSIC.BODY
-      this.tile_Map.layerGroup.children[i].body.collideWorldBounds = true;
-      this.tile_Map.layerGroup.children[i].body.immovable = true;
-      this.tile_Map.layerGroup.children[i].body.bounce.setTo(1, 1);
+      //this.tile_Map.layerGroup.children[i].body.collideWorldBounds = true;
+      //this.tile_Map.layerGroup.children[i].body.checkCollision = true;
+
+      //this.tile_Map.layerGroup.children[i].body.immovable = true;
+      //this.tile_Map.layerGroup.children[i].body.bounce.setTo(1, 1);
     }
   };
 
   //Comprueba si el tile está ocupado en base al valor del atributo index:
   this.TileOcupado = function(variable, grupoCapas) {
+   
     var colision = false;
     var i = 1;
     //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
@@ -237,6 +241,8 @@ Mapa.prototype.generate = function(plGr) {
   this.GrupoObjetos.add(this.GrupoRecursos);
   this.GrupoObjetos.add(this.GrupoArmas);
   this.GrupoObjetos.add(this.wallGroup);
+
+  
 
   //se crean las capas, se definen como colisiones y se añaden al grupo
   this.añadeLayer();
@@ -278,6 +284,7 @@ Mapa.prototype.resizeLayer = function(scale) {
 //recibe mensaje class: Player
 Mapa.prototype.playerCheckLayerCollision = function(player) {
   var bool = false;
+  
   //recogen la posición real de body
   var X = player.body.x;
   var Y = player.body.y;
@@ -311,6 +318,7 @@ Mapa.prototype.PlayerObjectCheckCollision = function(player) {
   return bool;
 };
 //método callback invocado desde la función arcade.collide
+//solo actuará si el primer parámetro es bala
 Mapa.prototype.CallBackCollision = function(obj, colObj){
   if (obj.name === 'bullet'){
     if (colObj.name === "resource" || colObj.name === "wall"){
@@ -413,4 +421,8 @@ Mapa.prototype.plasyerPickUpObject = function(player) {
   }
 };
 
+
 module.exports = Mapa;
+
+
+// + this.layer_obstaculo_1.getTiles (0, 0, 800, 592, true) + this.layer_obstaculo_2.getTiles (0, 0, 800, 592, true);

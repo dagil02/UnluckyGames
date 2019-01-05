@@ -34,28 +34,22 @@ Bala.prototype.direction = function(player) {
     this.alcance = this.y + this.alcance * dir.y; //alcance obtiene la posición donde debe destruirse
     this.vel *= -1;
     this.vel_Y = true;
-    //this.angle = 0;
-    //1:derecha;
   } else if (this.orientation === 1) {
     dir.x = 1 * this.width;
     this.alcance = this.x + this.alcance * dir.x;
-    //this.angle = 90; //rotación del sprite
-    //this.anchor.setTo(0, 1);
+   
   } //2:abajo;
   else if (this.orientation === 2) {
     dir.y = 1 * this.height;
     this.alcance = this.y + this.alcance * dir.y;
     this.vel_Y = true;
-    //this.angle = 180;
-    //this.anchor.setTo(1, 1);
+ 
   }
   //3:izquierda
   else if (this.orientation === 3) {
     dir.x = -1 * this.width;
     this.vel *= -1;
     this.alcance = this.x + this.alcance * dir.x;
-    //this.angle = -90;
-    //this.anchor.setTo(1, 0);
   }
   return dir;
 };
@@ -63,7 +57,7 @@ Bala.prototype.direction = function(player) {
 Bala.prototype.generate = function(player) {
   //alcance y daño se recogen del atributo currentWeapon
   this.alcance = player.currentWeapon.alcance;
-  this.damage = player.currentWeapon.damage;
+  this.bulletDamage = player.currentWeapon.weaponDamage;
 
   //physics
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -94,7 +88,7 @@ Bala.prototype.move = function() {
 };
 
 //de actualizará en el update, si llega al límite sin colsionar con algo se destruirá.
-//como se usa en el update también actualizamos su poisición
+
 Bala.prototype.limiteAlcance = function() {
   var bool = false;
   //si colisiona con los límites del mapa
