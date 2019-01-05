@@ -43,9 +43,11 @@ var PlayScene = {
     this.endGame = false;
 
     //LOGICA TURNOS
-    //numero de jugadores en partida CONSTANTE
-    this.numPlayers = this.game.numPlayers;
+    //numero de jugadores en partida 
+    this.numPlayers = this.game.numPlayers; //se va reduciendo con cada muerte
     this.turno = 0; //variable
+    this.auxTurno = 0;
+    
     //******************************************************************* */
 
 
@@ -86,16 +88,28 @@ var PlayScene = {
       this.playerGroup.add(new player(this.game, rPos.x, rPos.y, "player_1"));
 
     }
-    //contador de pasos. CONSTANTE
+    //contador de pasos y vida. CONSTANTE
     this.playerWalkCont = 50;
+    this.playerLife = 100;
     //por cada miembro del grupo se actualiza su contador
+    var i = this.numPlayers;
     this.playerGroup.forEach(element => {
       element.walkCont = this.playerWalkCont;
+      element.life = this.playerLife;
+      element.name = i;
+      i++;
     });
+    //se hacen fijos los body de los jugadores fuera de turno 
+    for (var i = 0; i < this.playerGroup.length; i++){
+      if (i !== this.turno){
+        this.playerGroup.children[i].body.immovable = true;
+      }
+    }
 
     //MAPA Y RECURSOS
     this.mapa = new mapa(this.game);
     this.mapa.generate(this.playerGroup);
+   
 
     //la variable recoge los grupos de físicas de obj. parametro en this.checkInput()
     this.objGr = this.mapa.GrupoObjetos;
@@ -103,12 +117,14 @@ var PlayScene = {
     this.game.world.bringToTop(this.playerGroup);
   },
 
+  //************ */RENDER Y UPDATE ********************
   update: function() {
     if (!this.endGame) {
       if (!this.pause) {
-        this.checkInput(); //gestiona el input de cada jugador en su turno
-        this.playerGroup.children[this.turno].bulletUpdate(this.mapa);
+        this.checkPlayerLife();
         this.compruebaTurno();
+        this.playerGroup.children[this.turno].bulletUpdate(this);
+        this.checkInput(); //gestiona el input de cada jugador en su turno
         //gestiona las colisiones de balas y su llamada a destrucción
       } else {
         //La tecla enter manda al menu inicial
@@ -158,7 +174,7 @@ var PlayScene = {
           " damage: " +
           this.playerGroup.children[this.turno].currentWeapon.weaponDamage +
           " alcance: " +
-          this.playerGroup.children[0].currentWeapon.alcance,
+          this.playerGroup.children[this.turno].currentWeapon.alcance,
         350,
         640,
         "yellow",
@@ -166,9 +182,10 @@ var PlayScene = {
       );
     }
 
-    //this.game.debug.text("", 32, 660, "yellow", "Segoe UI");
   },
+  //*********************************************************************************************** */
 
+  //GESTION DEL ESCALADO DEL TILEMAP Y SPRITES  ****************
   zoomTo: function(scale) {
     //escalar
     var auxScale = this.previousScale; //auxiliar para recoger el escalar previo
@@ -217,6 +234,7 @@ var PlayScene = {
     this.game.world.bringToTop(this.hud);
   },
 
+  //********* */GESTION DEL INPUT ************
   checkInput: function() {
     if (this.inputAux.isDown(this.key1)) {
       this.zoomTo(2);
@@ -231,6 +249,8 @@ var PlayScene = {
       this.startPause();
     }
   },
+
+  //*********** */GESTION DE LOS MENUS Y ESTADOS ***************
 
   startPause: function() {
     //crea un nuevo objeto tipo spirte
@@ -253,15 +273,38 @@ var PlayScene = {
   pasaTurno: function() {
     //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
     this.turno = (this.turno + 1) % this.numPlayers;
-    //actualiza el contador de pasos según la constante
-    this.playerGroup.children[this.turno].walkCont = this.playerWalkCont;
+    this.zoomTo(1);
     //gestion de la camara
     this.game.camera.follow(this.playerGroup.children[this.turno]);
+    //actualiza el contador de pasos según la constante
+    this.playerGroup.children[this.turno].walkCont = this.playerWalkCont;
+    this.playerGroup.children[this.turno].body.immovable = false;
+    for (var i = 0; i < this.playerGroup.length; i++){
+      if (i !== this.turno){
+        this.playerGroup.children[i].body.immovable = true;
+      }
+    }
   },
   compruebaTurno: function() {
     if (this.playerGroup.children[this.turno].walkCont <= 0) {
       this.pasaTurno();
     }
+  },
+  
+  checkPlayerLife: function(){
+    this.playerGroup.forEach(element => {
+      if ( element.life <= 0){
+        element.destroy();
+        this.numPlayers--;
+        this.turno = this.turno % this.numPlayers;
+        if (this.numPlayers === 1){this.PlayerWin();}
+      }
+    });
+  },
+
+  //implementar victoria ¡¡¡¡¡¡¡¡¡¡
+  PlayerWin: function(){
+    this.game.state.start("Menu");
   }
 };
 

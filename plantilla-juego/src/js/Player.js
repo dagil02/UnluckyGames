@@ -10,11 +10,11 @@ function Player(game, x, y, sprite) {
   //ATTRIBUTE
   this.game.world.addChild(this);
 
-  this.name = "jugador";
+  this.name;
   this.life = 100; //contador de vida 
 
   //gestion del turno
-  this.walkCont = 100; //los pasos se resetean con cada turno.
+  this.walkCont; //los pasos se resetean con cada turno.
   this.walk_WallScale = 4;
   this.walk_ResourceScale = 3;
   //walk_WeaponScale se recoge del atributo currentWeapon. dado que su valor depende del arma
@@ -258,21 +258,44 @@ Player.prototype.shotBullet = function() {
 };
 
 //comunica con class: PlayScene y Mapa y gestiona la destrucción de la bala y sus llamadas según colisión
-Player.prototype.bulletUpdate = function (mapa) {
+Player.prototype.bulletUpdate = function (playScene) {
   if (this.bulletGroup.length > 0) {
     this.bulletGroup.forEach(element => {
-      if (element.limiteAlcance() || mapa.PlayerObjectCheckCollision(element)) {
+      if (element.limiteAlcance() || playScene.mapa.PlayerObjectCheckCollision(element)) {
         element.destroy();
       }
       else {
         var XY = {'x': this.game.math.roundTo(element.x /element.width, 0), 'y':this.game.math.roundTo(element.y /element.height, 0)};
-        if (mapa.TileOcupado(XY, mapa.tile_Map.layerGroup.children)){
+        if (playScene.mapa.TileOcupado(XY, playScene.mapa.tile_Map.layerGroup.children)){
           element.destroy();
         }
+        else {this.CheckPlayerBulletVsPlayer(playScene);}
       }
     });
   }
 };
+
+Player.prototype.CheckPlayerBulletVsPlayer = function (playScene){
+
+  var bool = false;
+  var i = 0;
+  while (!bool && i < this.bulletGroup.length){
+  var j = 0;
+    while (!bool && j < playScene.playerGroup.length){
+      bool = this.game.physics.arcade.collide(this.bulletGroup.children[i], playScene.playerGroup.children[j]);
+      j++;
+    }
+    i++;
+  }
+  if (bool){
+    playScene.playerGroup.children[j - 1].life -= this.bulletGroup.children[i - 1].bulletDamage;
+    //playScene.playerGroup.children[j - 1].body.velocity = 0;
+    //playScene.playerGroup.children[j - 1].body.immovable = true;
+    this.bulletGroup.children[i - 1].destroy();
+    console.log (playScene.playerGroup.children[j - 1].life);
+  }
+};
+
 
 module.exports = Player;
 
