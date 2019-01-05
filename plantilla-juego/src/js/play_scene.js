@@ -87,7 +87,9 @@ var PlayScene = {
         }
       }
     }
+    else{
     this.game.state.start("CreditScene");
+    }
   },
 
   render: function () {
