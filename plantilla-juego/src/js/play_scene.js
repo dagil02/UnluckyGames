@@ -67,14 +67,18 @@ var PlayScene = {
 
     //fin del juego
     this.endGame = false;
+
+    //lógica de turnos
+    this.numPlayers = this.game.numPlayers;
+    this.turno = 0;
   },
 
   update: function () {
     if (!this.endGame) {
       if (!this.pause) {
         this.checkInput(); //gestiona el input de cada jugador en su turno
-        this.playerGroup.children[0].bulletUpdate(this.mapa);
-
+        this.playerGroup.children[this.turno].bulletUpdate(this.mapa);
+        this.compruebaTurno();
         //gestiona las colisiones de balas y su llamada a destrucción
       } else {
         //La tecla enter manda al menu inicial
@@ -89,8 +93,8 @@ var PlayScene = {
 
       }
     }
-    else{
-    this.game.state.start("CreditScene");
+    else {
+      this.game.state.start("CreditScene");
     }
   },
 
@@ -106,8 +110,8 @@ var PlayScene = {
     );
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
     this.game.debug.text(
-      "resources: " + this.playerGroup.children[0].resources + " walks: " +
-      this.playerGroup.children[0].walkCont,
+      "resources: " + this.playerGroup.children[this.turno].resources + " walks: " +
+      this.playerGroup.children[this.turno].walkCont,
       32,
       640,
       "yellow",
@@ -116,9 +120,9 @@ var PlayScene = {
 
 
 
-    if (this.playerGroup.children[0].currentWeapon){
+    if (this.playerGroup.children[this.turno].currentWeapon) {
       this.game.debug.text(
-        `Debugging object: CURRENT WEAPON: ` +  this.playerGroup.children[0].currentWeapon.tipoArma,
+        `Debugging object: CURRENT WEAPON: ` + this.playerGroup.children[this.turno].currentWeapon.tipoArma,
 
         350,
         610,
@@ -127,8 +131,8 @@ var PlayScene = {
       );
       this.game.debug.text(
 
-        "balas: " + this.playerGroup.children[0].currentWeapon.balas_Cont + " damage: " + 
-        this.playerGroup.children[0].currentWeapon.weaponDamage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
+        "balas: " + this.playerGroup.children[this.turno].currentWeapon.balas_Cont + " damage: " +
+        this.playerGroup.children[this.turno].currentWeapon.weaponDamage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
         350,
         640,
         "yellow",
@@ -154,7 +158,7 @@ var PlayScene = {
     var auxCamera_H = this.hud.height + this.previousWorld_H; //eje: worldH 1184 + 208 = 1392; así permite a la cam sobrepasar los límites del mundo
 
     //gestion de la camara
-    this.game.camera.follow(this.playerGroup.children[0]);
+    this.game.camera.follow(this.playerGroup.children[this.turno]);
     //se invoca a los método de los gameObjects
     this.mapa.resizeLayer(scale);
     //this.playerGroup.children[0].resizePlayer(scale);
@@ -193,7 +197,7 @@ var PlayScene = {
     } else if (this.inputAux.isDown(this.key2)) {
       this.zoomTo(1);
     } else {
-      this.playerGroup.children[0].checkInput(this.mapa, this.objGr);
+      this.playerGroup.children[this.turno].checkInput(this.mapa, this.objGr);
     }
     //la tecla esc activa el menu de pausa
     if (this.inputAux.isDown(27)) {
@@ -215,6 +219,21 @@ var PlayScene = {
     //Hace transparente el menu de pausa
     this.Pause.alpha = 0;
   },
+  //Pasa el turno al siguiente
+  pasaTurno: function () {
+
+    this.turno++;
+    if (this.turno === this.numPlayers) {
+      this.turno = 100;
+    }
+    this.playerGroup.children[this.turno].walkCont = 10;
+  },
+  compruebaTurno: function () {
+    if (this.playerGroup.children[this.turno].walkCont <= 0) {
+      this.pasaTurno();
+    }
+
+  }
 
 };
 
