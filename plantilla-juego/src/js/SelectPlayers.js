@@ -26,15 +26,15 @@ var SelectPlayers =  {
 
     },
     functButton1: function(game){
-        game.numPlayers = 2;
+        this.game.numPlayers = 2;
         this.state.start('play');
     },
     functButton2: function(game){
-        game.numPlayers = 3;
+        this.game.numPlayers = 3;
         this.state.start('play');
     },
     functButton3: function(game){
-        game.numPlayers = 4;
+        this.game.numPlayers = 4;
         this.state.start('play');
     }
 };
