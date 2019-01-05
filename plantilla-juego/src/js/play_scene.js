@@ -58,6 +58,7 @@ var PlayScene = {
     this.pause = false;
     var Pause;
 
+
     //Musica
     var MusicaFondo;
     this.MusicaFondo = this.game.add.audio('AudioJuego', 0.05, true);
@@ -85,6 +86,7 @@ var PlayScene = {
           this.pause = false;
           this.endPause();
         }
+
       }
     }
     else{
@@ -112,16 +114,20 @@ var PlayScene = {
       "Segoe UI"
     );
 
-    if (this.playerGroup.children[0].currentWeapon) {
+
+
+    if (this.playerGroup.children[0].currentWeapon){
       this.game.debug.text(
-        `Debugging object: CURRENT WEAPON: ` + this.playerGroup.children[0].currentWeapon.tipoArma,
+        `Debugging object: CURRENT WEAPON: ` +  this.playerGroup.children[0].currentWeapon.tipoArma,
+
         350,
         610,
         "yellow",
         "Segoe UI"
       );
       this.game.debug.text(
-        "balas: " + this.playerGroup.children[0].currentWeapon.balas_Cont + " damage: " +
+
+        "balas: " + this.playerGroup.children[0].currentWeapon.balas_Cont + " damage: " + 
         this.playerGroup.children[0].currentWeapon.damage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
         350,
         640,
