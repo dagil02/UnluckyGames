@@ -39,12 +39,7 @@ var PlayScene = {
       { x: 688, y: 64  },
       { x: 32, y: 560 }
     ];
-    /*
-    { x: 128, y: 96 },
-      { x: 32, y: 560 },
-      { x: 688, y: 64 },
-      { x: 640, y: 512 }
-    */
+    
     for (var i = 0; i < this.game.numPlayers; i++) {
       this.playerGroup.add(
         new player(
