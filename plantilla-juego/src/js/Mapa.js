@@ -14,10 +14,8 @@ function Mapa(game) {
   this.layer_obstaculo_1;
   this.layer_obstaculo_2;
 
-  //efectos de sonido 
-  this.SonidoRecurso = this.game.add.audio('Recursos',1,false);
- 
-
+  //efectos de sonido
+  this.SonidoRecurso = this.game.add.audio("Recursos", 1, false);
 
   //gestion escalar: 1 por defecto. se usa en el método Prototype.LayerResize
   this.auxScale = 1;
@@ -211,7 +209,6 @@ function Mapa(game) {
 
   //Comprueba si el tile está ocupado en base al valor del atributo index:
   this.TileOcupado = function(variable, grupoCapas) {
-   
     var colision = false;
     var i = 1;
     //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
@@ -245,8 +242,6 @@ Mapa.prototype.generate = function(plGr) {
   this.GrupoObjetos.add(this.GrupoRecursos);
   this.GrupoObjetos.add(this.GrupoArmas);
   this.GrupoObjetos.add(this.wallGroup);
-
-  
 
   //se crean las capas, se definen como colisiones y se añaden al grupo
   this.añadeLayer();
@@ -288,7 +283,7 @@ Mapa.prototype.resizeLayer = function(scale) {
 //recibe mensaje class: Player
 Mapa.prototype.playerCheckLayerCollision = function(player) {
   var bool = false;
-  
+
   //recogen la posición real de body
   var X = player.body.x;
   var Y = player.body.y;
@@ -315,7 +310,8 @@ Mapa.prototype.PlayerObjectCheckCollision = function(player) {
   while (!bool && i < this.GrupoObjetos.length) {
     bool = this.game.physics.arcade.collide(
       player,
-      this.GrupoObjetos.children[i].children, this.CallBackCollision
+      this.GrupoObjetos.children[i].children,
+      this.CallBackCollision
     );
     i++;
   }
@@ -323,13 +319,13 @@ Mapa.prototype.PlayerObjectCheckCollision = function(player) {
 };
 //método callback invocado desde la función arcade.collide
 //solo actuará si el primer parámetro es bala
-Mapa.prototype.CallBackCollision = function(obj, colObj){
-  if (obj.name === 'bullet'){
-    if (colObj.name === "resource" || colObj.name === "wall"){
+Mapa.prototype.CallBackCollision = function(obj, colObj) {
+  if (obj.name === "bullet") {
+    if (colObj.name === "resource" || colObj.name === "wall") {
       colObj.destroy(); //destruye el recurso
     }
   }
-}
+};
 //comunica con class: player. Jugador manda la orden de construir. y espera true o false
 Mapa.prototype.añadeWall = function(player) {
   var bool = false;
@@ -355,8 +351,7 @@ Mapa.prototype.añadeWall = function(player) {
 
 //recibe mensaje de class: Player. busca el arma en la orientación y colision con player
 //la vuelve invisible y sin físicas, y la solapa al body de player
-Mapa.prototype.armedPlayer = function (player, weapon) {
-
+Mapa.prototype.armedPlayer = function(player, weapon) {
   //si el jugador no está armado hasta los dientes
   if (!player.currentWeapon) {
     //reacondiciona las físicas
@@ -365,10 +360,9 @@ Mapa.prototype.armedPlayer = function (player, weapon) {
     weapon.body.checkCollision = false;
     //overlapa los sprites
     weapon.position = player.position;
-    player.currentWeapon = weapon;//el atributo recoge los valores del arma para gestionarlos desde class: Player
-    //weapon.alpha = 0; //lo vuelve invisible 
+    player.currentWeapon = weapon; //el atributo recoge los valores del arma para gestionarlos desde class: Player
+    weapon.alpha = 0; //lo vuelve invisible
   }
-
 };
 
 //recibe mensaje de class: Player. busca y destruye el recurso en orientación y colision
@@ -423,54 +417,48 @@ Mapa.prototype.playerPickUpObject = function(player) {
       resource[0].destroy();
       player.walkCont -= player.walk_WallScale;
     } else if (resource[0].name === "weapon") {
-      this.armedPlayer(player,  resource[0]);
+      this.armedPlayer(player, resource[0]);
     }
   }
 };
 //suelta objeto (arma)
-Mapa.prototype.playerDropObject = function (player){
-
+Mapa.prototype.playerDropObject = function(player) {
   //se recoge la pos previa
   var prevPlayer = { x: player.x, y: player.y };
-  //se recoge el arma actual 
-  var  weapon = player.currentWeapon;
-  //se calcula la nueva pos en base a la orientación
-  var dir = this.direction(player);
+
+  var weapon = player.currentWeapon;
   //se deshabilita el arma de player para que el body no desplace más tiles con ejerciendo fuerza
   player.currentWeapon = null;
-  //se simula una nueva pos
-  player.x += dir.x;
-  player.y += dir.y;
 
+  //se calcula la nueva pos en base a la orientación
+  var dir = this.direction(player);
+  var auxX = player.x + dir.x;
+  var auxY = player.y + dir.y;
+  var aux = require("./Armas");
+  var weaPON = new aux(this.game, auxX, auxY, weapon.tipoArma);
+  weaPON.generate();
   //se comprueba la colisión con las colisiones constantes del mapa
-  var XY = { 'x': (player.x / player.width), 'y': (player.y / player.height) }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
+  var XY = { x: weaPON.x / player.width, y: weaPON.y / player.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
 
   var bool = false;
   bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
+
   //en caso de no haber colision comprueba que no exista con armas, recursos o muros
-  if (!bool && !this.AñadeObjetoAux(player)) {
-    //el arma se queda en la nueva pos
-    weapon.x = player.x; weapon.y = player.y;
-    weapon.body.x = weapon.x; weapon.body.y = weapon.y;
-    //player vuelve a su posción
-    player.x = prevPlayer.x; player.y = prevPlayer.y;
-    player.body.x = player.x; player.body.y = player.y;
-    //reacondiciona las físicas
-    weapon.body.collideWorldBounds = true;
-    weapon.body.immovable = true;
-    weapon.body.checkCollision = true;
-     //weapon.alpha = 1; //lo hace visible
-  } 
-  else {
-    //player recupera su posición anterior y el arma que portaba 
-    player.x = prevPlayer.x; player.y = prevPlayer.y;
+  if (!bool && !this.AñadeObjetoAux(weaPON)) {
+    weaPON.balas_Cont = weapon.balas_Cont;
+    weapon.destroy();
+    this.GrupoArmas.add(weaPON);
+    this.game.world.bringToTop(this.GrupoArmas);
+  } else {
     player.currentWeapon = weapon;
+    weaPON.destroy();
   }
-}
+};
 
 Mapa.prototype.direction = function(player) {
   var orientation = player.orientation;
-  var width = player.width; var height = player.height;
+  var width = player.width;
+  var height = player.height;
   var dir = { x: 0, y: 0 }; //coordenadas de retorno
   //0:arriba; 1:derecha; 2:abajo; 3:izquierda
   if (orientation === 0) {
@@ -488,6 +476,5 @@ Mapa.prototype.direction = function(player) {
   }
   return dir;
 };
-
 
 module.exports = Mapa;

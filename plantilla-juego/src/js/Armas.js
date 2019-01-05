@@ -33,8 +33,8 @@ function Armas(game, x, y, sprite) {
 	//función para determinar el tipo de arma e inicializar sus atributos
 	this.Tipo_De_Arma = function () {
 		if (this.tipoArma === "pistola") { this.alcance = 5; this.weaponDamage = 10; this.balas_image = 'b_Gun'; this.walk_WeaponScale = 1;}
-		else if (this.tipoArma === "Subfusil") { this.alcance = 10; this.weaponDamage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3;}
-		else if (this.tipoArma = "francoTirador") { this.alcance = 20; this.weaponDamage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6;}
+		else if (this.tipoArma === "subFusil") { this.alcance = 10; this.weaponDamage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3;}
+		else if (this.tipoArma === "francoTirador") { this.alcance = 20; this.weaponDamage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6;}
 	}
 
 }
