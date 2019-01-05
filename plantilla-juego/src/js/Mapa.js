@@ -350,18 +350,11 @@ Mapa.prototype.añadeWall = function(player) {
 };
 
 //recibe mensaje de class: Player. busca el arma en la orientación y colision con player
-//la vuelve invisible y sin físicas, y la solapa al body de player
 Mapa.prototype.armedPlayer = function(player, weapon) {
   //si el jugador no está armado hasta los dientes
   if (!player.currentWeapon) {
-    //reacondiciona las físicas
-    weapon.body.collideWorldBounds = false;
-    weapon.body.immovable = false;
-    weapon.body.checkCollision = false;
-    //overlapa los sprites
-    weapon.position = player.position;
     player.currentWeapon = weapon; //el atributo recoge los valores del arma para gestionarlos desde class: Player
-    weapon.alpha = 0; //lo vuelve invisible
+    weapon.destroy();
   }
 };
 
@@ -425,6 +418,7 @@ Mapa.prototype.playerPickUpObject = function(player) {
 Mapa.prototype.playerDropObject = function(player) {
   //se recoge la pos previa
   var prevPlayer = { x: player.x, y: player.y };
+  var XY;
 
   var weapon = player.currentWeapon;
   //se deshabilita el arma de player para que el body no desplace más tiles con ejerciendo fuerza
@@ -436,9 +430,17 @@ Mapa.prototype.playerDropObject = function(player) {
   var auxY = player.y + dir.y;
   var aux = require("./Armas");
   var weaPON = new aux(this.game, auxX, auxY, weapon.tipoArma);
+  //si se crea con la escala aumentada debe redimensionarse
+  if (weaPON.auxScale !== player.auxScale) {
+    weaPON.resizeObject(player.auxScale);
+    //como el método ya duplica una posición presupuesta de 16*16 hay que dividir
+    weaPON.x /= player.auxScale;
+    weaPON.y /= player.auxScale;  
+  }
+
   weaPON.generate();
-  //se comprueba la colisión con las colisiones constantes del mapa
-  var XY = { x: weaPON.x / player.width, y: weaPON.y / player.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
+  XY = { x: weaPON.x / player.width, y: weaPON.y / player.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
+ 
 
   var bool = false;
   bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
@@ -478,3 +480,13 @@ Mapa.prototype.direction = function(player) {
 };
 
 module.exports = Mapa;
+
+
+/** //reacondiciona las físicas
+    /*weapon.body.collideWorldBounds = false;
+    weapon.body.immovable = false;
+    weapon.body.checkCollision = false;
+    //overlapa los sprites
+    weapon.position = player.position;
+    player.currentWeapon = weapon; //el atributo recoge los valores del arma para gestionarlos desde class: Player
+    //weapon.alpha = 0; //lo vuelve invisible*/ 

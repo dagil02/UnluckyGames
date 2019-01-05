@@ -6,7 +6,9 @@ var player = require("./Player");
 //var cursors;
 
 var PlayScene = {
-  create: function () {
+  create: function() {
+
+    // ************** CONSTANTES Y VARIABLES DE GAME **********************
     //World
     this.game.world.setBounds(0, 0, 800, 592);
     this.game.camera.setBoundsToWorld();
@@ -21,12 +23,33 @@ var PlayScene = {
 
     //Input
     this.inputAux = this.game.input.keyboard;
+    //zoom: scale*2; scale*1
     this.key1 = Phaser.KeyCode.ONE;
     this.key2 = Phaser.KeyCode.TWO;
-    this.key3 = Phaser.KeyCode.THREE;
+    //pausa
+    this.key3 = Phaser.KeyCode.ESC;
+    //vuelta al menu
+    this.key4 = Phaser.KeyCode.ENTER;
 
-    //GENERACION DE ELEM DE JUEGO
-    //jugadores
+    //Variables que controlan la pausa
+    this.pause = false; //bool de control
+    this.menuPause; //se genera un sprite
+
+    //Musica
+    this.MusicaFondo = this.game.add.audio("AudioJuego", 0.05, true);
+    this.MusicaFondo.play();
+
+    //fin del juego
+    this.endGame = false;
+
+    //LOGICA TURNOS
+    //numero de jugadores en partida CONSTANTE
+    this.numPlayers = this.game.numPlayers;
+    this.turno = 0; //variable
+    //******************************************************************* */
+
+    //******************* GENERACION DE ELEM DE JUEGO *******************
+    //JUGADORES
     this.playerGroup = this.game.add.group();
     //desierto; niveve; praderaTop; praderaButton
     this.playerPos = [
@@ -35,17 +58,39 @@ var PlayScene = {
       { x: 688, y: 64 },
       { x: 640, y: 512 }
     ];
-    for (var i = 0; i < this.playerPos.length; i++) {
-      this.playerGroup.add(
-        new player(
-          this.game,
-          this.playerPos[i].x,
-          this.playerPos[i].y,
-          "player_1"
-        )
-      );
+    //se crean los jugadores y se meten en el grupo
+    var numAparecidos = [];
+    for (var i = 0; i < this.numPlayers; i++) {
+      //genera un aleatorio para colocar a los jugadores
+      //el doble bucle anidado interno evita que el random repita posición para dos o más jugadores.
+      var esta = true;
+      var r;
+      while (esta) {
+        r = Math.floor(Math.random() * 4);
+        var bool = false;
+        var j = 0;
+        while (!bool && j < numAparecidos.length) {
+          bool = r === numAparecidos[j];
+          j++;
+        }
+        if (bool) {
+          r = Math.floor(Math.random() * 4);
+        } else {
+          esta = false;
+          numAparecidos.push(r);
+        }
+      }
+      var rPos = this.playerPos[r];
+      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, "player_1"));
     }
-    //mapa y recursos
+    //contador de pasos. CONSTANTE
+    this.playerWalkCont = 50;
+    //por cada miembro del grupo se actualiza su contador
+    this.playerGroup.forEach(element => {
+      element.walkCont = this.playerWalkCont;
+    });
+
+    //MAPA Y RECURSOS
     this.mapa = new mapa(this.game);
     this.mapa.generate(this.playerGroup);
 
@@ -53,27 +98,9 @@ var PlayScene = {
     this.objGr = this.mapa.GrupoObjetos;
 
     this.game.world.bringToTop(this.playerGroup);
-
-    //Variables que controlan la pausa
-    this.pause = false;
-    var Pause;
-
-
-    //Musica
-    var MusicaFondo;
-    this.MusicaFondo = this.game.add.audio('AudioJuego', 0.05, true);
-
-    this.MusicaFondo.play();
-
-    //fin del juego
-    this.endGame = false;
-
-    //lógica de turnos
-    this.numPlayers = this.game.numPlayers;
-    this.turno = 0;
   },
 
-  update: function () {
+  update: function() {
     if (!this.endGame) {
       if (!this.pause) {
         this.checkInput(); //gestiona el input de cada jugador en su turno
@@ -82,47 +109,40 @@ var PlayScene = {
         //gestiona las colisiones de balas y su llamada a destrucción
       } else {
         //La tecla enter manda al menu inicial
-        if (this.inputAux.isDown(13)) {
+        if (this.inputAux.isDown(this.key4)) {
           this.pause = false;
           this.game.state.start("Menu");
           //la barra espaciadora reanuda el juego
-        } else if (this.inputAux.isDown(32)) {
+        } else if (this.inputAux.isDown(this.key3)) {
           this.pause = false;
           this.endPause();
         }
-
       }
-    }
-    else {
+    } else {
       this.game.state.start("CreditScene");
     }
   },
 
-  render: function () {
+  render: function() {
     var y = 38;
 
-    this.game.debug.text(
-      `PLAYER TESTING: `,
-      32,
-      610,
-      "yellow",
-      "Segoe UI"
-    );
+    this.game.debug.text(`PLAYER TESTING: `, 32, 610, "yellow", "Segoe UI");
     //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
     this.game.debug.text(
-      "resources: " + this.playerGroup.children[this.turno].resources + " walks: " +
-      this.playerGroup.children[this.turno].walkCont,
+      "resources: " +
+        this.playerGroup.children[this.turno].resources +
+        " walks: " +
+        this.playerGroup.children[this.turno].walkCont,
       32,
       640,
       "yellow",
       "Segoe UI"
     );
 
-
-
     if (this.playerGroup.children[this.turno].currentWeapon) {
       this.game.debug.text(
-        `Debugging object: CURRENT WEAPON: ` + this.playerGroup.children[this.turno].currentWeapon.tipoArma,
+        `Debugging object: CURRENT WEAPON: ` +
+          this.playerGroup.children[this.turno].currentWeapon.tipoArma,
 
         350,
         610,
@@ -130,9 +150,12 @@ var PlayScene = {
         "Segoe UI"
       );
       this.game.debug.text(
-
-        "balas: " + this.playerGroup.children[this.turno].currentWeapon.balas_Cont + " damage: " +
-        this.playerGroup.children[this.turno].currentWeapon.weaponDamage + " alcance: " + this.playerGroup.children[0].currentWeapon.alcance,
+        "balas: " +
+          this.playerGroup.children[this.turno].currentWeapon.balas_Cont +
+          " damage: " +
+          this.playerGroup.children[this.turno].currentWeapon.weaponDamage +
+          " alcance: " +
+          this.playerGroup.children[0].currentWeapon.alcance,
         350,
         640,
         "yellow",
@@ -143,7 +166,7 @@ var PlayScene = {
     //this.game.debug.text("", 32, 660, "yellow", "Segoe UI");
   },
 
-  zoomTo: function (scale) {
+  zoomTo: function(scale) {
     //escalar
     var auxScale = this.previousScale; //auxiliar para recoger el escalar previo
     this.boolScale = this.previousScale === 2;
@@ -157,8 +180,6 @@ var PlayScene = {
     //cámara
     var auxCamera_H = this.hud.height + this.previousWorld_H; //eje: worldH 1184 + 208 = 1392; así permite a la cam sobrepasar los límites del mundo
 
-    //gestion de la camara
-    this.game.camera.follow(this.playerGroup.children[this.turno]);
     //se invoca a los método de los gameObjects
     this.mapa.resizeLayer(scale);
     //this.playerGroup.children[0].resizePlayer(scale);
@@ -172,9 +193,11 @@ var PlayScene = {
     if (!this.boolScale) {
       this.HudScale();
     }
+    //gestion de la camara
+    this.game.camera.follow(this.playerGroup.children[this.turno]);
   },
 
-  HudScale: function () {
+  HudScale: function() {
     if (this.game.camera.x > 0 || this.game.camera.y > 0) {
       if (this.game.camera.x > 0) {
         this.hud.x = this.game.camera.x;
@@ -191,7 +214,7 @@ var PlayScene = {
     this.game.world.bringToTop(this.hud);
   },
 
-  checkInput: function () {
+  checkInput: function() {
     if (this.inputAux.isDown(this.key1)) {
       this.zoomTo(2);
     } else if (this.inputAux.isDown(this.key2)) {
@@ -200,43 +223,43 @@ var PlayScene = {
       this.playerGroup.children[this.turno].checkInput(this.mapa, this.objGr);
     }
     //la tecla esc activa el menu de pausa
-    if (this.inputAux.isDown(27)) {
+    if (this.inputAux.isDown(this.key3)) {
       this.pause = true;
       this.startPause();
     }
   },
 
-  startPause: function () {
-    this.Pause = this.game.add.sprite(
+  startPause: function() {
+    //crea un nuevo objeto tipo spirte
+    this.menuPause = this.game.add.sprite(
       this.game.world.centerX,
       this.game.world.centerY,
       "Pausa"
     );
-    this.Pause.alpha = 0.7;
-    this.Pause.anchor.setTo(0.5, 0.5);
+    //valores de renderizado del menuPause
+    this.menuPause.alpha = 0.7;
+    this.menuPause.anchor.setTo(0.5, 0.5);
+    this.MusicaFondo.pause(); //se pausa la música
   },
-  endPause: function () {
-    //Hace transparente el menu de pausa
-    this.Pause.alpha = 0;
+  endPause: function() {
+    //destruye le sprite
+    this.menuPause.destroy();
+    this.MusicaFondo.play(); //reanuda la música
   },
   //Pasa el turno al siguiente
-  pasaTurno: function () {
-
-    this.turno++;
-    if (this.turno === this.numPlayers) {
-      this.turno = 0;
-    }
-    this.playerGroup.children[this.turno].walkCont = 100;
+  pasaTurno: function() {
+    //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
+    this.turno = (this.turno + 1) % this.numPlayers;
+    //actualiza el contador de pasos según la constante
+    this.playerGroup.children[this.turno].walkCont = this.playerWalkCont;
+    //gestion de la camara
+    this.game.camera.follow(this.playerGroup.children[this.turno]);
   },
-  compruebaTurno: function () {
+  compruebaTurno: function() {
     if (this.playerGroup.children[this.turno].walkCont <= 0) {
       this.pasaTurno();
     }
-
   }
-
 };
-
-
 
 module.exports = PlayScene;
