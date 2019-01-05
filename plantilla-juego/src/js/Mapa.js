@@ -14,6 +14,10 @@ function Mapa(game) {
   this.layer_obstaculo_1;
   this.layer_obstaculo_2;
 
+  //efectos de sonido 
+  this.SonidoRecurso = this.game.add.audio('Recursos',1,false);
+ 
+
 
   //gestion escalar: 1 por defecto. se usa en el método Prototype.LayerResize
   this.auxScale = 1;
@@ -351,24 +355,25 @@ Mapa.prototype.añadeWall = function(player) {
 
 //recibe mensaje de class: Player. busca el arma en la orientación y colision con player
 //la vuelve invisible y sin físicas, y la solapa al body de player
-Mapa.prototype.armedPlayer = function(player, weapon) {
-  //reacondicia las físicas
-  weapon.body.collideWorldBounds = false;
-  weapon.body.immovable = false;
-  weapon.body.checkCollision = false;
-  //overlapa los sprites
-  weapon.position = player.position;
-  player.currentWeapon = weapon;//el atributo recoge los valores del arma para gestionarlos desde class: Player
-  //weapon.alpha = 0; //lo vuelve invisible 
+Mapa.prototype.armedPlayer = function (player, weapon) {
 
-  
-  
+  //si el jugador no está armado hasta los dientes
+  if (!player.currentWeapon) {
+    //reacondiciona las físicas
+    weapon.body.collideWorldBounds = false;
+    weapon.body.immovable = false;
+    weapon.body.checkCollision = false;
+    //overlapa los sprites
+    weapon.position = player.position;
+    player.currentWeapon = weapon;//el atributo recoge los valores del arma para gestionarlos desde class: Player
+    //weapon.alpha = 0; //lo vuelve invisible 
+  }
 
 };
 
 //recibe mensaje de class: Player. busca y destruye el recurso en orientación y colision
 //y sube el contador de recursos de player
-Mapa.prototype.plasyerPickUpObject = function(player) {
+Mapa.prototype.playerPickUpObject = function(player) {
   //orientacion: 0 = arr, 1 = der, 2 = abaj, 3 = izq
   var resource = [];
   var i = 0;
@@ -410,9 +415,11 @@ Mapa.prototype.plasyerPickUpObject = function(player) {
   if (resource.length >= 1) {
     if (resource[0].name === "resource") {
       player.resources += resource[0].cantidad;
+      this.SonidoRecurso.play();
       resource[0].destroy();
       player.walkCont -= player.walk_ResourceScale;
     } else if (resource[0].name === "wall") {
+      this.SonidoRecurso.play();
       resource[0].destroy();
       player.walkCont -= player.walk_WallScale;
     } else if (resource[0].name === "weapon") {
@@ -420,9 +427,67 @@ Mapa.prototype.plasyerPickUpObject = function(player) {
     }
   }
 };
+//suelta objeto (arma)
+Mapa.prototype.playerDropObject = function (player){
+
+  //se recoge la pos previa
+  var prevPlayer = { x: player.x, y: player.y };
+  //se recoge el arma actual 
+  var  weapon = player.currentWeapon;
+  //se calcula la nueva pos en base a la orientación
+  var dir = this.direction(player);
+  //se deshabilita el arma de player para que el body no desplace más tiles con ejerciendo fuerza
+  player.currentWeapon = null;
+  //se simula una nueva pos
+  player.x += dir.x;
+  player.y += dir.y;
+
+  //se comprueba la colisión con las colisiones constantes del mapa
+  var XY = { 'x': (player.x / player.width), 'y': (player.y / player.height) }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
+
+  var bool = false;
+  bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
+  //en caso de no haber colision comprueba que no exista con armas, recursos o muros
+  if (!bool && !this.AñadeObjetoAux(player)) {
+    //el arma se queda en la nueva pos
+    weapon.x = player.x; weapon.y = player.y;
+    weapon.body.x = weapon.x; weapon.body.y = weapon.y;
+    //player vuelve a su posción
+    player.x = prevPlayer.x; player.y = prevPlayer.y;
+    player.body.x = player.x; player.body.y = player.y;
+    //reacondiciona las físicas
+    weapon.body.collideWorldBounds = true;
+    weapon.body.immovable = true;
+    weapon.body.checkCollision = true;
+     //weapon.alpha = 1; //lo hace visible
+  } 
+  else {
+    //player recupera su posición anterior y el arma que portaba 
+    player.x = prevPlayer.x; player.y = prevPlayer.y;
+    player.currentWeapon = weapon;
+  }
+}
+
+Mapa.prototype.direction = function(player) {
+  var orientation = player.orientation;
+  var width = player.width; var height = player.height;
+  var dir = { x: 0, y: 0 }; //coordenadas de retorno
+  //0:arriba; 1:derecha; 2:abajo; 3:izquierda
+  if (orientation === 0) {
+    dir.x = 0;
+    dir.y = -1 * height;
+  } else if (orientation === 1) {
+    dir.x = 1 * width;
+    dir.y = 0;
+  } else if (orientation === 2) {
+    dir.x = 0;
+    dir.y = 1 * height;
+  } else if (orientation === 3) {
+    dir.x = -1 * width;
+    dir.y = 0;
+  }
+  return dir;
+};
 
 
 module.exports = Mapa;
-
-
-// + this.layer_obstaculo_1.getTiles (0, 0, 800, 592, true) + this.layer_obstaculo_2.getTiles (0, 0, 800, 592, true);

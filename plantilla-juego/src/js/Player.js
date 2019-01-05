@@ -59,14 +59,9 @@ function Player(game, x, y, sprite) {
   this.body.bounce.setTo(1, 1);
   this.body.x = this.x;
   this.body.y = this.y;
-//efectos de sonido
-  var SonidoDisparo;
-  var SonidoRecurso;
-  var SonidoPasos;
-  var SonidoMuros;
-  
+
+  //efectos de sonido
   this.SonidoDisparo = this.game.add.audio('Disparo',1,false);
-  this.SonidoRecurso = this.game.add.audio('Recursos',1,false);
   this.SonidoPasos = this.game.add.audio('Pasos',0.1,false);
   this.SonidoMuros = this.game.add.audio('Muro',0.5,false);
 }
@@ -91,7 +86,7 @@ Player.prototype.resizePlayer = function(scale) {
   });
 };
 
-Player.prototype.checkInput = function(mapa, obj) {
+Player.prototype.checkInput = function (mapa, obj) {
   //desplazamiento y orientacion
   if (
     this.inputAux.isDown(this.key1) ||
@@ -106,14 +101,17 @@ Player.prototype.checkInput = function(mapa, obj) {
     this.inputAux.isDown(this.key6)
   ) {
     if (this.inputAux.isDown(this.key5)) {
-      mapa.plasyerPickUpObject(this);
+      mapa.playerPickUpObject(this);
     } else {
       this.buildWall(mapa);
     }
-  } else if (this.inputAux.isDown(this.key8)) {
-
-    this.SonidoDisparo.play();
-
+  } else if (this.inputAux.isDown(this.key7)) {
+    if (this.currentWeapon){
+      mapa.playerDropObject(this);
+    }
+  
+  }
+  else if (this.inputAux.isDown(this.key8)) {
     this.shotBullet();
   }
 };
@@ -135,7 +133,6 @@ Player.prototype.checkMove = function(mapa) {
   //arriba W
   if (this.inputAux.isDown(this.key2)) {
     this.orientation = 0;
-
     if (this.body.y >= this.height) {
       pos.y -= this.width;
       posPrevia.y -= this.height / this.auxScale;
@@ -198,8 +195,9 @@ Player.prototype.movePlayer = function(mapa, posT) {
   } else {
     //gestiona un timeCounter para regular la velocidad de desplazamiento
     //y decrementa los pasos le jugador
-    this.SonidoPasos.play();
+    
     if (this.game.time.now > this.timeMove) {
+      this.SonidoPasos.play();
       this.walkCont--;
       this.timeMove = this.game.time.now + this.velMove;
     } else {
@@ -229,6 +227,7 @@ Player.prototype.buildWall = function(mapa) {
     //controla el tiempo de creación
     if (this.game.time.now > this.timeMove) {
       if (mapa.añadeWall(this)) {
+        this.SonidoMuros.play();
         this.resources--;
         this.timeMove = this.game.time.now + this.velMove;
       }
@@ -245,6 +244,7 @@ Player.prototype.shotBullet = function() {
       //3º que el arma tenga balas en la recamara. Shot: devuelve true y decrementa las balas en la recamara
       if (this.currentWeapon.Shot()) {
         //se genera la bala y se establece su lógica de movimiento
+        this.SonidoDisparo.play();
         var bullet = require("./Bala");
         var shot = new bullet(this.game, this.x, this.y, "bala");
         shot.generate(this);
