@@ -25,17 +25,27 @@ var PlayScene = {
     this.key2 = Phaser.KeyCode.TWO;
     this.key3 = Phaser.KeyCode.THREE;
 
+    //lógica de turnos
+    this.numPlayers = this.game.numPlayers;
+    this.turno = 0;
+
     //GENERACION DE ELEM DE JUEGO
     //jugadores
     this.playerGroup = this.game.add.group();
     //desierto; niveve; praderaTop; praderaButton
     this.playerPos = [
       { x: 128, y: 96 },
+      { x: 640, y: 512 },
+      { x: 688, y: 64  },
+      { x: 32, y: 560 }
+    ];
+    /*
+    { x: 128, y: 96 },
       { x: 32, y: 560 },
       { x: 688, y: 64 },
       { x: 640, y: 512 }
-    ];
-    for (var i = 0; i < this.playerPos.length; i++) {
+    */
+    for (var i = 0; i < this.game.numPlayers; i++) {
       this.playerGroup.add(
         new player(
           this.game,
@@ -68,9 +78,7 @@ var PlayScene = {
     //fin del juego
     this.endGame = false;
 
-    //lógica de turnos
-    this.numPlayers = this.game.numPlayers;
-    this.turno = 0;
+    
   },
 
   update: function () {
