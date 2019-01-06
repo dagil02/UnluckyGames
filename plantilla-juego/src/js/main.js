@@ -53,7 +53,7 @@ var PreloaderScene = {
     this.game.load.image("posIni", "assets/sprites/posPlayer.png");
 
     //videos
-    this.game.load.video("Intro", "/assets/videos/Battlefort_intro.webm");
+    this.game.load.video("introScene", "/assets/videos/Battlefort_intro.webm");
 
     //textura de menus
     this.game.load.image("Menu", "assets/sprites/menus/textura_mainMenu.png");
@@ -63,7 +63,8 @@ var PreloaderScene = {
       "FondoSelectPlayers",
       "assets/sprites/menus/fondoSelectPlayers.png"
     );
-    //botones
+    //BOTONES
+    //startButton
     this.game.load.image(
       "startButton",
       "assets/sprites/button/startButton.png", 800,50
@@ -71,10 +72,14 @@ var PreloaderScene = {
     this.game.load.image(
       "startButton_animation",
       "assets/sprites/button/startButton_check.png"
-    ); //startButton animación
-    this.game.load.image("Button1", "assets/sprites/button/Button1.png");
-    this.game.load.image("Button2", "assets/sprites/button/Button2.png");
-    this.game.load.image("Button3", "assets/sprites/button/Button3.png");
+    ); 
+    //selectPlayerButton
+    this.game.load.image("Button1", "assets/sprites/button/button_2Players.png");
+    this.game.load.image("Button1A", "assets/sprites/button/button_2Players_animation.png");
+    this.game.load.image("Button2", "assets/sprites/button/button_3Players.png");
+    this.game.load.image("Button2A", "assets/sprites/button/button_3Players_animation.png");
+    this.game.load.image("Button3", "assets/sprites/button/button_4Players.png");
+    this.game.load.image("Button3A", "assets/sprites/button/button_4Players_animation.png");
 
     //Musica y sonidos
     this.game.load.audio("AudioMenu", [
@@ -104,7 +109,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("Menu");
+    this.game.state.start("Menu"); //"unluckyScene"
   }
 };
 
@@ -112,7 +117,7 @@ window.onload = function() {
   var game = new Phaser.Game(50 * 16, 50 * 16, Phaser.AUTO, "game");
   game.state.add("boot", BootScene);
   game.state.add("preloader", PreloaderScene);
-  game.state.add("intro", IntroScene);
+  game.state.add("unluckyScene", IntroScene);
   game.state.add("Menu", Menu);
   game.state.add("SPScene", SelectPlayers);
   game.state.add("play", PlayScene);
