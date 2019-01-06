@@ -47,6 +47,9 @@ var PlayScene = {
     this.numPlayers = this.game.numPlayers; //se va reduciendo con cada muerte
     this.turno = 0; //variable
     this.auxTurno = 0;
+    this.pasaBool = false; 
+    //texto de transicion
+    this.text1;
     
     //******************************************************************* */
 
@@ -121,11 +124,15 @@ var PlayScene = {
   update: function() {
     if (!this.endGame) {
       if (!this.pause) {
-        this.checkPlayerLife();
-        this.compruebaTurno();
-        this.playerGroup.children[this.turno].bulletUpdate(this);
-        this.checkInput(); //gestiona el input de cada jugador en su turno
-        //gestiona las colisiones de balas y su llamada a destrucción
+        //paraliza el juego mientras se cambia de turno 
+        if (!this.pasaBool){
+          this.checkPlayerLife();
+          this.compruebaTurno();
+          this.playerGroup.children[this.turno].bulletUpdate(this);
+          this.checkInput(); //gestiona el input de cada jugador en su turno
+          //gestiona las colisiones de balas y su llamada a destrucción
+        }
+        
       } else {
         //La tecla enter manda al menu inicial
         if (this.inputAux.isDown(this.key4)) {
@@ -271,6 +278,8 @@ var PlayScene = {
   },
   //Pasa el turno al siguiente
   pasaTurno: function() {
+    this.pasaBool = false;
+    this.text1.destroy();
     //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
     this.turno = (this.turno + 1) % this.numPlayers;
     this.zoomTo(1);
@@ -287,10 +296,23 @@ var PlayScene = {
   },
   compruebaTurno: function() {
     if (this.playerGroup.children[this.turno].walkCont <= 0) {
-      this.pasaTurno();
+    this.pasaBool = true;
+    this.LooserText();
     }
   },
-  
+
+  LooserText: function () {
+    //se implementa la animacion y transición de cambio de turno
+    var aux = (this.turno + 1) % this.numPlayers;
+    this.text1 = this.game.add.text(0, 300, "GET READY LOOSER Nº " + aux, 64);
+    this.game.physics.arcade.enable(this.text1);
+    this.text1.body.velocity.x += 60;
+    this.text1.collideWorldBounds = true;
+    this.text1.body.bounce.set(1);
+    this.game.time.events.add(3000, this.pasaTurno, this);
+  },
+
+
   checkPlayerLife: function(){
     this.playerGroup.forEach(element => {
       if ( element.life <= 0){

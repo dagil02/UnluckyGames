@@ -36,7 +36,7 @@ var PreloaderScene = {
 
     //hud
     this.game.load.image("hud2", "assets/canvas/hud.png");
-
+   
     //OBJETOS
     //recursos
     this.game.load.image("arbol", "assets/sprites/arbol.png");
@@ -122,7 +122,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("introScene"); //"unluckyScene"
+    this.game.state.start("introScene"); //introScene
   }
 };
 
