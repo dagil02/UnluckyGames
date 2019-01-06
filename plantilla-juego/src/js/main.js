@@ -73,11 +73,24 @@ var PreloaderScene = {
       "startButton_animation",
       "assets/sprites/button/startButton_check.png"
     ); 
+    //creditButton
+    this.game.load.image(
+      "creditButton",
+      "assets/sprites/button/creditButton.png", 800,50
+    ); //startButton
+    this.game.load.image(
+      "creditButton_animation",
+      "assets/sprites/button/creditButton_animation.png"
+    ); 
+
     //selectPlayerButton
+    //2 players
     this.game.load.image("Button1", "assets/sprites/button/button_2Players.png");
     this.game.load.image("Button1A", "assets/sprites/button/button_2Players_animation.png");
+    //3 players
     this.game.load.image("Button2", "assets/sprites/button/button_3Players.png");
     this.game.load.image("Button2A", "assets/sprites/button/button_3Players_animation.png");
+    //4 players
     this.game.load.image("Button3", "assets/sprites/button/button_4Players.png");
     this.game.load.image("Button3A", "assets/sprites/button/button_4Players_animation.png");
 
@@ -109,7 +122,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("Menu"); //"unluckyScene"
+    this.game.state.start("introScene"); //"unluckyScene"
   }
 };
 
@@ -117,7 +130,7 @@ window.onload = function() {
   var game = new Phaser.Game(50 * 16, 50 * 16, Phaser.AUTO, "game");
   game.state.add("boot", BootScene);
   game.state.add("preloader", PreloaderScene);
-  game.state.add("unluckyScene", IntroScene);
+  game.state.add("introScene", IntroScene);
   game.state.add("Menu", Menu);
   game.state.add("SPScene", SelectPlayers);
   game.state.add("play", PlayScene);

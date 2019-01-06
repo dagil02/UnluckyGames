@@ -3,17 +3,19 @@
 var Creditos =  {
     create:function (game) {
 
-        var Credit;
+        this.game = game;
+
+        this.credti;
         this.cursor = this.game.input.keyboard;
+        this.key1 = Phaser.KeyCode.ENTER;
 
       
-        Credit = game.add.sprite(400, 700, 'FondoCreditos');
-        Credit.anchor.setTo(0.5,1);
+        this.credti = game.add.sprite(0, 0, 'FondoCreditos');
         
     },
 
     update:function (game) {
-        if (this.cursor.isDown(13)) {
+        if (this.cursor.isDown(this.key1)) {
             this.state.start('Menu');
           }
 
