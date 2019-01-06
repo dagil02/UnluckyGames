@@ -6,6 +6,7 @@ var PlayScene = require('./play_scene.js');
 var Menu = require('./StartScreen.js');
 var Creditos = require('./Creditos.js');
 var SelectPlayers = require('./SelectPlayers.js');
+var IntroScene = require('./IntroScene.js')
 
 var BootScene = {
   preload: function () {
@@ -72,11 +73,15 @@ var PreloaderScene = {
     this.game.load.audio('Recursos', ['assets/musica/recursos_mp3.mp3', 'assets/musica/recursos_ogg.ogg']);
     this.game.load.audio('Pasos', ['assets/musica/Pasos_mp3.mp3', 'assets/musica/Pasos_ogg.ogg']);
     this.game.load.audio('Muro', ['assets/musica/Muro_mp3.mp3', 'assets/musica/Muro_ogg.ogg']);
+
+    //videos
+    //this.game.load.video('Intro', '/assets/videos/Battlefort_intro.mp4'); Battlefort_intro.webm
+    this.game.load.video('Intro', '/assets/videos/Battlefort_intro.webm');
   
   },
 
   create: function () {
-    this.game.state.start('Menu');
+    this.game.state.start('intro');
 
   }
 };
@@ -86,10 +91,11 @@ window.onload = function () {
   var game = new Phaser.Game((50 * 16), (50 * 16), Phaser.AUTO, 'game');
   game.state.add('boot', BootScene);
   game.state.add('preloader', PreloaderScene);
-  game.state.add('play', PlayScene);
+  game.state.add('intro', IntroScene)
   game.state.add('Menu', Menu);
-  game.state.add('CreditScene', Creditos);
   game.state.add('SPScene', SelectPlayers);
-
+  game.state.add('play', PlayScene);
+  game.state.add('CreditScene', Creditos);
+ 
   game.state.start('boot');
 };
