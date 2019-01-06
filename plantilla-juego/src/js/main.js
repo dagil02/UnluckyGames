@@ -68,10 +68,10 @@ var PreloaderScene = {
       "startButton",
       "assets/sprites/button/startButton.png", 800,50
     ); //startButton
-    /*this.game.load.image(
+    this.game.load.image(
       "startButton_animation",
-      "assets/sprites/button/startButton.png"
-    ); //startButton animación*/
+      "assets/sprites/button/startButton_check.png"
+    ); //startButton animación
     this.game.load.image("Button1", "assets/sprites/button/Button1.png");
     this.game.load.image("Button2", "assets/sprites/button/Button2.png");
     this.game.load.image("Button3", "assets/sprites/button/Button3.png");
@@ -104,7 +104,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("intro");
+    this.game.state.start("Menu");
   }
 };
 

@@ -17,7 +17,8 @@ var startScreen = {
     //this.key1 = Phaser.KeyCode.ENTER;
     
     this.B1 = this.game.add.button(0, 100, 'startButton', this.actionOnClick, this);
- 
+    this.B1.onInputOver.add(this.funcionUP, this);
+    this.B1.onInputOut.add(this.funcionOut, this);
   
     //this.B2 = game.add.button(300, 400, 'startButton_animation', this.functButton2, this, 1, 0, 2);
     //this.B1.onInputOver.add(this.funcionUP, this);
@@ -36,13 +37,13 @@ var startScreen = {
     this.state.start("SPScene");
   },
 
-  /*funcionUP: function (){
-    this.B1.texture.loadTexture('startButton_animation');
+  funcionUP: function (){
+    this.B1.loadTexture('startButton_animation');
   },
 
   funcionOut: function(){
-    this.B1.texture.loadTexture('startButton');
-  }*/
+    this.B1.loadTexture('startButton');
+  }
 
 
 };

@@ -4,7 +4,7 @@ var SelectPlayers =  {
     
     create:function (game) {
  
-        this.playersSelection = game.add.sprite(400, 500, 'FondoSelectPlayers');
+        this.playersSelection = game.add.sprite(0, 0, 'FondoSelectPlayers');
         
         this.B1 = game.add.button(50, 400, 'Button1', this.functButton1, this, 2, 1, 0);
         this.B2 = game.add.button(300, 400, 'Button2', this.functButton2, this, 2, 1, 0);
