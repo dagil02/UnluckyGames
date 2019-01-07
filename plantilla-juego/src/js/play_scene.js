@@ -316,48 +316,35 @@ var PlayScene = {
 
   gameHUD: function(){
 
-    //player
-    //var pos1 = {'x': this.hud.x + 50, 'y': this.hud.y + 40};
-    //var pos2 = {'x': this.hud.x +50, 'y': this.hud.y + 100};
-    //var pos3 = {'x': this.hud.x + 50, 'y': this.hud.y + 160};
+    var style = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
+    var style2 = { font: "18px Calibri", fill: "#fff", tabs: [ 164, 120] };
 
-    //weapon
-    //var pos4 = {'x': this.hud.x + 400, 'y': this.hud.y + 40};
-    //var pos6 = {'x': this.hud.x + 400, 'y': this.hud.y + 100};
-    //var pos7 = {'x': this.hud.x + 400, 'y': this.hud.y + 160};
-   
+    var X = 250; var X2 = 600;
+    var Y = 125; var Y2 = 155;
+
     if (this.playerGroup.children[this.turno].currentWeapon){
    
       var aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;  
       var aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
       var aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
+
+      style2 = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
     }
-    else { aux1 =  "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "Donde alcance tu vista";}
+    else { aux1 =  "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "Donde alcance tu vista"; X2 -= 20;
+  }
 
-    this.textHUD; this.textHUD2;
+   
 
-    var style = { font: "16px Calibri", fill: "#fff", tabs: [ 164, 120] };
+    var texPlayer = this.game.add.text(this.hud.x + X, this.hud.y + 38,  this.turno , style);
+    var texLife = this.game.add.text(this.hud.x + X, this.hud.y + 66,   this.playerGroup.children[this.turno].life , style);
+  
+    var texWalks = this.game.add.text(this.hud.x + X, this.hud.y + Y,  this.playerGroup.children[this.turno].walkCont , style);
+    var textResources = this.game.add.text(this.hud.x + X, this.hud.y + Y2,  this.turno , style);
 
-    var headings = [ 'PLAYER     ' + this.turno, 'WEAPON     ' + aux1];
-
-    this.textHUD = this.game.add.text(this.hud.x + 60, this.hud.y +60, '', style);
-    this.textHUD.parseList(headings);
-
-    var swords = [
-        [ 'WALKS     '+ this.playerGroup.children[this.turno].walkCont, 'SCOPE     '+ aux3],
-        [ '' ,''],
-        [ 'RESOURCES     ' + this.playerGroup.children[this.turno].resources, 'DAMAGE     ' + aux2]
-    ];
-
-    this.textHUD2 = this.game.add.text(this.hud.x + 60, this.hud.y + 140, '', style);
-    this.textHUD2.parseList(swords);
-
-    //this.textHUD.setText(" "); 
-    //this.textHUD.parseList(headings);
-
-    //this.textHUD2.setText(" ");
-    //this.textHUD2.parseList(swords);
-
+    
+    var textWeapon = this.game.add.text(this.hud.x + X2, this.hud.y + 55,  aux1 , style2);
+    var texScope = this.game.add.text(this.hud.x + X2, this.hud.y + Y,  aux2 , style2);
+    var textDamage = this.game.add.text(this.hud.x + X2, this.hud.y + Y2,  aux3, style2);
   },
 
 };
