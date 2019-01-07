@@ -6,7 +6,7 @@ var player = require("./Player");
 //var cursors;
 
 var PlayScene = {
-  create: function() {
+  create: function () {
     // ************** CONSTANTES Y VARIABLES DE GAME **********************
     //World
     this.game.world.setBounds(0, 0, 800, 592);
@@ -27,9 +27,10 @@ var PlayScene = {
     this.key2 = Phaser.KeyCode.TWO;
     //pausa
     this.key3 = Phaser.KeyCode.ESC;
-    //vuelta al menu
+    //reanuda juego
     this.key4 = Phaser.KeyCode.ENTER;
-
+    //Vuelta al menu
+    this.key5 = Phaser.KeyCode.SPACEBAR;
     //Variables que controlan la pausa
     this.pause = false; //bool de control
     this.menuPause; //se genera un sprite
@@ -50,8 +51,8 @@ var PlayScene = {
     //TEXTOS
     //texto de transicion
     this.text1;
-    
-   
+
+
     //******************************************************************* */
 
     //******************* GENERACION DE ELEM DE JUEGO *******************
@@ -123,7 +124,7 @@ var PlayScene = {
   },
 
   //************ */RENDER Y UPDATE ********************
-  update: function() {
+  update: function () {
     if (!this.endGame) {
       if (!this.pause) {
         //paraliza el juego mientras se cambia de turno
@@ -134,30 +135,30 @@ var PlayScene = {
           this.checkInput(); //gestiona el input de cada jugador en su turno
         }
       } else {
-        //La tecla enter manda al menu inicial
-        if (this.inputAux.isDown(this.key4)) {
+        //La barra espaciadora manda al menu inicial
+        if (this.inputAux.isDown(this.key5)) {
           this.pause = false;
           this.game.state.start("Menu");
-          //la barra espaciadora reanuda el juego
-        } else if (this.inputAux.isDown(this.key3)) {
+          //la tecla enter reanuda el juego
+        } else if (this.inputAux.isDown(this.key4)) {
           this.pause = false;
           this.endPause();
         }
       }
     } else {
       this.game.state.start("CreditScene");
-      
+
     }
   },
 
-  render: function() { 
-    this.renderHUD(); 
+  render: function () {
+    this.renderHUD();
     this.game.world.bringToTop(this.GrupoTextos);
   },
   //*********************************************************************************************** */
 
   //GESTION DEL ESCALADO DEL TILEMAP Y SPRITES  ****************
-  zoomTo: function(scale) {
+  zoomTo: function (scale) {
     //escalar
     var auxScale = this.previousScale; //auxiliar para recoger el escalar previo
     this.boolScale = this.previousScale === 2;
@@ -189,7 +190,7 @@ var PlayScene = {
 
   },
 
-  HudScale: function() {
+  HudScale: function () {
     if (this.game.camera.x > 0 || this.game.camera.y > 0) {
       if (this.game.camera.x > 0) {
         this.hud.x = this.game.camera.x;
@@ -208,7 +209,7 @@ var PlayScene = {
   },
 
   //********* */GESTION DEL INPUT ************
-  checkInput: function() {
+  checkInput: function () {
     if (this.inputAux.isDown(this.key1)) {
       this.zoomTo(2);
     } else if (this.inputAux.isDown(this.key2)) {
@@ -225,11 +226,11 @@ var PlayScene = {
 
   //*********** */GESTION DE LOS MENUS Y ESTADOS ***************
 
-  startPause: function() {
+  startPause: function () {
     //crea un nuevo objeto tipo spirte
     this.menuPause = this.game.add.sprite(
       this.game.world.centerX,
-      this.game.world.centerY,
+      this.game.world.centerY+100,
       "Pausa"
     );
     //valores de renderizado del menuPause
@@ -237,7 +238,7 @@ var PlayScene = {
     this.menuPause.anchor.setTo(0.5, 0.5);
     this.MusicaFondo.pause(); //se pausa la música
   },
-  endPause: function() {
+  endPause: function () {
     //destruye le sprite
     this.menuPause.destroy();
     this.MusicaFondo.play(); //reanuda la música
@@ -255,13 +256,13 @@ var PlayScene = {
     this.zoomTo(2);
 
     //un nuevo texto antes de omenzar
-    this.text1 = this.game.add.bitmapText(this.game.camera.x + 180, this.game.camera.y + 270, "fuente2", "READY PLAYER?", 32 );
+    this.text1 = this.game.add.bitmapText(this.game.camera.x + 180, this.game.camera.y + 270, "fuente2", "READY PLAYER?", 32);
     this.text1.width = 450; this.text1.height = 90;
     this.text1.fixedToCamera = true;
 
 
     //se crea un evento de n seg dónde se amplia la cámara para identificar al siguiente jugador
-    this.game.time.events.add(2000, this.pasaTurnoAux , this);
+    this.game.time.events.add(2000, this.pasaTurnoAux, this);
   },
 
   //segunda parte del método pasa turno. es llamado después del intervalo de tiempo
@@ -278,25 +279,25 @@ var PlayScene = {
         this.playerGroup.children[i].body.immovable = true;
       }
     }
-    
+
     //se renderiza para no dejar los valores  del HUD en blanco 
     this.renderHUD();
     this.game.world.bringToTop(this.GrupoTextos);
   },
 
-  compruebaTurno: function() {
+  compruebaTurno: function () {
     if (this.playerGroup.children[this.turno].walkCont <= 0) {
       this.pasaBool = true;
       this.LooserText();
     }
   },
 
-  LooserText: function() {
+  LooserText: function () {
     //asegura que la escala sea la de por defecto
     this.zoomTo(1);
 
     //Texto precargado. bitmapFont
-    this.text1 = this.game.add.bitmapText(0,300, "fuente1", 'GET READY NEXT LOOSER', 48 );
+    this.text1 = this.game.add.bitmapText(0, 300, "fuente1", 'GET READY NEXT LOOSER', 48);
     //se definen físicas para que el texto se mueva hacia el centro de la pantalla
     this.game.physics.arcade.enable(this.text1);
     this.text1.body.velocity.x += 60;
@@ -308,7 +309,7 @@ var PlayScene = {
 
 
   //**************GESTION VIDA Y ESTADO FIN DE JUEGO  */
-  checkPlayerLife: function() {
+  checkPlayerLife: function () {
     this.playerGroup.forEach(element => {
       if (element.life <= 0) {
         element.destroy();
@@ -322,89 +323,90 @@ var PlayScene = {
   },
 
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
-  PlayerWin: function() {
+  PlayerWin: function () {
     this.game.state.start("Menu");
   },
 
   /** HEADS UP DISPLAY */
 
   //Textos que se renderizarán en el HUD 
-  gameHUD: function(){
+  gameHUD: function () {
 
     var X = 250; var X2 = 600;
     var Y = 125; var Y2 = 155;
     //player - life
-    this.hudPosPlayer = {'x':this.hud.x + X , 'y': this.hud.y + 38};
-    this.hudPosLife = {'x':this.hud.x + X , 'y': this.hud.y + 66};
+    this.hudPosPlayer = { 'x': this.hud.x + X, 'y': this.hud.y + 38 };
+    this.hudPosLife = { 'x': this.hud.x + X, 'y': this.hud.y + 66 };
     //pasos - recursos
-    this.hudPosWalks = {'x':this.hud.x + X , 'y': this.hud.y + Y};
-    this.hudPosResources = {'x':this.hud.x + X , 'y': this.hud.y + Y2};
+    this.hudPosWalks = { 'x': this.hud.x + X, 'y': this.hud.y + Y };
+    this.hudPosResources = { 'x': this.hud.x + X, 'y': this.hud.y + Y2 };
     //weapon - alcance - daño
-    this.hudPosWeapon = {'x':this.hud.x + X2 , 'y': this.hud.y + 55};
-    this.hudPosScope = {'x':this.hud.x + X2 , 'y': this.hud.y + Y};
-    this.hudPosDamage = {'x':this.hud.x + X2 , 'y': this.hud.y + Y2};
-   
-    var style = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
-    var style2 = { font: "18px Calibri", fill: "#fff", tabs: [ 164, 120] };
+    this.hudPosWeapon = { 'x': this.hud.x + X2, 'y': this.hud.y + 55 };
+    this.hudPosScope = { 'x': this.hud.x + X2, 'y': this.hud.y + Y };
+    this.hudPosDamage = { 'x': this.hud.x + X2, 'y': this.hud.y + Y2 };
+
+    var style = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
+    var style2 = { font: "18px Calibri", fill: "#fff", tabs: [164, 120] };
 
     var aux1;
     var aux2;
     var aux3;
-    if (this.playerGroup.children[this.turno].currentWeapon){
-   
-      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;  
+    if (this.playerGroup.children[this.turno].currentWeapon) {
+
+      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
       aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
       aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
 
-      style2 = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
+      style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
     }
-    else { aux1 =  "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "El horizonte";}
+    else { aux1 = "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "El horizonte"; }
     //plasyer - life
-    this.texPlayer = this.game.add.text( this.hudPosPlayer.x, this.hudPosPlayer.y,  this.turno + 1 , style);
-    this.texLife = this.game.add.text(this.hudPosLife.x, this.hudPosLife.y,   this.playerGroup.children[this.turno].life , style);
+    this.texPlayer = this.game.add.text(this.hudPosPlayer.x, this.hudPosPlayer.y, this.turno + 1, style);
+    this.texLife = this.game.add.text(this.hudPosLife.x, this.hudPosLife.y, this.playerGroup.children[this.turno].life, style);
     //walks - resources
-    this.texWalks = this.game.add.text( this.hudPosWalks.x, this.hudPosWalks.y,  this.playerGroup.children[this.turno].walkCont , style);
-    this.textResources = this.game.add.text( this.hudPosResources.x,  this.hudPosResources.y,  this.playerGroup.children[this.turno].resources , style);
+    this.texWalks = this.game.add.text(this.hudPosWalks.x, this.hudPosWalks.y, this.playerGroup.children[this.turno].walkCont, style);
+    this.textResources = this.game.add.text(this.hudPosResources.x, this.hudPosResources.y, this.playerGroup.children[this.turno].resources, style);
     //arma - alcance - daño
-    this.textWeapon = this.game.add.text( this.hudPosWeapon.x, this.hudPosWeapon.y,  aux1 , style2);
-    this.texScope = this.game.add.text(  this.hudPosScope.x,   this.hudPosScope.y,  aux3 , style2);
-    this.textDamage = this.game.add.text(  this.hudPosDamage.x,   this.hudPosDamage.y,  aux2, style2);
+    this.textWeapon = this.game.add.text(this.hudPosWeapon.x, this.hudPosWeapon.y, aux1, style2);
+    this.texScope = this.game.add.text(this.hudPosScope.x, this.hudPosScope.y, aux3, style2);
+    this.textDamage = this.game.add.text(this.hudPosDamage.x, this.hudPosDamage.y, aux2, style2);
 
     //grupo para renderizar 
     this.GrupoTextos = this.game.add.group();
-    this.GrupoTextos.add(this.texPlayer); this.GrupoTextos.add(this.texLife); this.GrupoTextos.add( this.texWalks); this.GrupoTextos.add( this.textResources); 
-    this.GrupoTextos.add(this.textWeapon); this.GrupoTextos.add(  this.texScope);  this.GrupoTextos.add(this.textDamage);
+    this.GrupoTextos.add(this.texPlayer); this.GrupoTextos.add(this.texLife); this.GrupoTextos.add(this.texWalks); this.GrupoTextos.add(this.textResources);
+    this.GrupoTextos.add(this.textWeapon); this.GrupoTextos.add(this.texScope); this.GrupoTextos.add(this.textDamage);
 
     //tienen que seguir a la cámara para no desplazarse cuando se escala el hud
     this.GrupoTextos.forEach(element => {
       element.fixedToCamera = true;
     });
-   
+
   },
 
   //Se ejectua en el Render de PlayScene para actualizar textos
-  renderHUD: function (){
+  renderHUD: function () {
 
     var aux1; var aux2; var aux3; var style2;
-    if (this.playerGroup.children[this.turno].currentWeapon){
-   
-      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;  
+    if (this.playerGroup.children[this.turno].currentWeapon) {
+
+      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
       aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
       aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
 
-      style2 = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
+      style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
     }
-    else { aux1 =  "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";
-  }
+    else {
+      aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";
+    }
     this.texPlayer.setText(this.turno + 1);
-    this.texLife.setText( this.playerGroup.children[this.turno].life);
-    this.texWalks.setText( this.playerGroup.children[this.turno].walkCont);
+    this.texLife.setText(this.playerGroup.children[this.turno].life);
+    this.texWalks.setText(this.playerGroup.children[this.turno].walkCont);
     this.textResources.setText(this.playerGroup.children[this.turno].resources);
     this.textWeapon.setText(aux1);
     this.texScope.setText(aux3);
     this.textDamage.setText(aux2);
   },
-  
+
 };
 
 module.exports = PlayScene;
