@@ -7,6 +7,7 @@ var Menu = require("./StartScreen.js");
 var Creditos = require("./Creditos.js");
 var SelectPlayers = require("./SelectPlayers.js");
 var IntroScene = require("./IntroScene.js");
+var Victoria = require("./victoria.js");
 
 var BootScene = {
   preload: function() {
@@ -67,6 +68,7 @@ var PreloaderScene = {
       "FondoSelectPlayers",
       "assets/sprites/menus/fondoSelectPlayers.png"
     );
+    this.game.load.image("FondoVictoria", "assets/sprites/menus/victoria.png");
     //BOTONES
     //startButton
     this.game.load.image(
@@ -139,6 +141,7 @@ window.onload = function() {
   game.state.add("SPScene", SelectPlayers);
   game.state.add("play", PlayScene);
   game.state.add("CreditScene", Creditos);
+  game.state.add("VictoryScene", Victoria);
 
   game.state.start("boot");
 };
