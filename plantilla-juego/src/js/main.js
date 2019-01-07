@@ -53,8 +53,9 @@ var PreloaderScene = {
     this.game.load.image("bala", "assets/sprites/bala.png");
 
     //JUGADOR
-    this.game.load.image("player_1", "assets/sprites/character.png"); //posPlayer.png
+    //this.game.load.image("player_1", "assets/sprites/character1.png"); //posPlayer.png
     this.game.load.image("posIni", "assets/sprites/posPlayer.png");
+    this.game.load.spritesheet('player_1', 'assets/sprites/character1.png', 16, 16, 8);
 
     //videos
     this.game.load.video("introScene", "/assets/videos/Battlefort_intro.webm");

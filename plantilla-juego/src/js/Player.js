@@ -7,11 +7,16 @@
 function Player(game, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite); //hereda de sprite
 
+
+  this.frame = 0;
+
   //ATTRIBUTE
   this.game.world.addChild(this);
 
   this.name;
   this.life = 100; //contador de vida 
+
+  this.anchor.setTo(0.5);
 
   //gestion del turno
   this.walkCont; //los pasos se resetean con cada turno.
@@ -123,6 +128,10 @@ Player.prototype.checkMove = function(mapa) {
   var pos = { x: 0, y: 0 };
   var posPrevia = { x: 0, y: 0 };
 
+  if (this.orientation === 3){
+    this.scale.x *= -1;
+  }
+
   //define la llamada a movePlayer()
   var boolcheck = false;
 
@@ -160,6 +169,7 @@ Player.prototype.checkMove = function(mapa) {
   }
   //izquierda A
   else if (this.inputAux.isDown(this.key1)) {
+    this.scale.x *= -1;
     this.orientation = 3;
     if (this.body.x >= this.width) {
       pos.x -= this.width;
@@ -167,6 +177,8 @@ Player.prototype.checkMove = function(mapa) {
       boolcheck = true;
     }
   }
+
+ 
   //si existe entrada de teclado
   if (boolcheck) {
     //la variable de ámbito local simula la siguiente pos en base al escalar y lo pasa al atributo de la clase
@@ -197,6 +209,7 @@ Player.prototype.movePlayer = function(mapa, posT) {
     //y decrementa los pasos le jugador
     
     if (this.game.time.now > this.timeMove) {
+      this.frame = (this.frame + 1) % 8;
       this.SonidoPasos.play();
       this.walkCont--;
       this.timeMove = this.game.time.now + this.velMove;
