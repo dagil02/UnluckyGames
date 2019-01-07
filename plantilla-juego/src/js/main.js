@@ -39,6 +39,7 @@ var PreloaderScene = {
 
     //fuentes
     this.game.load.bitmapFont('fuente1', '/assets/fonts/font.png', '/assets/fonts/font.fnt');
+    this.game.load.bitmapFont('fuente2', '/assets/fonts/font2.png', '/assets/fonts/font2.fnt');
    
     //OBJETOS
     //recursos
