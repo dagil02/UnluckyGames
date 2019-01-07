@@ -1306,8 +1306,8 @@ var PreloaderScene = {
     this.game.load.image("hud2", "assets/canvas/hud.png");
 
     //fuentes
-    this.game.load.bitmapFont('fuente1', '/assets/fonts/font.png', '/assets/fonts/font.xml');
-    this.game.load.bitmapFont('fuente2', '/assets/fonts/font2.png', '/assets/fonts/font2.xml');
+    this.game.load.bitmapFont('fuente1', 'assets/fonts/font.png', '/assets/fonts/font.xml');
+    this.game.load.bitmapFont('fuente2', 'assets/fonts/font2.png', '/assets/fonts/font2.xml');
    
     //OBJETOS
     //recursos
@@ -1325,7 +1325,7 @@ var PreloaderScene = {
     this.game.load.image("posIni", "assets/sprites/posPlayer.png");
 
     //videos
-    this.game.load.video("introScene", "/assets/videos/Battlefort_intro.webm");
+    this.game.load.video("introScene", "assets/videos/Battlefort_intro.webm");
 
     //textura de menus
     this.game.load.image("Menu", "assets/sprites/menus/textura_mainMenu.png");
