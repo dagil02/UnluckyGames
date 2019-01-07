@@ -91,8 +91,8 @@ var PlayScene = {
       this.playerGroup.add(new player(this.game, rPos.x, rPos.y, "player_1"));
     }
     //contador de pasos y vida. CONSTANTE
-    this.playerWalkCont = 5;
-    this.playerLife = 100;
+    this.playerWalkCont = 30;
+    this.playerLife = 200;
     //por cada miembro del grupo se actualiza su contador
     var i = this.numPlayers;
     this.playerGroup.forEach(element => {
@@ -116,6 +116,10 @@ var PlayScene = {
     this.objGr = this.mapa.GrupoObjetos;
 
     this.game.world.bringToTop(this.playerGroup);
+
+    //se construye el hud
+    this.gameHUD();
+    this.game.world.bringToTop(this.GrupoTextos);
   },
 
   //************ */RENDER Y UPDATE ********************
@@ -142,12 +146,13 @@ var PlayScene = {
       }
     } else {
       this.game.state.start("CreditScene");
+      
     }
   },
 
-  render: function() {
-    this.game.world.bringToTop(this.hud);
-    this.gameHUD();
+  render: function() { 
+    this.renderHUD(); 
+    this.game.world.bringToTop(this.GrupoTextos);
   },
   //*********************************************************************************************** */
 
@@ -181,6 +186,7 @@ var PlayScene = {
     }
     //gestion de la camara
     this.game.camera.follow(this.playerGroup.children[this.turno]);
+
   },
 
   HudScale: function() {
@@ -198,6 +204,7 @@ var PlayScene = {
 
     this.hud.fixedToCamera = true;
     this.game.world.bringToTop(this.hud);
+
   },
 
   //********* */GESTION DEL INPUT ************
@@ -248,8 +255,8 @@ var PlayScene = {
     this.zoomTo(2);
 
     //un nuevo texto antes de omenzar
-    this.text1 = this.game.add.bitmapText(this.playerGroup.children[this.turno].x, this.playerGroup.children[this.turno].y, "fuente1", "READY PLAYER Nº " +  this.turno + "?", 28 );
-    this.text1.anchor.setTo(0.5);
+    this.text1 = this.game.add.bitmapText(this.game.camera.x + 200, this.game.camera.y + 300, "fuente1", "READY PLAYER Nº " +  this.turno + "?", 28 );
+    this.text1.fixedToCamera = true;
 
 
     //se crea un evento de n seg dónde se amplia la cámara para identificar al siguiente jugador
@@ -270,6 +277,10 @@ var PlayScene = {
         this.playerGroup.children[i].body.immovable = true;
       }
     }
+    
+    //se renderiza para no dejar los valores  del HUD en blanco 
+    this.renderHUD();
+    this.game.world.bringToTop(this.GrupoTextos);
   },
 
   compruebaTurno: function() {
@@ -314,39 +325,85 @@ var PlayScene = {
     this.game.state.start("Menu");
   },
 
-  gameHUD: function(){
+  /** HEADS UP DISPLAY */
 
-    var style = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
-    var style2 = { font: "18px Calibri", fill: "#fff", tabs: [ 164, 120] };
+  //Textos que se renderizarán en el HUD 
+  gameHUD: function(){
 
     var X = 250; var X2 = 600;
     var Y = 125; var Y2 = 155;
+    //player - life
+    this.hudPosPlayer = {'x':this.hud.x + X , 'y': this.hud.y + 38};
+    this.hudPosLife = {'x':this.hud.x + X , 'y': this.hud.y + 66};
+    //pasos - recursos
+    this.hudPosWalks = {'x':this.hud.x + X , 'y': this.hud.y + Y};
+    this.hudPosResources = {'x':this.hud.x + X , 'y': this.hud.y + Y2};
+    //weapon - alcance - daño
+    this.hudPosWeapon = {'x':this.hud.x + X2 , 'y': this.hud.y + 55};
+    this.hudPosScope = {'x':this.hud.x + X2 , 'y': this.hud.y + Y};
+    this.hudPosDamage = {'x':this.hud.x + X2 , 'y': this.hud.y + Y2};
+   
+    var style = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
+    var style2 = { font: "18px Calibri", fill: "#fff", tabs: [ 164, 120] };
 
+    var aux1;
+    var aux2;
+    var aux3;
     if (this.playerGroup.children[this.turno].currentWeapon){
    
-      var aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;  
-      var aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
-      var aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
+      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;  
+      aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
+      aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
 
       style2 = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
     }
-    else { aux1 =  "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "Donde alcance tu vista"; X2 -= 20;
-  }
+    else { aux1 =  "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "El horizonte";}
+    //plasyer - life
+    this.texPlayer = this.game.add.text( this.hudPosPlayer.x, this.hudPosPlayer.y,  this.turno , style);
+    this.texLife = this.game.add.text(this.hudPosLife.x, this.hudPosLife.y,   this.playerGroup.children[this.turno].life , style);
+    //walks - resources
+    this.texWalks = this.game.add.text( this.hudPosWalks.x, this.hudPosWalks.y,  this.playerGroup.children[this.turno].walkCont , style);
+    this.textResources = this.game.add.text( this.hudPosResources.x,  this.hudPosResources.y,  this.playerGroup.children[this.turno].resources , style);
+    //arma - alcance - daño
+    this.textWeapon = this.game.add.text( this.hudPosWeapon.x, this.hudPosWeapon.y,  aux1 , style2);
+    this.texScope = this.game.add.text(  this.hudPosScope.x,   this.hudPosScope.y,  aux3 , style2);
+    this.textDamage = this.game.add.text(  this.hudPosDamage.x,   this.hudPosDamage.y,  aux2, style2);
 
+    //grupo para renderizar 
+    this.GrupoTextos = this.game.add.group();
+    this.GrupoTextos.add(this.texPlayer); this.GrupoTextos.add(this.texLife); this.GrupoTextos.add( this.texWalks); this.GrupoTextos.add( this.textResources); 
+    this.GrupoTextos.add(this.textWeapon); this.GrupoTextos.add(  this.texScope);  this.GrupoTextos.add(this.textDamage);
+
+    //tienen que seguir a la cámara para no desplazarse cuando se escala el hud
+    this.GrupoTextos.forEach(element => {
+      element.fixedToCamera = true;
+    });
    
-
-    var texPlayer = this.game.add.text(this.hud.x + X, this.hud.y + 38,  this.turno , style);
-    var texLife = this.game.add.text(this.hud.x + X, this.hud.y + 66,   this.playerGroup.children[this.turno].life , style);
-  
-    var texWalks = this.game.add.text(this.hud.x + X, this.hud.y + Y,  this.playerGroup.children[this.turno].walkCont , style);
-    var textResources = this.game.add.text(this.hud.x + X, this.hud.y + Y2,  this.turno , style);
-
-    
-    var textWeapon = this.game.add.text(this.hud.x + X2, this.hud.y + 55,  aux1 , style2);
-    var texScope = this.game.add.text(this.hud.x + X2, this.hud.y + Y,  aux2 , style2);
-    var textDamage = this.game.add.text(this.hud.x + X2, this.hud.y + Y2,  aux3, style2);
   },
 
+  //Se ejectua en el Render de PlayScene para actualizar textos
+  renderHUD: function (){
+
+    var aux1; var aux2; var aux3; var style2;
+    if (this.playerGroup.children[this.turno].currentWeapon){
+   
+      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;  
+      aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
+      aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
+
+      style2 = { font: "24px Calibri", fill: "#fff", tabs: [ 164, 120] };
+    }
+    else { aux1 =  "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";
+  }
+    this.texPlayer.setText(this.turno);
+    this.texLife.setText( this.playerGroup.children[this.turno].life);
+    this.texWalks.setText( this.playerGroup.children[this.turno].walkCont);
+    this.textResources.setText(this.playerGroup.children[this.turno].resources);
+    this.textWeapon.setText(aux1);
+    this.texScope.setText(aux3);
+    this.textDamage.setText(aux2);
+  },
+  
 };
 
 module.exports = PlayScene;

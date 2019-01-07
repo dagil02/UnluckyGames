@@ -243,6 +243,8 @@ Player.prototype.shotBullet = function() {
     if (this.game.time.now > this.timeMove) {
       //3º que el arma tenga balas en la recamara. Shot: devuelve true y decrementa las balas en la recamara
       if (this.currentWeapon.Shot()) {
+
+        this.walkCont -= this.currentWeapon.walkContador;
         //se genera la bala y se establece su lógica de movimiento
         this.SonidoDisparo.play();
         var bullet = require("./Bala");
@@ -251,6 +253,7 @@ Player.prototype.shotBullet = function() {
         shot.move();//establece la lógica mov
         this.bulletGroup.add(shot);
         this.game.world.bringToTop(this.bulletGroup);
+       
         this.timeMove = this.game.time.now + this.velMove;
       }
     }
@@ -289,8 +292,6 @@ Player.prototype.CheckPlayerBulletVsPlayer = function (playScene){
   }
   if (bool){
     playScene.playerGroup.children[j - 1].life -= this.bulletGroup.children[i - 1].bulletDamage;
-    //playScene.playerGroup.children[j - 1].body.velocity = 0;
-    //playScene.playerGroup.children[j - 1].body.immovable = true;
     this.bulletGroup.children[i - 1].destroy();
     console.log (playScene.playerGroup.children[j - 1].life);
   }

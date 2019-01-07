@@ -23,6 +23,8 @@ function Armas(game, x, y, sprite) {
 	this.weaponDamage;//damage comunican con jugador y éste con bala para determinar el daño ¡¡existe un atributo de sprite que se llama damage, no llamar así!!
 	this.walk_WeaponScale; //será el escalar que resta pasos al jugador con cada disparo
 
+	this.walkContador;
+
 	//METHODS
 	this.asignaValores = function (funcionRandom) {
 		this.balas_Cont = funcionRandom; //la cantidad de balas sí es aleatoria
@@ -32,9 +34,9 @@ function Armas(game, x, y, sprite) {
 
 	//función para determinar el tipo de arma e inicializar sus atributos
 	this.Tipo_De_Arma = function () {
-		if (this.tipoArma === "pistola") { this.alcance = 5; this.weaponDamage = 10; this.balas_image = 'b_Gun'; this.walk_WeaponScale = 1;}
-		else if (this.tipoArma === "subFusil") { this.alcance = 10; this.weaponDamage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3;}
-		else if (this.tipoArma === "francoTirador") { this.alcance = 20; this.weaponDamage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6;}
+		if (this.tipoArma === "pistola") { this.alcance = 5; this.weaponDamage = 10; this.balas_image = 'b_Gun'; this.walk_WeaponScale = 1; this.walkContador = 2;}
+		else if (this.tipoArma === "subFusil") { this.alcance = 10; this.weaponDamage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3; this.walkContador = 4;}
+		else if (this.tipoArma === "francoTirador") { this.alcance = 20; this.weaponDamage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6; this.walkContador = 8;}
 	}
 
 }
