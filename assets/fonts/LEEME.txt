@@ -1,0 +1,2 @@
+Las fuentes en formato ttf no sirven. Hay que convertirlas a bitmap (png y xml)
+conversor online gratuito Littera. 

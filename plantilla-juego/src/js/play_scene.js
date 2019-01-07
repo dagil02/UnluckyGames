@@ -324,7 +324,7 @@ var PlayScene = {
 
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
   PlayerWin: function () {
-    this.game.state.start("Menu");
+    this.game.state.start("VictoryScene");
   },
 
   /** HEADS UP DISPLAY */
