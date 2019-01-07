@@ -1306,8 +1306,8 @@ var PreloaderScene = {
     this.game.load.image("hud2", "assets/canvas/hud.png");
 
     //fuentes
-    this.game.load.bitmapFont('fuente1', 'assets/fonts/font.png', '/assets/fonts/font.xml');
-    this.game.load.bitmapFont('fuente2', 'assets/fonts/font2.png', '/assets/fonts/font2.xml');
+    this.game.load.bitmapFont('fuente1', 'assets/fonts/font.png', 'assets/fonts/font.xml');
+    this.game.load.bitmapFont('fuente2', 'assets/fonts/font2.png', 'assets/fonts/font2.xml');
    
     //OBJETOS
     //recursos
