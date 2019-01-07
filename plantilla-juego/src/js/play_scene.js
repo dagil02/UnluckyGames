@@ -47,10 +47,11 @@ var PlayScene = {
     this.turno = 0; //variable
     this.auxTurno = 0;
     this.pasaBool = false;
+    //TEXTOS
     //texto de transicion
     this.text1;
+    
    
-
     //******************************************************************* */
 
     //******************* GENERACION DE ELEM DE JUEGO *******************
@@ -127,7 +128,6 @@ var PlayScene = {
           this.compruebaTurno();
           this.playerGroup.children[this.turno].bulletUpdate(this);
           this.checkInput(); //gestiona el input de cada jugador en su turno
-          //gestiona las colisiones de balas y su llamada a destrucción
         }
       } else {
         //La tecla enter manda al menu inicial
@@ -146,44 +146,7 @@ var PlayScene = {
   },
 
   render: function() {
-    var y = 38;
-
-    this.game.debug.text(`PLAYER TESTING: `, 32, 610, "yellow", "Segoe UI");
-    //this.game.debug.cameraInfo(this.game.camera, 32, 640, "yellow");
-    this.game.debug.text(
-      "resources: " +
-        this.playerGroup.children[this.turno].resources +
-        " walks: " +
-        this.playerGroup.children[this.turno].walkCont,
-      32,
-      640,
-      "yellow",
-      "Segoe UI"
-    );
-
-    if (this.playerGroup.children[this.turno].currentWeapon) {
-      this.game.debug.text(
-        `Debugging object: CURRENT WEAPON: ` +
-          this.playerGroup.children[this.turno].currentWeapon.tipoArma,
-
-        350,
-        610,
-        "yellow",
-        "Segoe UI"
-      );
-      this.game.debug.text(
-        "balas: " +
-          this.playerGroup.children[this.turno].currentWeapon.balas_Cont +
-          " damage: " +
-          this.playerGroup.children[this.turno].currentWeapon.weaponDamage +
-          " alcance: " +
-          this.playerGroup.children[this.turno].currentWeapon.alcance,
-        350,
-        640,
-        "yellow",
-        "Segoe UI"
-      );
-    }
+   this.gameHUD();
   },
   //*********************************************************************************************** */
 
@@ -271,6 +234,8 @@ var PlayScene = {
     this.menuPause.destroy();
     this.MusicaFondo.play(); //reanuda la música
   },
+
+  //********************** */GESTIÓN DE TURNOS ***************************
   //Pasa el turno al siguiente
   pasaTurno: function () {
 
@@ -328,6 +293,8 @@ var PlayScene = {
     this.game.time.events.add(2200, this.pasaTurno, this);
   },
 
+
+  //**************GESTION VIDA Y ESTADO FIN DE JUEGO  */
   checkPlayerLife: function() {
     this.playerGroup.forEach(element => {
       if (element.life <= 0) {
@@ -344,7 +311,54 @@ var PlayScene = {
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
   PlayerWin: function() {
     this.game.state.start("Menu");
-  }
+  },
+
+  gameHUD: function(){
+
+    //player
+    //var pos1 = {'x': this.hud.x + 50, 'y': this.hud.y + 40};
+    //var pos2 = {'x': this.hud.x +50, 'y': this.hud.y + 100};
+    //var pos3 = {'x': this.hud.x + 50, 'y': this.hud.y + 160};
+
+    //weapon
+    //var pos4 = {'x': this.hud.x + 400, 'y': this.hud.y + 40};
+    //var pos6 = {'x': this.hud.x + 400, 'y': this.hud.y + 100};
+    //var pos7 = {'x': this.hud.x + 400, 'y': this.hud.y + 160};
+   
+    if (this.playerGroup.children[this.turno].currentWeapon){
+   
+      var aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;  
+      var aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
+      var aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
+    }
+    else { aux1 =  "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "Donde alcance tu vista";}
+
+    this.textHUD; this.textHUD2;
+
+    var style = { font: "16px Calibri", fill: "#fff", tabs: [ 164, 120] };
+
+    var headings = [ 'PLAYER     ' + this.turno, 'WEAPON     ' + aux1];
+
+    this.textHUD = this.game.add.text(this.hud.x + 60, this.hud.y +60, '', style);
+    this.textHUD.parseList(headings);
+
+    var swords = [
+        [ 'WALKS     '+ this.playerGroup.children[this.turno].walkCont, 'SCOPE     '+ aux3],
+        [ '' ,''],
+        [ 'RESOURCES     ' + this.playerGroup.children[this.turno].resources, 'DAMAGE     ' + aux2]
+    ];
+
+    this.textHUD2 = this.game.add.text(this.hud.x + 60, this.hud.y + 140, '', style);
+    this.textHUD2.parseList(swords);
+
+    //this.textHUD.setText(" "); 
+    //this.textHUD.parseList(headings);
+
+    //this.textHUD2.setText(" ");
+    //this.textHUD2.parseList(swords);
+
+  },
+
 };
 
 module.exports = PlayScene;
