@@ -360,7 +360,7 @@ var PlayScene = {
     }
     else { aux1 =  "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "El horizonte";}
     //plasyer - life
-    this.texPlayer = this.game.add.text( this.hudPosPlayer.x, this.hudPosPlayer.y,  this.turno , style);
+    this.texPlayer = this.game.add.text( this.hudPosPlayer.x, this.hudPosPlayer.y,  this.turno + 1 , style);
     this.texLife = this.game.add.text(this.hudPosLife.x, this.hudPosLife.y,   this.playerGroup.children[this.turno].life , style);
     //walks - resources
     this.texWalks = this.game.add.text( this.hudPosWalks.x, this.hudPosWalks.y,  this.playerGroup.children[this.turno].walkCont , style);
@@ -396,7 +396,7 @@ var PlayScene = {
     }
     else { aux1 =  "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";
   }
-    this.texPlayer.setText(this.turno);
+    this.texPlayer.setText(this.turno + 1);
     this.texLife.setText( this.playerGroup.children[this.turno].life);
     this.texWalks.setText( this.playerGroup.children[this.turno].walkCont);
     this.textResources.setText(this.playerGroup.children[this.turno].resources);
