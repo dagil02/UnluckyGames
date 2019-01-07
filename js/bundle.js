@@ -1306,8 +1306,8 @@ var PreloaderScene = {
     this.game.load.image("hud2", "assets/canvas/hud.png");
 
     //fuentes
-    this.game.load.bitmapFont('fuente1', 'assets/fonts/font.png', 'assets/fonts/font.xml');
-    this.game.load.bitmapFont('fuente2', 'assets/fonts/font2.png', 'assets/fonts/font2.xml');
+    this.game.load.bitmapFont('fuente1', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
+    this.game.load.bitmapFont('fuente2', 'assets/fonts/font2.png', 'assets/fonts/font2.fnt');
    
     //OBJETOS
     //recursos
@@ -1395,7 +1395,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("Menu"); //introScene
+    this.game.state.start("introScene"); //introScene
   }
 };
 
@@ -1672,7 +1672,7 @@ var PlayScene = {
     this.zoomTo(2);
 
     //un nuevo texto antes de omenzar
-    this.text1 = this.game.add.bitmapText(this.game.camera.x + 180, this.game.camera.y + 270, 'fuente2', "READY PLAYER?", 32);
+    this.text1 = this.game.add.bitmapText(this.game.camera.x + 180, this.game.camera.y + 270, "fuente2", "READY PLAYER?", 32);
     this.text1.width = 450; this.text1.height = 90;
     this.text1.fixedToCamera = true;
 
@@ -1713,7 +1713,7 @@ var PlayScene = {
     this.zoomTo(1);
 
     //Texto precargado. bitmapFont
-    this.text1 = this.game.add.bitmapText(0, 300, 'fuente1', 'GET READY NEXT LOOSER', 48);
+    this.text1 = this.game.add.bitmapText(0, 300, "fuente1", 'GET READY NEXT LOOSER', 48);
     //se definen físicas para que el texto se mueva hacia el centro de la pantalla
     this.game.physics.arcade.enable(this.text1);
     this.text1.body.velocity.x += 60;
