@@ -146,7 +146,8 @@ var PlayScene = {
   },
 
   render: function() {
-   this.gameHUD();
+    this.game.world.bringToTop(this.hud);
+    this.gameHUD();
   },
   //*********************************************************************************************** */
 
