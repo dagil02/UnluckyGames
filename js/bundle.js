@@ -1395,7 +1395,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("introScene"); //introScene
+    this.game.state.start("Menu"); //introScene
   }
 };
 
