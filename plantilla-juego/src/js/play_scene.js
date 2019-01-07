@@ -7,7 +7,6 @@ var player = require("./Player");
 
 var PlayScene = {
   create: function() {
-
     // ************** CONSTANTES Y VARIABLES DE GAME **********************
     //World
     this.game.world.setBounds(0, 0, 800, 592);
@@ -43,16 +42,16 @@ var PlayScene = {
     this.endGame = false;
 
     //LOGICA TURNOS
-    //numero de jugadores en partida 
+    //numero de jugadores en partida
     this.numPlayers = this.game.numPlayers; //se va reduciendo con cada muerte
     this.turno = 0; //variable
     this.auxTurno = 0;
-    this.pasaBool = false; 
+    this.pasaBool = false;
     //texto de transicion
     this.text1;
-    
-    //******************************************************************* */
+   
 
+    //******************************************************************* */
 
     //******************* GENERACION DE ELEM DE JUEGO *******************
     //JUGADORES
@@ -62,7 +61,7 @@ var PlayScene = {
     this.playerPos = [
       { x: 128, y: 96 },
       { x: 640, y: 512 },
-      { x: 688, y: 64  },
+      { x: 688, y: 64 },
       { x: 32, y: 560 }
     ];
     //se crean los jugadores y se meten en el grupo
@@ -89,10 +88,9 @@ var PlayScene = {
       }
       var rPos = this.playerPos[r];
       this.playerGroup.add(new player(this.game, rPos.x, rPos.y, "player_1"));
-
     }
     //contador de pasos y vida. CONSTANTE
-    this.playerWalkCont = 50;
+    this.playerWalkCont = 5;
     this.playerLife = 100;
     //por cada miembro del grupo se actualiza su contador
     var i = this.numPlayers;
@@ -102,9 +100,9 @@ var PlayScene = {
       element.name = i;
       i++;
     });
-    //se hacen fijos los body de los jugadores fuera de turno 
-    for (var i = 0; i < this.playerGroup.length; i++){
-      if (i !== this.turno){
+    //se hacen fijos los body de los jugadores fuera de turno
+    for (var i = 0; i < this.playerGroup.length; i++) {
+      if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
       }
     }
@@ -112,7 +110,6 @@ var PlayScene = {
     //MAPA Y RECURSOS
     this.mapa = new mapa(this.game);
     this.mapa.generate(this.playerGroup);
-   
 
     //la variable recoge los grupos de físicas de obj. parametro en this.checkInput()
     this.objGr = this.mapa.GrupoObjetos;
@@ -124,15 +121,14 @@ var PlayScene = {
   update: function() {
     if (!this.endGame) {
       if (!this.pause) {
-        //paraliza el juego mientras se cambia de turno 
-        if (!this.pasaBool){
+        //paraliza el juego mientras se cambia de turno
+        if (!this.pasaBool) {
           this.checkPlayerLife();
           this.compruebaTurno();
           this.playerGroup.children[this.turno].bulletUpdate(this);
           this.checkInput(); //gestiona el input de cada jugador en su turno
           //gestiona las colisiones de balas y su llamada a destrucción
         }
-        
       } else {
         //La tecla enter manda al menu inicial
         if (this.inputAux.isDown(this.key4)) {
@@ -188,7 +184,6 @@ var PlayScene = {
         "Segoe UI"
       );
     }
-
   },
   //*********************************************************************************************** */
 
@@ -277,55 +272,77 @@ var PlayScene = {
     this.MusicaFondo.play(); //reanuda la música
   },
   //Pasa el turno al siguiente
-  pasaTurno: function() {
-    this.pasaBool = false;
-    this.text1.destroy();
+  pasaTurno: function () {
+
+    this.text1.destroy(); //se destruye el bitMapText
+
     //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
     this.turno = (this.turno + 1) % this.numPlayers;
-    this.zoomTo(1);
-    //gestion de la camara
-    this.game.camera.follow(this.playerGroup.children[this.turno]);
+
+    this.zoomTo(2);
+
+    //un nuevo texto antes de omenzar
+    this.text1 = this.game.add.bitmapText(this.playerGroup.children[this.turno].x, this.playerGroup.children[this.turno].y, "fuente1", "READY PLAYER Nº " +  this.turno + "?", 28 );
+    this.text1.anchor.setTo(0.5);
+
+
+    //se crea un evento de n seg dónde se amplia la cámara para identificar al siguiente jugador
+    this.game.time.events.add(2000, this.pasaTurnoAux , this);
+  },
+
+  //segunda parte del método pasa turno. es llamado después del intervalo de tiempo
+  pasaTurnoAux: function () {
+
+    this.text1.destroy();
+    this.pasaBool = false; //el buleano desInterrumpe el ciclo del update
+
     //actualiza el contador de pasos según la constante
     this.playerGroup.children[this.turno].walkCont = this.playerWalkCont;
     this.playerGroup.children[this.turno].body.immovable = false;
-    for (var i = 0; i < this.playerGroup.length; i++){
-      if (i !== this.turno){
+    for (var i = 0; i < this.playerGroup.length; i++) {
+      if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
       }
     }
   },
+
   compruebaTurno: function() {
     if (this.playerGroup.children[this.turno].walkCont <= 0) {
-    this.pasaBool = true;
-    this.LooserText();
+      this.pasaBool = true;
+      this.LooserText();
     }
   },
 
-  LooserText: function () {
-    //se implementa la animacion y transición de cambio de turno
-    var aux = (this.turno + 1) % this.numPlayers;
-    this.text1 = this.game.add.text(0, 300, "GET READY LOOSER Nº " + aux, 64);
+  LooserText: function() {
+    //asegura que la escala sea la de por defecto
+    this.zoomTo(1);
+
+    //Texto precargado. bitmapFont
+    this.text1 = this.game.add.bitmapText(0,300, "fuente1", 'GET READY NEXT LOOSER', 48 );
+    //se definen físicas para que el texto se mueva hacia el centro de la pantalla
     this.game.physics.arcade.enable(this.text1);
     this.text1.body.velocity.x += 60;
     this.text1.collideWorldBounds = true;
     this.text1.body.bounce.set(1);
-    this.game.time.events.add(3000, this.pasaTurno, this);
+    //se establece un evento de tiempo, a los tres segundos se destruye el texto y se inicia el siguiente turno
+    this.game.time.events.add(2200, this.pasaTurno, this);
   },
 
-
-  checkPlayerLife: function(){
+  checkPlayerLife: function() {
     this.playerGroup.forEach(element => {
-      if ( element.life <= 0){
+      if (element.life <= 0) {
         element.destroy();
         this.numPlayers--;
         this.turno = this.turno % this.numPlayers;
-        if (this.numPlayers === 1){this.PlayerWin();}
+        if (this.numPlayers === 1) {
+          this.PlayerWin();
+        }
       }
     });
   },
 
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
-  PlayerWin: function(){
+  PlayerWin: function() {
     this.game.state.start("Menu");
   }
 };

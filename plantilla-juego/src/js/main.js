@@ -36,6 +36,9 @@ var PreloaderScene = {
 
     //hud
     this.game.load.image("hud2", "assets/canvas/hud.png");
+
+    //fuentes
+    this.game.load.bitmapFont('fuente1', '/assets/fonts/font.png', '/assets/fonts/font.fnt');
    
     //OBJETOS
     //recursos
@@ -122,7 +125,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("introScene"); //introScene
+    this.game.state.start("Menu"); //introScene
   }
 };
 
