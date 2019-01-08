@@ -24,6 +24,8 @@ body {
     text-align: center; 
 }
 
+
+
 .cont_juego{
     display: flex;
     justify-content:space-around;
@@ -39,20 +41,10 @@ body {
     border: 3px solid blue;
     
 }
-
- #hud{
-    position: absolute;
-    top: 616px;
-    width:794px;
-    height: 200px;
-    border: 3px ridge red;
-    
-    
-}
-
 a {
   color: #85FE2B;
 }
+
 
 /*FOOTER*/
 .footer_cont {
