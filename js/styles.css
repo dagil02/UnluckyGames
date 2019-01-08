@@ -1,0 +1,114 @@
+html {
+  font-size: 10px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Courier, 'Courier New', monospace;
+  font-size: 1.6rem;
+  background: #fff;
+  color: #000;
+
+  background-image: url(assets/canvas/background_.png);
+  
+}
+
+/*CONTENEDOR: MAIN-GAME*/
+.game{
+    width:806px; /*la dim. depende tam:bordes que se apliquen*/
+    height:806px;
+    margin: auto;
+    margin-top: 2rem; margin-bottom: 2rem;
+    text-align: center; 
+}
+
+
+
+.cont_juego{
+    display: flex;
+    justify-content:space-around;
+    flex-wrap: nowrap; 
+   
+    box-decoration-break: slice;
+    -webkit-box-decoration-break: slice;
+    box-shadow: 7px 7px 7px 0 #ff1493, -5px -5px 5px 0 #00f, 10px 10px 10px 0 #ff0;
+}
+#game{
+    width: 800px;
+    height:800px;
+    border: 3px solid blue;
+    
+}
+a {
+  color: #85FE2B;
+}
+
+
+/*FOOTER*/
+.footer_cont {
+  margin: auto;
+  width: 850px; height: 150px;
+  clear: both;
+
+  margin-bottom:  2rem;
+  
+  padding-top:  2rem; 
+  padding-bottom: 2rem;
+
+  object-position: bottom;
+
+ 
+  display: flex;
+  justify-content:space-around;
+  align-items: center;
+  
+  background-image: url(assets/canvas/footer_carcasa.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+
+    /*imagen para el borde*/
+    /*tamaño del borde y radio*/
+    border-width:1px; 
+    -webkit-border-image: url(assets/canvas/footer_borde.png) 0.01% stretch;
+    -moz-border-image: url(assets/canvas/footer_borde.png) 0.01% stretch;
+    -o-border-image: url(assets/canvas/footer_borde.png)  0.01% stretch;
+    -ms-border-image: url(assets/canvas/footer_borde.png) 0.01% stretch;
+    
+}
+
+#contFondo{
+  /*tamaño del contenedor de texto */
+  width: 800px; height: 140px;
+  margin: auto; 
+  
+  
+  /*tamaño del borde y radio*/
+  border-width: 10px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  
+  /*imagen para el borde*/
+  -webkit-border-image: url(assets/canvas/borde-console.png) 10% stretch;
+  -moz-border-image: url(assets/canvas/borde-console.png) 10% stretch;
+  -o-border-image: url(assets/canvas/borde-console.png) 10% stretch;
+  -ms-border-image: url(assets/canvas/borde-console.png) 10% stretch;
+  
+  background: black;
+  
+  /*define caja flexible para gestionar el texto*/
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: center;
+
+}
+
+#contFondo p {
+  font-family: Computerfont;
+  color: #85FE2B;
+  font-size: 2vw;   
+}
+
