@@ -24,8 +24,6 @@ function Armas(game, x, y, sprite) {
 	this.weaponDamage;//damage comunican con jugador y éste con bala para determinar el daño ¡¡existe un atributo de sprite que se llama damage, no llamar así!!
 	this.walk_WeaponScale; //será el escalar que resta pasos al jugador con cada disparo
 
-	this.walkContador;
-
 	//METHODS
 	this.asignaValores = function (funcionRandom) {
 		this.balas_Cont = funcionRandom; //la cantidad de balas sí es aleatoria
@@ -35,9 +33,9 @@ function Armas(game, x, y, sprite) {
 
 	//función para determinar el tipo de arma e inicializar sus atributos
 	this.Tipo_De_Arma = function () {
-		if (this.tipoArma === "pistola") { this.alcance = 5; this.weaponDamage = 10; this.balas_image = 'b_Gun'; this.walk_WeaponScale = 1; this.walkContador = 2;}
-		else if (this.tipoArma === "subFusil") { this.alcance = 10; this.weaponDamage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3; this.walkContador = 4;}
-		else if (this.tipoArma === "francoTirador") { this.alcance = 20; this.weaponDamage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6; this.walkContador = 8;}
+		if (this.tipoArma === "GUN") { this.alcance = 5; this.weaponDamage = 10; this.balas_image = 'b_Gun'; this.walk_WeaponScale = 1;}
+		else if (this.tipoArma === "SUBFUSIL") { this.alcance = 10; this.weaponDamage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3;}
+		else if (this.tipoArma === "SNIPER") { this.alcance = 20; this.weaponDamage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6;}
 	}
 
 }
@@ -294,7 +292,7 @@ function Mapa(game) {
 
   //Metodo para devolve un índice de armas
   this.Selec_Weapon = function() {
-    var idSprite_list = ["subFusil", "pistola", "francoTirador"];
+    var idSprite_list = ["SUBFUSIL", "GUN", "SNIPER"];
     var i = Math.floor(Math.random() * idSprite_list.length);
     var enlace = require("./Armas");
 
@@ -594,6 +592,8 @@ Mapa.prototype.armedPlayer = function(player, weapon) {
   //si el jugador no está armado hasta los dientes
   if (!player.currentWeapon) {
     player.currentWeapon = weapon; //el atributo recoge los valores del arma para gestionarlos desde class: Player
+    if (player.orientation === 3){player.loadTexture(player.nameGunLeft);}
+    else {player.loadTexture(player.nameGun);}
     weapon.destroy();
   }
 };
@@ -663,6 +663,12 @@ Mapa.prototype.playerDropObject = function(player) {
   var weapon = player.currentWeapon;
   //se deshabilita el arma de player para que el body no desplace más tiles con ejerciendo fuerza
   player.currentWeapon = null;
+  if (player.orientation === 3){
+    player.loadTexture(player.nameLeft);
+  }else {
+    player.loadTexture(player.nameTex);
+  }
+ 
 
   //se calcula la nueva pos en base a la orientación
   var dir = this.direction(player);
@@ -722,14 +728,6 @@ Mapa.prototype.direction = function(player) {
 module.exports = Mapa;
 
 
-/** //reacondiciona las físicas
-    /*weapon.body.collideWorldBounds = false;
-    weapon.body.immovable = false;
-    weapon.body.checkCollision = false;
-    //overlapa los sprites
-    weapon.position = player.position;
-    player.currentWeapon = weapon; //el atributo recoge los valores del arma para gestionarlos desde class: Player
-    //weapon.alpha = 0; //lo vuelve invisible*/ 
 },{"./Armas":1,"./Muro":6,"./recurso":13}],6:[function(require,module,exports){
 "use strict";
 
@@ -843,11 +841,29 @@ module.exports = Objeto;
 function Player(game, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite); //hereda de sprite
 
+  this.nameTex = sprite;
+  this.nameLeft; this.nameGun; this.nameGunLeft;
+  if (sprite === 'player_1'){
+    this.nameLeft = 'player_1_left'; this.nameGun = 'player_1_Gun'; this.nameGunLeft = 'player_1_Gun_left';
+  }
+  else if (sprite === 'player_2'){
+    this.nameLeft = 'player_2_left'; this.nameGun = 'player_2_Gun'; this.nameGunLeft = 'player_2_Gun_left';
+  }
+  else if (sprite === 'player_3'){
+    this.nameLeft = 'player_3_left'; this.nameGun = 'player_3_Gun'; this.nameGunLeft = 'player_3_Gun_left';
+  }
+  else {
+    this.nameLeft = 'player_4_left'; this.nameGun = 'player_4_Gun'; this.nameGunLeft = 'player_4_Gun_left';
+  }
+
   //ATTRIBUTE
   this.game.world.addChild(this);
 
-  this.name;
   this.life = 100; //contador de vida 
+  this.name;
+
+  //gestion cambio textura
+  this.changeTex = false;
 
   //gestion del turno
   this.walkCont; //los pasos se resetean con cada turno.
@@ -1003,6 +1019,8 @@ Player.prototype.checkMove = function(mapa) {
       boolcheck = true;
     }
   }
+
+ 
   //si existe entrada de teclado
   if (boolcheck) {
     //la variable de ámbito local simula la siguiente pos en base al escalar y lo pasa al atributo de la clase
@@ -1033,6 +1051,26 @@ Player.prototype.movePlayer = function(mapa, posT) {
     //y decrementa los pasos le jugador
     
     if (this.game.time.now > this.timeMove) {
+
+      //movimiento hacia la izquierda
+      if (this.orientation === 3){
+
+        if (!this.changeTex){
+          this.changeTex = true;
+          this.frame = 0;
+          if (this.currentWeapon){this.loadTexture(this.nameGunLeft);}
+          else {this.loadTexture(this.nameLeft)} 
+        }
+      }
+      if (this.orientation === 1){
+        if (this.changeTex){
+          this.changeTex = false;
+          if (this.currentWeapon){this.loadTexture(this.nameGun);}
+          else {this.loadTexture(this.nameTex);}
+          this.frame = 0;
+        }
+      }
+      this.frame = (this.frame + 1) % 8;
       this.SonidoPasos.play();
       this.walkCont--;
       this.timeMove = this.game.time.now + this.velMove;
@@ -1079,8 +1117,6 @@ Player.prototype.shotBullet = function() {
     if (this.game.time.now > this.timeMove) {
       //3º que el arma tenga balas en la recamara. Shot: devuelve true y decrementa las balas en la recamara
       if (this.currentWeapon.Shot()) {
-
-        this.walkCont -= this.currentWeapon.walkContador;
         //se genera la bala y se establece su lógica de movimiento
         this.SonidoDisparo.play();
         var bullet = require("./Bala");
@@ -1132,6 +1168,19 @@ Player.prototype.CheckPlayerBulletVsPlayer = function (playScene){
     console.log (playScene.playerGroup.children[j - 1].life);
   }
 };
+
+Player.prototype.updateTexture = function(){
+
+  if (this.currentWeapon){
+    if (this.orientation === 1){
+      this.loadTexture(this.nameGun);
+    }
+    else{
+      this.loadTexture(this.nameGunLeft);
+    }
+  }
+};
+
 
 
 module.exports = Player;
@@ -1224,6 +1273,13 @@ var startScreen = {
     this.B2.onInputOver.add(this.b2funcionUP, this);
     this.B2.onInputOut.add(this.b2funcionOut, this);
 
+    //creditButton
+    this.B3 = this.game.add.button(100, 500, 'tutorialButton', this.actionOnClick3, this);
+    this.B3.width = 250;
+    this.B3.height = 70;
+    this.B3.onInputOver.add(this.b3funcionUP, this);
+    this.B3.onInputOut.add(this.b3funcionOut, this);
+
     
   },
 
@@ -1257,7 +1313,24 @@ var startScreen = {
 
   b2funcionOut: function(){
     this.B2.loadTexture('creditButton');
-  }
+  },
+
+
+  actionOnClick3: function (){
+    this.Music.stop();
+    this.state.start("tutorialScene");
+  },
+
+  b3funcionUP: function (){
+    this.B3.loadTexture('tutorial_animation');
+  },
+
+  b3funcionOut: function(){
+    this.B3.loadTexture('tutorialButton');
+  },
+
+
+  
 
 
 };
@@ -1275,6 +1348,7 @@ var Creditos = require("./Creditos.js");
 var SelectPlayers = require("./SelectPlayers.js");
 var IntroScene = require("./IntroScene.js");
 var Victoria = require("./victoria.js");
+var Tutorial = require("./tutorialScene.js")
 
 var BootScene = {
   preload: function() {
@@ -1314,15 +1388,45 @@ var PreloaderScene = {
     this.game.load.image("arbol", "assets/sprites/arbol.png");
     this.game.load.image("muro", "assets/sprites/muro.png");
     //armas
-    this.game.load.image("subFusil", "assets/sprites/gun.png");
-    this.game.load.image("pistola", "assets/sprites/pistola.png");
-    this.game.load.image("francoTirador", "assets/sprites/francoTirador.png");
+    this.game.load.image("SUBFUSIL", "assets/sprites/gun.png");
+    this.game.load.image("GUN", "assets/sprites/pistola.png");
+    this.game.load.image("SNIPER", "assets/sprites/francoTirador.png");
     //balas
     this.game.load.image("bala", "assets/sprites/bala.png");
 
     //JUGADOR
-    this.game.load.image("player_1", "assets/sprites/character.png"); //posPlayer.png
+    //player posicion inicial 
     this.game.load.image("posIni", "assets/sprites/posPlayer.png");
+    //player 1
+    this.game.load.spritesheet('player_1', 'assets/sprites/character1.png', 16, 16, 8);
+    this.game.load.spritesheet('player_1_left','assets/sprites/character1_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_1_Gun', 'assets/sprites/character1_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_1_Gun_left','assets/sprites/character1_Gun_left.png', 16, 16, 8);
+
+    //player 2
+    this.game.load.spritesheet('player_2', 'assets/sprites/character2.png', 16, 16, 8);
+    this.game.load.spritesheet('player_2_left','assets/sprites/character2_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_2_Gun', 'assets/sprites/character2_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_2_Gun_left','assets/sprites/character2_Gun_left.png', 16, 16, 8);
+
+    //player 3
+    this.game.load.spritesheet('player_3', 'assets/sprites/character3.png', 16, 16, 8);
+    this.game.load.spritesheet('player_3_left','assets/sprites/character3_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_3_Gun', 'assets/sprites/character3_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_3_Gun_left','assets/sprites/character3_Gun_left.png', 16, 16, 8);
+
+    //plasyer 4
+    this.game.load.spritesheet('player_4', 'assets/sprites/character4.png', 16, 16, 8);
+    this.game.load.spritesheet('player_4_left','assets/sprites/character4_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_4_Gun', 'assets/sprites/character4_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_4_Gun_left','assets/sprites/character4_Gun_left.png', 16, 16, 8);
+
+
+   
 
     //videos
     this.game.load.video("introScene", "assets/videos/Battlefort_intro.webm");
@@ -1336,6 +1440,7 @@ var PreloaderScene = {
       "assets/sprites/menus/fondoSelectPlayers.png"
     );
     this.game.load.image("FondoVictoria", "assets/sprites/menus/victoria.png");
+    this.game.load.spritesheet('rodando','assets/sprites/menus/rodando.png', 117, 150, 7);
     //BOTONES
     //startButton
     this.game.load.image(
@@ -1355,6 +1460,21 @@ var PreloaderScene = {
       "creditButton_animation",
       "assets/sprites/button/creditButton_animation.png"
     ); 
+    //tutorial button´
+    this.game.load.image(
+      "tutorialButton",
+      "assets/sprites/button/tutorial.png"
+    );
+
+    this.game.load.image(
+      "tutorial_animation",
+      "assets/sprites/button/tutorial_animation.png"
+    );
+
+    this.game.load.image(
+      "tutorialtextura",
+      "assets/sprites/menus/controles.png"
+    );
 
     //selectPlayerButton
     //2 players
@@ -1395,7 +1515,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("Menu"); //introScene
+    this.game.state.start("introScene"); //introScene
   }
 };
 
@@ -1409,11 +1529,12 @@ window.onload = function() {
   game.state.add("play", PlayScene);
   game.state.add("CreditScene", Creditos);
   game.state.add("VictoryScene", Victoria);
+  game.state.add("tutorialScene", Tutorial);
 
   game.state.start("boot");
 };
 
-},{"./Creditos.js":3,"./IntroScene.js":4,"./SelectPlayers.js":9,"./StartScreen.js":10,"./play_scene.js":12,"./victoria.js":14}],12:[function(require,module,exports){
+},{"./Creditos.js":3,"./IntroScene.js":4,"./SelectPlayers.js":9,"./StartScreen.js":10,"./play_scene.js":12,"./tutorialScene.js":14,"./victoria.js":15}],12:[function(require,module,exports){
 "use strict";
 
 var mapa = require("./Mapa");
@@ -1477,10 +1598,10 @@ var PlayScene = {
     this.playerGroup = this.game.add.group();
     //desierto; niveve; praderaTop; praderaButton
     this.playerPos = [
-      { x: 128, y: 96 },
-      { x: 640, y: 512 },
-      { x: 688, y: 64 },
-      { x: 32, y: 560 }
+      { x: 128, y: 96, 'name': 'player_1' },
+      { x: 640, y: 512, 'name': 'player_2'},
+      { x: 688, y: 64, 'name': 'player_3' },
+      { x: 32, y: 560, 'name': 'player_4' }
     ];
     //se crean los jugadores y se meten en el grupo
     var numAparecidos = [];
@@ -1505,7 +1626,7 @@ var PlayScene = {
         }
       }
       var rPos = this.playerPos[r];
-      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, "player_1"));
+      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, rPos.name)); 
     }
     //contador de pasos y vida. CONSTANTE
     this.playerWalkCont = 40;
@@ -1549,6 +1670,8 @@ var PlayScene = {
           this.compruebaTurno();
           this.playerGroup.children[this.turno].bulletUpdate(this);
           this.checkInput(); //gestiona el input de cada jugador en su turno
+          //this.playerGroup.children[this.turno].updateTexture();
+
         }
       } else {
         //La barra espaciadora manda al menu inicial
@@ -1570,6 +1693,7 @@ var PlayScene = {
   render: function () {
     this.renderHUD();
     this.game.world.bringToTop(this.GrupoTextos);
+
   },
   //*********************************************************************************************** */
 
@@ -1644,14 +1768,10 @@ var PlayScene = {
 
   startPause: function () {
     //crea un nuevo objeto tipo spirte
-    this.menuPause = this.game.add.sprite(
-      this.game.world.centerX,
-      this.game.world.centerY+100,
-      "Pausa"
-    );
+    this.menuPause = this.game.add.sprite(0, 0, "Pausa");
+    this.menuPause.fixedToCamera = true;
     //valores de renderizado del menuPause
     this.menuPause.alpha = 0.7;
-    this.menuPause.anchor.setTo(0.5, 0.5);
     this.MusicaFondo.pause(); //se pausa la música
   },
   endPause: function () {
@@ -1805,11 +1925,17 @@ var PlayScene = {
     var aux1; var aux2; var aux3; var style2;
     if (this.playerGroup.children[this.turno].currentWeapon) {
 
-      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
-      aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
-      aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
+        aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
+        aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;     
+        style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
 
-      style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
+      if (this.playerGroup.children[this.turno].currentWeapon.balas_Cont === 0){
+        aux1 = "Sin balas";
+        style2 = { font: "18px Calibri", fill: "#fff", tabs: [164, 120] };
+      }
+      else {
+        aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
+      }
     }
     else {
       aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";
@@ -1856,6 +1982,38 @@ Recurso.prototype.generate = function (){
 module.exports = Recurso;
 
 },{"./Objeto":7}],14:[function(require,module,exports){
+"use strict";
+
+var Tutorial = {
+
+    create: function (game) {
+
+        this.game = game;
+        this.MainMenu = this.game.add.sprite(0, 0, "tutorialtextura");
+    
+        this.cursor = this.game.input.keyboard;
+        this.key1 = Phaser.KeyCode.ENTER;
+    
+      
+        this.text1 = this.game.add.text(500, 250, 'PULSA ENTER', 28);
+        this.tex2 = this.game.add.text (450, 280, 'PARA VOLVER AL MENU', 28);
+        
+      },
+    
+      update: function () {
+    
+        if (this.cursor.isDown(this.key1)) {
+            this.state.start('Menu');
+          }
+        }
+        
+
+};
+
+module.exports = Tutorial;
+
+ 
+},{}],15:[function(require,module,exports){
 'use strict'
 
 var Victoria =  {
@@ -1867,8 +2025,15 @@ var Victoria =  {
         this.cursor = this.game.input.keyboard;
         this.key1 = Phaser.KeyCode.ENTER;
 
-      
+       
         this.victory = game.add.sprite(0, 0, 'FondoVictoria');
+
+        this.rodando = this.game.add.sprite(0, 600, 'rodando');     
+        this.game.physics.enable(this.rodando, Phaser.Physics.ARCADE);
+
+        this.velMove = 200;
+        this.timeMove = 0;
+        this.text1 = this.game.add.bitmapText(100, 500, "fuente1", 'PRESS ENTER  TO BACK TO MENU', 36);
         
     },
 
@@ -1876,6 +2041,16 @@ var Victoria =  {
         if (this.cursor.isDown(this.key1)) {
             this.state.start('Menu');
           }
+
+          if (this.game.time.now > this.timeMove){
+            this.rodando.frame = (this.rodando.frame + 1) % 6;
+            this.rodando.x += this.rodando.width;
+            if (this.rodando.body.x >= 800){
+                this.rodando.body.x = -this.rodando.width;
+            }
+            this.timeMove += this.velMove;
+          }
+          
 
     },
 
