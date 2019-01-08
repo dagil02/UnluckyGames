@@ -1685,6 +1685,7 @@ var PlayScene = {
         }
       }
     } else {
+      this.MusicaFondo.stop();
       this.game.state.start("CreditScene");
 
     }
@@ -1692,7 +1693,13 @@ var PlayScene = {
 
   render: function () {
     this.renderHUD();
-    this.game.world.bringToTop(this.GrupoTextos);
+    if (this.pause){
+      this.game.world.bringToTop(this.menuPause);
+    }
+    else {
+      this.game.world.bringToTop(this.GrupoTextos);
+    }
+   
 
   },
   //*********************************************************************************************** */
@@ -1771,8 +1778,8 @@ var PlayScene = {
     this.menuPause = this.game.add.sprite(0, 0, "Pausa");
     this.menuPause.fixedToCamera = true;
     //valores de renderizado del menuPause
-    this.menuPause.alpha = 0.7;
     this.MusicaFondo.pause(); //se pausa la música
+    
   },
   endPause: function () {
     //destruye le sprite
@@ -1833,7 +1840,7 @@ var PlayScene = {
     this.zoomTo(1);
 
     //Texto precargado. bitmapFont
-    this.text1 = this.game.add.bitmapText(0, 300, "fuente1", 'GET READY NEXT LOOSER', 48);
+    this.text1 = this.game.add.bitmapText(0, 300, "fuente1", 'GET READY NEXT LOSER', 48);
     //se definen físicas para que el texto se mueva hacia el centro de la pantalla
     this.game.physics.arcade.enable(this.text1);
     this.text1.body.velocity.x += 60;
@@ -1860,6 +1867,7 @@ var PlayScene = {
 
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
   PlayerWin: function () {
+    this.MusicaFondo.stop();
     this.game.state.start("VictoryScene");
   },
 
@@ -2017,42 +2025,41 @@ module.exports = Tutorial;
 'use strict'
 
 var Victoria =  {
-    create:function (game) {
+  create:function (game) {
 
-        this.game = game;
+    this.game = game;
 
-        this.victory;
-        this.cursor = this.game.input.keyboard;
-        this.key1 = Phaser.KeyCode.ENTER;
+    this.victory;
+    this.cursor = this.game.input.keyboard;
+    this.key1 = Phaser.KeyCode.ENTER;
 
-       
-        this.victory = game.add.sprite(0, 0, 'FondoVictoria');
 
-        this.rodando = this.game.add.sprite(0, 600, 'rodando');     
-        this.game.physics.enable(this.rodando, Phaser.Physics.ARCADE);
+   
+    this.victory = game.add.sprite(0, 0, 'FondoVictoria');
 
-        this.velMove = 200;
-        this.timeMove = 0;
-        this.text1 = this.game.add.bitmapText(100, 500, "fuente1", 'PRESS ENTER  TO BACK TO MENU', 36);
-        
-    },
+ 
+    this.rodando = this.game.add.sprite(0, 600, 'rodando'); 
+    this.rodando.smoothed = false;   
+    this.anim = this.rodando.animations.add('walk', [0,2,3,4,5] , 12, true);
 
-    update:function (game) {
-        if (this.cursor.isDown(this.key1)) {
-            this.state.start('Menu');
-          }
+    this.anim.play (8, true);
+   
 
-          if (this.game.time.now > this.timeMove){
-            this.rodando.frame = (this.rodando.frame + 1) % 6;
-            this.rodando.x += this.rodando.width;
-            if (this.rodando.body.x >= 800){
-                this.rodando.body.x = -this.rodando.width;
-            }
-            this.timeMove += this.velMove;
-          }
-          
+    this.text1 = this.game.add.bitmapText(100, 500, "fuente1", 'PRESS ENTER  TO BACK TO MENU', 36);
+    
+},
 
-    },
+update:function (game) {
+    if (this.cursor.isDown(this.key1)) {
+        this.state.start('Menu');
+      }
+
+      this.rodando.x += 3;
+      //tope lateral + frame width
+      if (this.rodando.x > this.game.world.width + this.rodando.width) {
+        this.rodando.x = -this.rodando.width;
+      }
+},
 
 };
 module.exports = Victoria;
