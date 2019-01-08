@@ -6,6 +6,7 @@ function Mapa(game) {
   //ATRIBUTOS
   this.game = game;
 
+
   this.tile_Map; //recoge el mapa de tiles
 
   //capas
@@ -45,7 +46,8 @@ function Mapa(game) {
       );
     //como el método también lo usa la construccion de muros, evita no devolver false en caso de coincidir con una pos inicial de juegador
     //porque este método también se usa después de la creación del mapa
-    if (!esta && aux.name !== "wall") {
+    if (!esta && aux.name === "wall") {
+
       esta = this.game.physics.arcade.collide(aux, this.plyGroup.children);
     }
 
@@ -306,6 +308,8 @@ Mapa.prototype.playerCheckLayerCollision = function(player) {
 Mapa.prototype.PlayerObjectCheckCollision = function(player) {
   var bool = false;
   var i = 0;
+
+  bool = this.game.physics.arcade.collide(player, this.plyGroup.children);
   //1º comprueba la colisión con armas y recursos
   while (!bool && i < this.GrupoObjetos.length) {
     bool = this.game.physics.arcade.collide(
@@ -338,6 +342,7 @@ Mapa.prototype.añadeWall = function(player) {
   var XY = { x: wall.x / wall.width, y: wall.y / wall.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
   bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
 
+  if (!bool){ bool = this.game.physics.arcade.collide(wall, this.plyGroup.children);}
   //en caso de no haber colision comprueba que no exista con armas, recursos o muros
   if (!bool && !this.AñadeObjetoAux(wall)) {
     this.wallGroup.add(wall);
