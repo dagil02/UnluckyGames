@@ -8,6 +8,7 @@ var Creditos = require("./Creditos.js");
 var SelectPlayers = require("./SelectPlayers.js");
 var IntroScene = require("./IntroScene.js");
 var Victoria = require("./victoria.js");
+var Tutorial = require("./tutorialScene.js")
 
 var BootScene = {
   preload: function() {
@@ -119,6 +120,21 @@ var PreloaderScene = {
       "creditButton_animation",
       "assets/sprites/button/creditButton_animation.png"
     ); 
+    //tutorial button´
+    this.game.load.image(
+      "tutorialButton",
+      "assets/sprites/button/tutorial.png"
+    );
+
+    this.game.load.image(
+      "tutorial_animation",
+      "assets/sprites/button/tutorial_animation.png"
+    );
+
+    this.game.load.image(
+      "tutorialtextura",
+      "assets/sprites/menus/controles.png"
+    );
 
     //selectPlayerButton
     //2 players
@@ -173,6 +189,7 @@ window.onload = function() {
   game.state.add("play", PlayScene);
   game.state.add("CreditScene", Creditos);
   game.state.add("VictoryScene", Victoria);
+  game.state.add("tutorialScene", Tutorial);
 
   game.state.start("boot");
 };

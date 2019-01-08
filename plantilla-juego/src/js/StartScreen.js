@@ -20,6 +20,13 @@ var startScreen = {
     this.B2.onInputOver.add(this.b2funcionUP, this);
     this.B2.onInputOut.add(this.b2funcionOut, this);
 
+    //creditButton
+    this.B3 = this.game.add.button(100, 500, 'tutorialButton', this.actionOnClick3, this);
+    this.B3.width = 250;
+    this.B3.height = 70;
+    this.B3.onInputOver.add(this.b3funcionUP, this);
+    this.B3.onInputOut.add(this.b3funcionOut, this);
+
     
   },
 
@@ -53,7 +60,24 @@ var startScreen = {
 
   b2funcionOut: function(){
     this.B2.loadTexture('creditButton');
-  }
+  },
+
+
+  actionOnClick3: function (){
+    this.Music.stop();
+    this.state.start("tutorialScene");
+  },
+
+  b3funcionUP: function (){
+    this.B3.loadTexture('tutorial_animation');
+  },
+
+  b3funcionOut: function(){
+    this.B3.loadTexture('tutorialButton');
+  },
+
+
+  
 
 
 };
