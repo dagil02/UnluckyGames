@@ -23,6 +23,7 @@ function Player(game, x, y, sprite) {
   }
 
   //ATTRIBUTE
+  this.game = game;
   this.game.world.addChild(this);
 
   this.life = 100; //contador de vida 
@@ -254,7 +255,7 @@ Player.prototype.compruebaColision = function(mapa) {
   //si no existe colision con objs llama a la función de la class: Map
   if (!bool) {
     //this.POSPREVIA se usará en caso de que auxScale === 2
-    bool = mapa.playerCheckLayerCollision(this);
+    bool = mapa.playerCheckLayerCollision(this) || this.game.physics.arcade.collide (this, mapa.plyGroup.children) ;
   }
 
   return bool;
@@ -310,7 +311,8 @@ Player.prototype.bulletUpdate = function (playScene) {
         if (playScene.mapa.TileOcupado(XY, playScene.mapa.tile_Map.layerGroup.children)){
           element.destroy();
         }
-        else {this.CheckPlayerBulletVsPlayer(playScene);}
+        else {
+          this.CheckPlayerBulletVsPlayer(playScene);}
       }
     });
   }
@@ -320,20 +322,14 @@ Player.prototype.CheckPlayerBulletVsPlayer = function (playScene){
 
   var bool = false;
   var i = 0;
-  while (!bool && i < this.bulletGroup.length){
-  var j = 0;
-    while (!bool && j < playScene.playerGroup.length){
-      bool = this.game.physics.arcade.collide(this.bulletGroup.children[i], playScene.playerGroup.children[j]);
-      j++;
-    }
-    i++;
-  }
-  if (bool){
-    playScene.playerGroup.children[j - 1].life -= this.bulletGroup.children[i - 1].bulletDamage;
-    this.bulletGroup.children[i - 1].destroy();
-    console.log (playScene.playerGroup.children[j - 1].life);
-  }
+  bool = this.game.physics.arcade.collide(this.bulletGroup.children, playScene.playerGroup.children, this.PlayerPain);
 };
+
+Player.prototype.PlayerPain = function (bala, player){
+  player.life -= bala.bulletDamage;
+  bala.destroy();
+  console.log ("vida jugador: " + player.life);
+}
 
 Player.prototype.updateTexture = function(){
 

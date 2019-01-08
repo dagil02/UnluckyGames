@@ -106,6 +106,7 @@ var PlayScene = {
     for (var i = 0; i < this.playerGroup.length; i++) {
       if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
+        //this.playerGroup.children[i].body.checkCollision = true;
       }
     }
 
@@ -132,8 +133,7 @@ var PlayScene = {
           this.checkPlayerLife();
           this.compruebaTurno();
           this.playerGroup.children[this.turno].bulletUpdate(this);
-          this.checkInput(); //gestiona el input de cada jugador en su turno
-          //this.playerGroup.children[this.turno].updateTexture();
+          this.checkInput(); //gestiona el input de cada jugador en su turn
 
         }
       } else {
@@ -420,6 +420,7 @@ var PlayScene = {
     this.texScope.setText(aux3);
     this.textDamage.setText(aux2);
   },
+
 
 };
 

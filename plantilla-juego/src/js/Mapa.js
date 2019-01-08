@@ -22,7 +22,7 @@ function Mapa(game) {
   this.auxScale = 1;
 
   //posciones jugadores
-  this.plyGroup = this.game.add.group();
+  this.plyGroup;
 
   //FUNCIONES
   //------METODOS PARA LA CREACIÓN DE OBJETO------
@@ -47,8 +47,10 @@ function Mapa(game) {
     //como el método también lo usa la construccion de muros, evita no devolver false en caso de coincidir con una pos inicial de juegador
     //porque este método también se usa después de la creación del mapa
     if (!esta) {
-
-      esta = this.game.physics.arcade.collide(aux, this.plyGroup.children);
+      if (aux.name !== "bullet" && aux.name !== 'wall'){
+        esta = this.game.physics.arcade.collide(aux, this.plyGroup.children);
+      }
+     
     }
 
     return esta;
@@ -249,11 +251,11 @@ Mapa.prototype.generate = function(plGr) {
   //se crean las capas, se definen como colisiones y se añaden al grupo
   this.añadeLayer();
 
-  //posJUGADORES
+  //Grupo de jugadores 
   this.plyGroup = plGr;
   //se añaden los Objetos al mapa. el 1º param. es un identificador del método SeleccionObjeto
   this.añadeObjetos("recurso", 40, this.GrupoRecursos);
-  this.añadeObjetos("arma", 15, this.GrupoArmas);
+  this.añadeObjetos("arma", 25, this.GrupoArmas);
 
   this.resizeLayer(1); //por defecto, para ajustar el hud y el mapa al mundo
 };
@@ -310,7 +312,6 @@ Mapa.prototype.PlayerObjectCheckCollision = function(player) {
   var bool = false;
   var i = 0;
 
-  bool = this.game.physics.arcade.collide(player, this.plyGroup.children);
   //1º comprueba la colisión con armas y recursos
   while (!bool && i < this.GrupoObjetos.length) {
     bool = this.game.physics.arcade.collide(
@@ -320,6 +321,7 @@ Mapa.prototype.PlayerObjectCheckCollision = function(player) {
     );
     i++;
   }
+  console.log ("HIT");
   return bool;
 };
 //método callback invocado desde la función arcade.collide
@@ -339,6 +341,7 @@ Mapa.prototype.añadeWall = function(player) {
   var wall = new muro(this.game, player.x, player.y, "muro");
   wall.generate(player);
 
+ 
   //se comprueba la colisión con las colisiones constantes del mapa
   var XY = { x: wall.x / wall.width, y: wall.y / wall.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
 
@@ -347,12 +350,17 @@ Mapa.prototype.añadeWall = function(player) {
   }
   else {bool = true;}
 
+  bool = this.game.physics.arcade.collide(wall, this.plyGroup.children);
+
+  console.log ("WALL COLLISION PLAYER" + bool);
+
   //en caso de no haber colision comprueba que no exista con armas, recursos o muros
   if (!bool && !this.AñadeObjetoAux(wall)) {
     this.wallGroup.add(wall);
     player.walkCont--; //construir muros decrementa los pasos en 1
     return true;
-  } else {
+  } 
+  else {
     wall.destroy();
     return false;
   }
