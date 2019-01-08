@@ -1429,7 +1429,7 @@ var PreloaderScene = {
    
 
     //videos
-    this.game.load.video("introScene", "assets/videos/Battlefort_intro.m4a");
+    this.game.load.video("introScene", "assets/videos/Battlefort_intro.webm");
 
     //textura de menus
     this.game.load.image("Menu", "assets/sprites/menus/textura_mainMenu.png");
@@ -1515,7 +1515,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("introScene"); //introScene
+    this.game.state.start("Menu"); //introScene no funciona en chrome
   }
 };
 
