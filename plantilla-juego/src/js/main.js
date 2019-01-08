@@ -100,7 +100,7 @@ var PreloaderScene = {
       "assets/sprites/menus/fondoSelectPlayers.png"
     );
     this.game.load.image("FondoVictoria", "assets/sprites/menus/victoria.png");
-    this.game.load.spritesheet('rodando','assets/sprites/menus/rodando.png', 117, 150, 7);
+    this.game.load.spritesheet('rodando','assets/sprites/menus/rodando.png', 118, 150, 7);
     //BOTONES
     //startButton
     this.game.load.image(
@@ -175,7 +175,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("Menu"); //introScene no funciona en chrome
+    this.game.state.start("VictoryScene"); //introScene no funciona en chrome
   }
 };
 

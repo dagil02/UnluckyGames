@@ -148,6 +148,7 @@ var PlayScene = {
         }
       }
     } else {
+      this.MusicaFondo.stop();
       this.game.state.start("CreditScene");
 
     }
@@ -323,6 +324,7 @@ var PlayScene = {
 
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
   PlayerWin: function () {
+    this.MusicaFondo.stop();
     this.game.state.start("VictoryScene");
   },
 
