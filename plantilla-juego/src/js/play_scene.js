@@ -89,7 +89,7 @@ var PlayScene = {
         }
       }
       var rPos = this.playerPos[r];
-      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, "player_1"));
+      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, 'player_1')); //"player_1"
     }
     //contador de pasos y vida. CONSTANTE
     this.playerWalkCont = 40;
@@ -228,14 +228,10 @@ var PlayScene = {
 
   startPause: function () {
     //crea un nuevo objeto tipo spirte
-    this.menuPause = this.game.add.sprite(
-      this.game.world.centerX,
-      this.game.world.centerY+100,
-      "Pausa"
-    );
+    this.menuPause = this.game.add.sprite(0, 0, "Pausa");
+    this.menuPause.fixedToCamera = true;
     //valores de renderizado del menuPause
     this.menuPause.alpha = 0.7;
-    this.menuPause.anchor.setTo(0.5, 0.5);
     this.MusicaFondo.pause(); //se pausa la música
   },
   endPause: function () {
@@ -389,11 +385,17 @@ var PlayScene = {
     var aux1; var aux2; var aux3; var style2;
     if (this.playerGroup.children[this.turno].currentWeapon) {
 
-      aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
-      aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
-      aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;
+        aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
+        aux3 = this.playerGroup.children[this.turno].currentWeapon.alcance;     
+        style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
 
-      style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
+      if (this.playerGroup.children[this.turno].currentWeapon.balas_Cont === 0){
+        aux1 = "Sin balas";
+        style2 = { font: "18px Calibri", fill: "#fff", tabs: [164, 120] };
+      }
+      else {
+        aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
+      }
     }
     else {
       aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";

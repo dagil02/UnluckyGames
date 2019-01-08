@@ -54,7 +54,7 @@ function Mapa(game) {
 
   //Metodo para devolve un índice de armas
   this.Selec_Weapon = function() {
-    var idSprite_list = ["subFusil", "pistola", "francoTirador"];
+    var idSprite_list = ["SUBFUSIL", "GUN", "SNIPER"];
     var i = Math.floor(Math.random() * idSprite_list.length);
     var enlace = require("./Armas");
 

@@ -8,7 +8,7 @@ function Player(game, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite); //hereda de sprite
 
 
-  this.frame = 0;
+  //this.frame = 0;
 
   //ATTRIBUTE
   this.game.world.addChild(this);
@@ -16,7 +16,8 @@ function Player(game, x, y, sprite) {
   this.name;
   this.life = 100; //contador de vida 
 
-  this.anchor.setTo(0.5);
+  //gestion cambio textura
+  this.changeTex = false;
 
   //gestion del turno
   this.walkCont; //los pasos se resetean con cada turno.
@@ -128,10 +129,6 @@ Player.prototype.checkMove = function(mapa) {
   var pos = { x: 0, y: 0 };
   var posPrevia = { x: 0, y: 0 };
 
-  if (this.orientation === 3){
-    this.scale.x *= -1;
-  }
-
   //define la llamada a movePlayer()
   var boolcheck = false;
 
@@ -169,7 +166,6 @@ Player.prototype.checkMove = function(mapa) {
   }
   //izquierda A
   else if (this.inputAux.isDown(this.key1)) {
-    this.scale.x *= -1;
     this.orientation = 3;
     if (this.body.x >= this.width) {
       pos.x -= this.width;
@@ -209,7 +205,29 @@ Player.prototype.movePlayer = function(mapa, posT) {
     //y decrementa los pasos le jugador
     
     if (this.game.time.now > this.timeMove) {
-      this.frame = (this.frame + 1) % 8;
+
+      //movimiento hacia la izquierda
+      if (this.orientation === 3){
+        if (!this.changeTex){
+          this.changeTex = true;
+          this.loadTexture('player_1_left');
+          this.frame = 7;
+        }
+        else {
+          this.frame--; 
+          if (this.frame < 0){
+            this.frame = 7;
+          }
+        }
+      }
+      if (this.orientation === 1){
+        if (this.changeTex){
+          this.changeTex = false;
+          this.loadTexture('player_1')
+          this.frame = 0;
+        }
+        this.frame = (this.frame + 1) % 8;
+      }
       this.SonidoPasos.play();
       this.walkCont--;
       this.timeMove = this.game.time.now + this.velMove;
@@ -256,8 +274,6 @@ Player.prototype.shotBullet = function() {
     if (this.game.time.now > this.timeMove) {
       //3º que el arma tenga balas en la recamara. Shot: devuelve true y decrementa las balas en la recamara
       if (this.currentWeapon.Shot()) {
-
-        this.walkCont -= this.currentWeapon.walkContador;
         //se genera la bala y se establece su lógica de movimiento
         this.SonidoDisparo.play();
         var bullet = require("./Bala");
@@ -309,6 +325,7 @@ Player.prototype.CheckPlayerBulletVsPlayer = function (playScene){
     console.log (playScene.playerGroup.children[j - 1].life);
   }
 };
+
 
 
 module.exports = Player;

@@ -47,16 +47,17 @@ var PreloaderScene = {
     this.game.load.image("arbol", "assets/sprites/arbol.png");
     this.game.load.image("muro", "assets/sprites/muro.png");
     //armas
-    this.game.load.image("subFusil", "assets/sprites/gun.png");
-    this.game.load.image("pistola", "assets/sprites/pistola.png");
-    this.game.load.image("francoTirador", "assets/sprites/francoTirador.png");
+    this.game.load.image("SUBFUSIL", "assets/sprites/gun.png");
+    this.game.load.image("GUN", "assets/sprites/pistola.png");
+    this.game.load.image("SNIPER", "assets/sprites/francoTirador.png");
     //balas
     this.game.load.image("bala", "assets/sprites/bala.png");
 
     //JUGADOR
-    //this.game.load.image("player_1", "assets/sprites/character1.png"); //posPlayer.png
+    //this.game.load.image("player", "assets/sprites/character.png");
     this.game.load.image("posIni", "assets/sprites/posPlayer.png");
     this.game.load.spritesheet('player_1', 'assets/sprites/character1.png', 16, 16, 8);
+    this.game.load.spritesheet('player_1_left','assets/sprites/character1_left.png', 16, 16, 8);
 
     //videos
     this.game.load.video("introScene", "assets/videos/Battlefort_intro.webm");
@@ -129,7 +130,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("introScene"); //introScene
+    this.game.state.start("Menu"); //introScene
   }
 };
 
