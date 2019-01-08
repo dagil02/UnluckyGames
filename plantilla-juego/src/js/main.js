@@ -123,7 +123,7 @@ var PreloaderScene = {
     //tutorial button´
     this.game.load.image(
       "tutorialButton",
-      "assets/sprites/button/tutorial.png"
+      "assets/sprites/button/Tutorial.png"
     );
 
     this.game.load.image(
