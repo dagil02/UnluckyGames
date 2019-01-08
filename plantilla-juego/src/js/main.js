@@ -83,6 +83,8 @@ var PreloaderScene = {
     //gun
     this.game.load.spritesheet('player_4_Gun', 'assets/sprites/character4_Gun.png', 16, 16, 8);
     this.game.load.spritesheet('player_4_Gun_left','assets/sprites/character4_Gun_left.png', 16, 16, 8);
+
+
    
 
     //videos
@@ -97,6 +99,7 @@ var PreloaderScene = {
       "assets/sprites/menus/fondoSelectPlayers.png"
     );
     this.game.load.image("FondoVictoria", "assets/sprites/menus/victoria.png");
+    this.game.load.spritesheet('rodando','assets/sprites/menus/rodando.png', 117, 150, 7);
     //BOTONES
     //startButton
     this.game.load.image(
@@ -156,7 +159,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("Menu"); //introScene
+    this.game.state.start("introScene"); //introScene
   }
 };
 
