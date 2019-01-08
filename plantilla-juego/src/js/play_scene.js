@@ -156,7 +156,13 @@ var PlayScene = {
 
   render: function () {
     this.renderHUD();
-    this.game.world.bringToTop(this.GrupoTextos);
+    if (this.pause){
+      this.game.world.bringToTop(this.menuPause);
+    }
+    else {
+      this.game.world.bringToTop(this.GrupoTextos);
+    }
+   
 
   },
   //*********************************************************************************************** */
@@ -235,8 +241,8 @@ var PlayScene = {
     this.menuPause = this.game.add.sprite(0, 0, "Pausa");
     this.menuPause.fixedToCamera = true;
     //valores de renderizado del menuPause
-    this.menuPause.alpha = 0.7;
     this.MusicaFondo.pause(); //se pausa la música
+    
   },
   endPause: function () {
     //destruye le sprite

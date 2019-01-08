@@ -175,7 +175,7 @@ var PreloaderScene = {
   },
 
   create: function() {
-    this.game.state.start("VictoryScene"); //introScene no funciona en chrome
+    this.game.state.start("Menu"); //introScene no funciona en chrome
   }
 };
 
