@@ -7,14 +7,26 @@
 function Player(game, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite); //hereda de sprite
 
-
-  //this.frame = 0;
+  this.nameTex = sprite;
+  this.nameLeft; this.nameGun; this.nameGunLeft;
+  if (sprite === 'player_1'){
+    this.nameLeft = 'player_1_left'; this.nameGun = 'player_1_Gun'; this.nameGunLeft = 'player_1_Gun_left';
+  }
+  else if (sprite === 'player_2'){
+    this.nameLeft = 'player_2_left'; this.nameGun = 'player_2_Gun'; this.nameGunLeft = 'player_2_Gun_left';
+  }
+  else if (sprite === 'player_3'){
+    this.nameLeft = 'player_3_left'; this.nameGun = 'player_3_Gun'; this.nameGunLeft = 'player_3_Gun_left';
+  }
+  else {
+    this.nameLeft = 'player_4_left'; this.nameGun = 'player_4_Gun'; this.nameGunLeft = 'player_4_Gun_left';
+  }
 
   //ATTRIBUTE
   this.game.world.addChild(this);
 
-  this.name;
   this.life = 100; //contador de vida 
+  this.name;
 
   //gestion cambio textura
   this.changeTex = false;
@@ -208,26 +220,23 @@ Player.prototype.movePlayer = function(mapa, posT) {
 
       //movimiento hacia la izquierda
       if (this.orientation === 3){
+
         if (!this.changeTex){
           this.changeTex = true;
-          this.loadTexture('player_1_left');
-          this.frame = 7;
-        }
-        else {
-          this.frame--; 
-          if (this.frame < 0){
-            this.frame = 7;
-          }
+          this.frame = 0;
+          if (this.currentWeapon){this.loadTexture(this.nameGunLeft);}
+          else {this.loadTexture(this.nameLeft)} 
         }
       }
       if (this.orientation === 1){
         if (this.changeTex){
           this.changeTex = false;
-          this.loadTexture('player_1')
+          if (this.currentWeapon){this.loadTexture(this.nameGun);}
+          else {this.loadTexture(this.nameTex);}
           this.frame = 0;
         }
-        this.frame = (this.frame + 1) % 8;
       }
+      this.frame = (this.frame + 1) % 8;
       this.SonidoPasos.play();
       this.walkCont--;
       this.timeMove = this.game.time.now + this.velMove;
@@ -323,6 +332,18 @@ Player.prototype.CheckPlayerBulletVsPlayer = function (playScene){
     playScene.playerGroup.children[j - 1].life -= this.bulletGroup.children[i - 1].bulletDamage;
     this.bulletGroup.children[i - 1].destroy();
     console.log (playScene.playerGroup.children[j - 1].life);
+  }
+};
+
+Player.prototype.updateTexture = function(){
+
+  if (this.currentWeapon){
+    if (this.orientation === 1){
+      this.loadTexture(this.nameGun);
+    }
+    else{
+      this.loadTexture(this.nameGunLeft);
+    }
   }
 };
 

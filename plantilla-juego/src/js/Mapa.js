@@ -354,6 +354,8 @@ Mapa.prototype.armedPlayer = function(player, weapon) {
   //si el jugador no está armado hasta los dientes
   if (!player.currentWeapon) {
     player.currentWeapon = weapon; //el atributo recoge los valores del arma para gestionarlos desde class: Player
+    if (player.orientation === 3){player.loadTexture(player.nameGunLeft);}
+    else {player.loadTexture(player.nameGun);}
     weapon.destroy();
   }
 };
@@ -423,6 +425,12 @@ Mapa.prototype.playerDropObject = function(player) {
   var weapon = player.currentWeapon;
   //se deshabilita el arma de player para que el body no desplace más tiles con ejerciendo fuerza
   player.currentWeapon = null;
+  if (player.orientation === 3){
+    player.loadTexture(player.nameLeft);
+  }else {
+    player.loadTexture(player.nameTex);
+  }
+ 
 
   //se calcula la nueva pos en base a la orientación
   var dir = this.direction(player);
@@ -481,12 +489,3 @@ Mapa.prototype.direction = function(player) {
 
 module.exports = Mapa;
 
-
-/** //reacondiciona las físicas
-    /*weapon.body.collideWorldBounds = false;
-    weapon.body.immovable = false;
-    weapon.body.checkCollision = false;
-    //overlapa los sprites
-    weapon.position = player.position;
-    player.currentWeapon = weapon; //el atributo recoge los valores del arma para gestionarlos desde class: Player
-    //weapon.alpha = 0; //lo vuelve invisible*/ 

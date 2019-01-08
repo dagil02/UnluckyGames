@@ -54,10 +54,36 @@ var PreloaderScene = {
     this.game.load.image("bala", "assets/sprites/bala.png");
 
     //JUGADOR
-    //this.game.load.image("player", "assets/sprites/character.png");
+    //player posicion inicial 
     this.game.load.image("posIni", "assets/sprites/posPlayer.png");
+    //player 1
     this.game.load.spritesheet('player_1', 'assets/sprites/character1.png', 16, 16, 8);
     this.game.load.spritesheet('player_1_left','assets/sprites/character1_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_1_Gun', 'assets/sprites/character1_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_1_Gun_left','assets/sprites/character1_Gun_left.png', 16, 16, 8);
+
+    //player 2
+    this.game.load.spritesheet('player_2', 'assets/sprites/character2.png', 16, 16, 8);
+    this.game.load.spritesheet('player_2_left','assets/sprites/character2_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_2_Gun', 'assets/sprites/character2_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_2_Gun_left','assets/sprites/character2_Gun_left.png', 16, 16, 8);
+
+    //player 3
+    this.game.load.spritesheet('player_3', 'assets/sprites/character3.png', 16, 16, 8);
+    this.game.load.spritesheet('player_3_left','assets/sprites/character3_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_3_Gun', 'assets/sprites/character3_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_3_Gun_left','assets/sprites/character3_Gun_left.png', 16, 16, 8);
+
+    //plasyer 4
+    this.game.load.spritesheet('player_4', 'assets/sprites/character4.png', 16, 16, 8);
+    this.game.load.spritesheet('player_4_left','assets/sprites/character4_left.png', 16, 16, 8);
+    //gun
+    this.game.load.spritesheet('player_4_Gun', 'assets/sprites/character4_Gun.png', 16, 16, 8);
+    this.game.load.spritesheet('player_4_Gun_left','assets/sprites/character4_Gun_left.png', 16, 16, 8);
+   
 
     //videos
     this.game.load.video("introScene", "assets/videos/Battlefort_intro.webm");

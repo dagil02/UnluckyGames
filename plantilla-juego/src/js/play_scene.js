@@ -61,10 +61,10 @@ var PlayScene = {
     this.playerGroup = this.game.add.group();
     //desierto; niveve; praderaTop; praderaButton
     this.playerPos = [
-      { x: 128, y: 96 },
-      { x: 640, y: 512 },
-      { x: 688, y: 64 },
-      { x: 32, y: 560 }
+      { x: 128, y: 96, 'name': 'player_1' },
+      { x: 640, y: 512, 'name': 'player_2'},
+      { x: 688, y: 64, 'name': 'player_3' },
+      { x: 32, y: 560, 'name': 'player_4' }
     ];
     //se crean los jugadores y se meten en el grupo
     var numAparecidos = [];
@@ -89,7 +89,7 @@ var PlayScene = {
         }
       }
       var rPos = this.playerPos[r];
-      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, 'player_1')); //"player_1"
+      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, rPos.name)); 
     }
     //contador de pasos y vida. CONSTANTE
     this.playerWalkCont = 40;
@@ -133,6 +133,8 @@ var PlayScene = {
           this.compruebaTurno();
           this.playerGroup.children[this.turno].bulletUpdate(this);
           this.checkInput(); //gestiona el input de cada jugador en su turno
+          //this.playerGroup.children[this.turno].updateTexture();
+
         }
       } else {
         //La barra espaciadora manda al menu inicial
@@ -154,6 +156,7 @@ var PlayScene = {
   render: function () {
     this.renderHUD();
     this.game.world.bringToTop(this.GrupoTextos);
+
   },
   //*********************************************************************************************** */
 
