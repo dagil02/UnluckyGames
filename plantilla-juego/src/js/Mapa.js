@@ -46,7 +46,7 @@ function Mapa(game) {
       );
     //como el método también lo usa la construccion de muros, evita no devolver false en caso de coincidir con una pos inicial de juegador
     //porque este método también se usa después de la creación del mapa
-    if (!esta && aux.name === "wall") {
+    if (!esta) {
 
       esta = this.game.physics.arcade.collide(aux, this.plyGroup.children);
     }
@@ -213,6 +213,7 @@ function Mapa(game) {
   this.TileOcupado = function(variable, grupoCapas) {
     var colision = false;
     var i = 1;
+
     //aqui recorre el array de hijos de layerGroup saltándose la capa BackGround
     while (!colision && i < grupoCapas.length) {
       colision = grupoCapas[i].layer.data[variable.y][variable.x].index !== -1;
@@ -340,9 +341,12 @@ Mapa.prototype.añadeWall = function(player) {
 
   //se comprueba la colisión con las colisiones constantes del mapa
   var XY = { x: wall.x / wall.width, y: wall.y / wall.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
-  bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
 
-  if (!bool){ bool = this.game.physics.arcade.collide(wall, this.plyGroup.children);}
+  if (( (XY.x >= 0 && XY.x < this.tile_Map.width) && (XY.y >=  0 && XY.y < this.tile_Map.height))) {
+    bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
+  }
+  else {bool = true;}
+
   //en caso de no haber colision comprueba que no exista con armas, recursos o muros
   if (!bool && !this.AñadeObjetoAux(wall)) {
     this.wallGroup.add(wall);
@@ -427,16 +431,12 @@ Mapa.prototype.playerDropObject = function(player) {
   var prevPlayer = { x: player.x, y: player.y };
   var XY;
 
+  bool = false;
+
   var weapon = player.currentWeapon;
   //se deshabilita el arma de player para que el body no desplace más tiles con ejerciendo fuerza
   player.currentWeapon = null;
-  if (player.orientation === 3){
-    player.loadTexture(player.nameLeft);
-  }else {
-    player.loadTexture(player.nameTex);
-  }
  
-
   //se calcula la nueva pos en base a la orientación
   var dir = this.direction(player);
   var auxX = player.x + dir.x;
@@ -452,11 +452,18 @@ Mapa.prototype.playerDropObject = function(player) {
   }
 
   weaPON.generate();
+
   XY = { x: weaPON.x / player.width, y: weaPON.y / player.height }; //debe recuperar la dimensión para que se ajuste a la matriz del .json
- 
 
   var bool = false;
-  bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
+
+
+  if (( (XY.x >= 0 && XY.x < this.tile_Map.width) && (XY.y >=  0 && XY.y < this.tile_Map.height))) {
+    bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
+  }
+  else {bool = true;}
+
+  if (!bool){ bool = this.game.physics.arcade.collide(weaPON, this.plyGroup.children);}
 
   //en caso de no haber colision comprueba que no exista con armas, recursos o muros
   if (!bool && !this.AñadeObjetoAux(weaPON)) {
@@ -464,7 +471,14 @@ Mapa.prototype.playerDropObject = function(player) {
     weapon.destroy();
     this.GrupoArmas.add(weaPON);
     this.game.world.bringToTop(this.GrupoArmas);
-  } else {
+    if (player.orientation === 3){
+      player.loadTexture(player.nameLeft);
+    }else {
+      player.loadTexture(player.nameTex);
+    }
+  } 
+  
+  else {
     player.currentWeapon = weapon;
     weaPON.destroy();
   }

@@ -283,7 +283,7 @@ var PlayScene = {
     for (var i = 0; i < this.playerGroup.length; i++) {
       if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
-    
+        //this.playerGroup.children[i].body.checkCollision = true;
       }
     }
 
