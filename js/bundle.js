@@ -1817,7 +1817,11 @@ var PlayScene = {
     this.text1.destroy(); //se destruye el bitMapText
 
     //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
-    this.turno = (this.turno + 1) % this.numPlayers;
+    //this.turno = (this.turno + 1) % this.numPlayers;
+    this.turno++;
+    if (this.turno >= this.numPlayers){
+      this.turno = 0;
+    }
 
     this.zoomTo(2);
 
@@ -1890,7 +1894,7 @@ var PlayScene = {
       for (var i = 0; i < this.playerGroup.length; i++) {
         this.playerGroup.children[i].turnoActual = i;
       }
-      this.turno = this.playerGroup.children[this.turno].turnoActual;
+      //this.turno = this.playerGroup.children[this.turno].turnoActual;
     }
 
     if (this.numPlayers === 1) {
