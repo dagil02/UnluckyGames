@@ -1819,7 +1819,7 @@ var PlayScene = {
 
     //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
     //this.turno = (this.turno + 1) % this.numPlayers;
-    this.turno++;
+    this.turno = this.turno + 1;
     if (this.turno >= this.numPlayers){
       this.turno = 0;
     }
