@@ -829,10 +829,7 @@ function Objeto(game, x, y, sprite) {
 	this.game.world.addChild(this);
 
 	//ATTRIBUTE
-  this.cantidad;
-  
-  this.turnoActual; //!!!!!!!!!!!!!!
-
+	this.cantidad;
 	this.auxScale = 1; //1 por defecto
 	this.name = sprite; //el nombre dependerá del tipo de objeto. más para depurar 
 
@@ -1208,6 +1205,8 @@ Player.prototype.updateTexture = function(){
   }
 };
 
+
+
 module.exports = Player;
 
 
@@ -1465,7 +1464,7 @@ var PreloaderScene = {
       "assets/sprites/menus/fondoSelectPlayers.png"
     );
     this.game.load.image("FondoVictoria", "assets/sprites/menus/victoria.png");
-    this.game.load.spritesheet('rodando','assets/sprites/menus/rodando.png', 117, 150, 7);
+    this.game.load.spritesheet('rodando','assets/sprites/menus/rodando.png', 118, 150, 7);
     //BOTONES
     //startButton
     this.game.load.image(
@@ -1608,6 +1607,7 @@ var PlayScene = {
     //numero de jugadores en partida
     this.numPlayers = this.game.numPlayers; //se va reduciendo con cada muerte
     this.turno = 0; //variable
+    this.auxTurno = 0;
     this.pasaBool = false;
     //TEXTOS
     //texto de transicion
@@ -1660,8 +1660,6 @@ var PlayScene = {
     this.playerGroup.forEach(element => {
       element.walkCont = this.playerWalkCont;
       element.life = this.playerLife;
-      element.turnoActual = i;
-      console.log ("turnosCreacion" + i);
       i++;
     });
     //se hacen fijos los body de los jugadores fuera de turno
@@ -1818,8 +1816,7 @@ var PlayScene = {
     this.text1.destroy(); //se destruye el bitMapText
 
     //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
-    //this.turno = (this.turno + 1) % this.numPlayers;
-    this.turno = this.turno + 1;
+    this.turno++;
     if (this.turno >= this.numPlayers){
       this.turno = 0;
     }
@@ -1882,28 +1879,22 @@ var PlayScene = {
 
   //**************GESTION VIDA Y ESTADO FIN DE JUEGO  */
   checkPlayerLife: function () {
-    var bool = false;
+    var muerto = 99;
+    var i = 0;
     this.playerGroup.forEach(element => {
       if (element.life <= 0) {
-        bool = true;
         element.destroy();
         this.numPlayers--;
+        muerto = i;
+        if (this.numPlayers === 1) {
+          this.PlayerWin();
+        }
+        if (this.turno > muerto){
+          this.turno--;
+        }
       }
+      i++;
     });
-
-    if (bool) {
-      console.log ("Kill: turno Actual" + this.turno);
-      console.log ("PlayerGroupLength"+  this.playerGroup.length);
-      for (var i = 0; i < this.playerGroup.length; i++) {
-        this.playerGroup.children[i].turnoActual = i;
-      }
-      bool = false;
-      //this.turno = this.playerGroup.children[this.turno].turnoActual;///
-    }
-
-    if (this.numPlayers === 1) {
-      this.PlayerWin();
-    }
   },
 
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
@@ -1936,7 +1927,6 @@ var PlayScene = {
     var aux1;
     var aux2;
     var aux3;
-   
     if (this.playerGroup.children[this.turno].currentWeapon) {
 
       aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
@@ -1945,7 +1935,7 @@ var PlayScene = {
 
       style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
     }
-    else { aux1 = "Hazte un tirachinas"; aux2 = "No haces pupa"; aux3 = "El horizonte"; }
+    else { aux1 = "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "El horizonte"; }
     //plasyer - life
     this.texPlayer = this.game.add.text(this.hudPosPlayer.x, this.hudPosPlayer.y, this.turno + 1, style);
     this.texLife = this.game.add.text(this.hudPosLife.x, this.hudPosLife.y, this.playerGroup.children[this.turno].life, style);
@@ -1973,7 +1963,6 @@ var PlayScene = {
   renderHUD: function () {
 
     var aux1; var aux2; var aux3; var style2;
-    console.log ("Kill: turno Actual" + this.turno);
     if (this.playerGroup.children[this.turno].currentWeapon) {
 
         aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
@@ -1989,7 +1978,7 @@ var PlayScene = {
       }
     }
     else {
-      aux1 = "Hazte un tirachinas"; aux2 = "No haces pupa"; aux3 = "El horizonte";
+      aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";
     }
     this.texPlayer.setText(this.turno + 1);
     this.texLife.setText(this.playerGroup.children[this.turno].life);
@@ -2044,7 +2033,9 @@ var Tutorial = {
         this.MainMenu = this.game.add.sprite(0, 0, "tutorialtextura");
     
         this.cursor = this.game.input.keyboard;
-        this.key1 = Phaser.KeyCode.ENTER; 
+        this.key1 = Phaser.KeyCode.ENTER;
+  
+        
       },
     
       update: function () {
@@ -2064,41 +2055,41 @@ module.exports = Tutorial;
 'use strict'
 
 var Victoria =  {
-  create:function (game) {
+    create:function (game) {
 
-    this.game = game;
+        this.game = game;
 
-    this.victory;
-    this.cursor = this.game.input.keyboard;
-    this.key1 = Phaser.KeyCode.ENTER;
+        this.victory;
+        this.cursor = this.game.input.keyboard;
+        this.key1 = Phaser.KeyCode.ENTER;
 
 
-   
-    this.victory = game.add.sprite(0, 0, 'FondoVictoria');
+       
+        this.victory = game.add.sprite(0, 0, 'FondoVictoria');
 
- 
-    this.rodando = this.game.add.sprite(0, 600, 'rodando'); 
-    this.rodando.smoothed = false;   
-    this.anim = this.rodando.animations.add('walk', [0,2,3,4,5] , 12, true);
+     
+        this.rodando = this.game.add.sprite(0, 600, 'rodando'); 
+        this.rodando.smoothed = false;   
+        this.anim = this.rodando.animations.add('walk', [0,2,3,4,5] , 12, true);
 
-    this.anim.play (8, true);
-   
+        this.anim.play (8, true);
+       
 
-    this.text1 = this.game.add.bitmapText(100, 500, "fuente1", 'PRESS ENTER  TO BACK TO MENU', 36);
-    
-},
+        this.text1 = this.game.add.bitmapText(100, 500, "fuente1", 'PRESS ENTER  TO BACK TO MENU', 36);
+        
+    },
 
-update:function (game) {
-    if (this.cursor.isDown(this.key1)) {
-        this.state.start('Menu');
-      }
+    update:function (game) {
+        if (this.cursor.isDown(this.key1)) {
+            this.state.start('Menu');
+          }
 
-      this.rodando.x += 3;
-      //tope lateral + frame width
-      if (this.rodando.x > this.game.world.width + this.rodando.width) {
-        this.rodando.x = -this.rodando.width;
-      }
-},
+          this.rodando.x += 3;
+          //tope lateral + frame width
+          if (this.rodando.x > this.game.world.width + this.rodando.width) {
+            this.rodando.x = -this.rodando.width;
+          }
+    },
 
 };
 module.exports = Victoria;
