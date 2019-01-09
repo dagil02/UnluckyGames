@@ -1891,7 +1891,7 @@ var PlayScene = {
     });
 
     if (bool) {
-      var i = this.turno;
+      console.log ("Kill: turno Actual" + this.turno);
       for (var i = 0; i < this.playerGroup.length; i++) {
         this.playerGroup.children[i].turnoActual = i;
       }
@@ -1934,6 +1934,7 @@ var PlayScene = {
     var aux1;
     var aux2;
     var aux3;
+    console.log ("Kill: turno Actual" + this.turno);
     if (this.playerGroup.children[this.turno].currentWeapon) {
 
       aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
