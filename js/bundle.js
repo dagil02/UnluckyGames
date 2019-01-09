@@ -1895,7 +1895,7 @@ var PlayScene = {
         this.playerGroup.children[i].turnoActual = i;
       }
       bool = false;
-      //this.turno = this.playerGroup.children[this.turno].turnoActual;
+      //this.turno = this.playerGroup.children[this.turno].turnoActual;///
     }
 
     if (this.numPlayers === 1) {
