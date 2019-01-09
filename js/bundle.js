@@ -241,7 +241,7 @@ module.exports = introScene;
 //node_modules/.bin/gulp run
 
 function Mapa(game) {
-   //ATRIBUTOS
+  //ATRIBUTOS
   this.game = game;
 
 
@@ -586,9 +586,10 @@ Mapa.prototype.añadeWall = function(player) {
   if (( (XY.x >= 0 && XY.x < this.tile_Map.width) && (XY.y >=  0 && XY.y < this.tile_Map.height))) {
     bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
   }
-  else {bool = true;}
+  else {
+    bool = true;}
 
-  bool = this.game.physics.arcade.collide(wall, this.plyGroup.children);
+   if (!bool){bool = this.game.physics.arcade.collide(wall, this.plyGroup.children);}
 
   console.log ("WALL COLLISION PLAYER" + bool);
 
@@ -750,7 +751,7 @@ Mapa.prototype.direction = function(player) {
     dir.y = 0;
   }
   return dir;
- };
+};
 
 module.exports = Mapa;
 
@@ -1664,6 +1665,7 @@ var PlayScene = {
     for (var i = 0; i < this.playerGroup.length; i++) {
       if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
+        //this.playerGroup.children[i].body.checkCollision = true;
       }
     }
 
@@ -1687,12 +1689,10 @@ var PlayScene = {
       if (!this.pause) {
         //paraliza el juego mientras se cambia de turno
         if (!this.pasaBool) {
-          this.checkPlayerLife();
-          this.compruebaTurno();
+          this.checkInput(); //gestiona el input de cada jugador en su turn
           this.playerGroup.children[this.turno].bulletUpdate(this);
-          this.checkInput(); //gestiona el input de cada jugador en su turno
-          //this.playerGroup.children[this.turno].updateTexture();
-
+          this.compruebaTurno();
+          this.checkPlayerLife();
         }
       } else {
         //La barra espaciadora manda al menu inicial
@@ -1833,20 +1833,21 @@ var PlayScene = {
   pasaTurnoAux: function () {
 
     this.text1.destroy();
-    this.pasaBool = false; //el buleano desInterrumpe el ciclo del update
-
+  
     //actualiza el contador de pasos según la constante
     this.playerGroup.children[this.turno].walkCont = this.playerWalkCont;
     this.playerGroup.children[this.turno].body.immovable = false;
     for (var i = 0; i < this.playerGroup.length; i++) {
       if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
+        //this.playerGroup.children[i].body.checkCollision = true;
       }
     }
 
     //se renderiza para no dejar los valores  del HUD en blanco 
     this.renderHUD();
     this.game.world.bringToTop(this.GrupoTextos);
+    this.pasaBool = false; //el buleano desInterrumpe el ciclo del update
   },
 
   compruebaTurno: function () {
@@ -1977,6 +1978,7 @@ var PlayScene = {
     this.texScope.setText(aux3);
     this.textDamage.setText(aux2);
   },
+
 
 };
 

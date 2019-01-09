@@ -130,11 +130,10 @@ var PlayScene = {
       if (!this.pause) {
         //paraliza el juego mientras se cambia de turno
         if (!this.pasaBool) {
-          this.checkPlayerLife();
-          this.compruebaTurno();
-          this.playerGroup.children[this.turno].bulletUpdate(this);
           this.checkInput(); //gestiona el input de cada jugador en su turn
-
+          this.playerGroup.children[this.turno].bulletUpdate(this);
+          this.compruebaTurno();
+          this.checkPlayerLife();
         }
       } else {
         //La barra espaciadora manda al menu inicial
@@ -275,8 +274,7 @@ var PlayScene = {
   pasaTurnoAux: function () {
 
     this.text1.destroy();
-    this.pasaBool = false; //el buleano desInterrumpe el ciclo del update
-
+  
     //actualiza el contador de pasos según la constante
     this.playerGroup.children[this.turno].walkCont = this.playerWalkCont;
     this.playerGroup.children[this.turno].body.immovable = false;
@@ -290,6 +288,7 @@ var PlayScene = {
     //se renderiza para no dejar los valores  del HUD en blanco 
     this.renderHUD();
     this.game.world.bringToTop(this.GrupoTextos);
+    this.pasaBool = false; //el buleano desInterrumpe el ciclo del update
   },
 
   compruebaTurno: function () {

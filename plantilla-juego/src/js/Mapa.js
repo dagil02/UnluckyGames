@@ -348,9 +348,10 @@ Mapa.prototype.añadeWall = function(player) {
   if (( (XY.x >= 0 && XY.x < this.tile_Map.width) && (XY.y >=  0 && XY.y < this.tile_Map.height))) {
     bool = this.TileOcupado(XY, this.tile_Map.layerGroup.children);
   }
-  else {bool = true;}
+  else {
+    bool = true;}
 
-  bool = this.game.physics.arcade.collide(wall, this.plyGroup.children);
+   if (!bool){bool = this.game.physics.arcade.collide(wall, this.plyGroup.children);}
 
   console.log ("WALL COLLISION PLAYER" + bool);
 
