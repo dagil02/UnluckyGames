@@ -1890,7 +1890,7 @@ var PlayScene = {
       for (var i = 0; i < this.playerGroup.length; i++) {
         this.playerGroup[i].turnoActual = i;
       }
-      this.turno = this.playerGroup[i].turnoActual;
+      this.turno = this.playerGroup.children[i].turnoActual;
     }
 
     if (this.numPlayers === 1) {
