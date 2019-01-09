@@ -1893,8 +1893,8 @@ var PlayScene = {
     if (bool) {
       for (var i = 0; i < this.playerGroup.length; i++) {
         this.playerGroup.children[i].turnoActual = i;
-        bool = false;
       }
+      bool = false;
       //this.turno = this.playerGroup.children[this.turno].turnoActual;
     }
 
