@@ -829,7 +829,10 @@ function Objeto(game, x, y, sprite) {
 	this.game.world.addChild(this);
 
 	//ATTRIBUTE
-	this.cantidad;
+  this.cantidad;
+  
+  this.turnoActual; //!!!!!!!!!!!!!!
+
 	this.auxScale = 1; //1 por defecto
 	this.name = sprite; //el nombre dependerá del tipo de objeto. más para depurar 
 
@@ -1605,7 +1608,6 @@ var PlayScene = {
     //numero de jugadores en partida
     this.numPlayers = this.game.numPlayers; //se va reduciendo con cada muerte
     this.turno = 0; //variable
-    this.auxTurno = 0;
     this.pasaBool = false;
     //TEXTOS
     //texto de transicion
@@ -1658,7 +1660,7 @@ var PlayScene = {
     this.playerGroup.forEach(element => {
       element.walkCont = this.playerWalkCont;
       element.life = this.playerLife;
-      element.name = i;
+      element.turnoActual = i;
       i++;
     });
     //se hacen fijos los body de los jugadores fuera de turno
@@ -1875,19 +1877,26 @@ var PlayScene = {
 
   //**************GESTION VIDA Y ESTADO FIN DE JUEGO  */
   checkPlayerLife: function () {
+    var bool = false;
     this.playerGroup.forEach(element => {
       if (element.life <= 0) {
+        bool = true;
         element.destroy();
         this.numPlayers--;
-        if ( this.numPlayers !== 0){
-         this.turno = this.turno -1;
-        }
-        //this.turno = this.turno % this.numPlayers;
-        if (this.numPlayers === 1) {
-          this.PlayerWin();
-        }
       }
     });
+
+    if (bool) {
+      for (var i = 0; i < this.playerGroup.length; i++) {
+        this.playerGroup[i].turnoActual = i;
+      }
+    }
+
+    this.turno = this.playerGroup[i].turnoActual;
+    
+    if (this.numPlayers === 1) {
+      this.PlayerWin();
+    }
   },
 
   //implementar victoria ¡¡¡¡¡¡¡¡¡¡
