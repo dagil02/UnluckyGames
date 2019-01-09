@@ -1934,7 +1934,7 @@ var PlayScene = {
     var aux1;
     var aux2;
     var aux3;
-    console.log ("Kill: turno Actual" + this.turno);
+   
     if (this.playerGroup.children[this.turno].currentWeapon) {
 
       aux1 = this.playerGroup.children[this.turno].currentWeapon.tipoArma;
@@ -1971,6 +1971,7 @@ var PlayScene = {
   renderHUD: function () {
 
     var aux1; var aux2; var aux3; var style2;
+    console.log ("Kill: turno Actual" + this.turno);
     if (this.playerGroup.children[this.turno].currentWeapon) {
 
         aux2 = this.playerGroup.children[this.turno].currentWeapon.weaponDamage;
