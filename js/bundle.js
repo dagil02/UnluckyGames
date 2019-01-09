@@ -1891,6 +1891,7 @@ var PlayScene = {
     });
 
     if (bool) {
+      var i = this.turno;
       for (var i = 0; i < this.playerGroup.length; i++) {
         this.playerGroup.children[i].turnoActual = i;
       }
