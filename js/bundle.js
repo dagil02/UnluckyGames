@@ -1661,6 +1661,7 @@ var PlayScene = {
       element.walkCont = this.playerWalkCont;
       element.life = this.playerLife;
       element.turnoActual = i;
+      console.log ("turnosCreacion" + i);
       i++;
     });
     //se hacen fijos los body de los jugadores fuera de turno
@@ -1892,6 +1893,7 @@ var PlayScene = {
 
     if (bool) {
       console.log ("Kill: turno Actual" + this.turno);
+      console.log ("PlayerGroupLength"+  this.playerGroup.length);
       for (var i = 0; i < this.playerGroup.length; i++) {
         this.playerGroup.children[i].turnoActual = i;
       }
