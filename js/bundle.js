@@ -1879,7 +1879,10 @@ var PlayScene = {
       if (element.life <= 0) {
         element.destroy();
         this.numPlayers--;
-        this.turno = (this.turno - 1) % this.numPlayers;
+        if ( this.numPlayers !== 0){
+         this.turno = this.turno -1;
+        }
+        //this.turno = this.turno % this.numPlayers;
         if (this.numPlayers === 1) {
           this.PlayerWin();
         }
