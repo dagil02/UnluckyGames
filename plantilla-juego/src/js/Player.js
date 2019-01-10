@@ -29,6 +29,10 @@ function Player(game, x, y, sprite) {
   this.life = 100; //contador de vida 
   this.name;
 
+  this.numeroPos;
+
+
+
   //gestion cambio textura
   this.changeTex = false;
 

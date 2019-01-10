@@ -45,8 +45,6 @@ var PlayScene = {
     //LOGICA TURNOS
     //numero de jugadores en partida
     this.numPlayers = this.game.numPlayers; //se va reduciendo con cada muerte
-    this.turno = 0; //variable
-    this.auxTurno = 0;
     this.pasaBool = false;
     //TEXTOS
     //texto de transicion
@@ -59,54 +57,41 @@ var PlayScene = {
     //JUGADORES
 
     this.playerGroup = this.game.add.group();
+    //contador de pasos y vida. CONSTANTE
+    this.playerWalkCont = 50;
+    this.playerLife = 25;
     //desierto; niveve; praderaTop; praderaButton
     this.playerPos = [
-      { x: 128, y: 96, 'name': 'player_1' },
+      { x: 128, y: 96, 'name': 'player_1'},
       { x: 640, y: 512, 'name': 'player_2'},
-      { x: 688, y: 64, 'name': 'player_3' },
-      { x: 32, y: 560, 'name': 'player_4' }
+      { x: 688, y: 64, 'name': 'player_3'},
+      { x: 32, y: 560, 'name': 'player_4'}
     ];
-    //se crean los jugadores y se meten en el grupo
-    var numAparecidos = [];
-    for (var i = 0; i < this.numPlayers; i++) {
-      //genera un aleatorio para colocar a los jugadores
-      //el doble bucle anidado interno evita que el random repita posición para dos o más jugadores.
-      var esta = true;
-      var r;
-      while (esta) {
-        r = Math.floor(Math.random() * 4);
-        var bool = false;
-        var j = 0;
-        while (!bool && j < numAparecidos.length) {
-          bool = r === numAparecidos[j];
-          j++;
-        }
-        if (bool) {
-          r = Math.floor(Math.random() * 4);
-        } else {
-          esta = false;
-          numAparecidos.push(r);
-        }
-      }
-      var rPos = this.playerPos[r];
-      this.playerGroup.add(new player(this.game, rPos.x, rPos.y, rPos.name)); 
+
+    this.PlayerTurno = [0, 1 , 2 , 3];
+
+    //COntrola el paso de turno 
+    this.turno = 0; //variable
+    this.auxTurno = 0; //ese se encargá de poner siempre la posición inicial posterior al último -1
+
+
+
+    for (var i = 0; i < this.numPlayers; i++){
+      var j = this.playerPos[i];
+      this.playerGroup.add(new player(this.game, j.x, j.y, j.name)); 
     }
-    //contador de pasos y vida. CONSTANTE
-    this.playerWalkCont = 40;
-    this.playerLife = 200;
-    //por cada miembro del grupo se actualiza su contador
-    var i = this.numPlayers;
-    this.playerGroup.forEach(element => {
-      element.walkCont = this.playerWalkCont;
-      element.life = this.playerLife;
-      element.name = i;
-      i++;
-    });
+
+    for (var i = 0; i < this.numPlayers; i++){
+     this.playerGroup.children[i].walkCont = this.playerWalkCont;
+     this.playerGroup.children[i].life = this.playerLife;
+     //var s = this.PlayerTurno[i].toString()
+     this.playerGroup.children[i].numeroPos = this.PlayerTurno[i];
+    }
+   
     //se hacen fijos los body de los jugadores fuera de turno
-    for (var i = 0; i < this.playerGroup.length; i++) {
+    for (var i = 0; i < this.numPlayers; i++) {
       if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
-        //this.playerGroup.children[i].body.checkCollision = true;
       }
     }
 
@@ -154,12 +139,12 @@ var PlayScene = {
   },
 
   render: function () {
-    this.renderHUD();
     if (this.pause){
       this.game.world.bringToTop(this.menuPause);
     }
     else {
       this.game.world.bringToTop(this.GrupoTextos);
+      this.renderHUD();
     }
    
 
@@ -255,8 +240,16 @@ var PlayScene = {
 
     this.text1.destroy(); //se destruye el bitMapText
 
-    //incrementa el turno del jugador de manera cíclica al sobrepasar el máx.
-    this.turno = (this.turno + 1) % this.numPlayers;
+    this.turno++;
+    
+    if ( this.turno >= this.numPlayers){
+      this.turno = this.auxTurno;
+    }
+    
+    if (this.turno === -1){
+
+      this.turno = 0;
+    }
 
     this.zoomTo(2);
 
@@ -278,10 +271,9 @@ var PlayScene = {
     //actualiza el contador de pasos según la constante
     this.playerGroup.children[this.turno].walkCont = this.playerWalkCont;
     this.playerGroup.children[this.turno].body.immovable = false;
-    for (var i = 0; i < this.playerGroup.length; i++) {
+    for (var i = 0; i < this.numPlayers; i++) {
       if (i !== this.turno) {
         this.playerGroup.children[i].body.immovable = true;
-        //this.playerGroup.children[i].body.checkCollision = true;
       }
     }
 
@@ -316,19 +308,92 @@ var PlayScene = {
 
   //**************GESTION VIDA Y ESTADO FIN DE JUEGO  */
   checkPlayerLife: function () {
-    this.playerGroup.forEach(element => {
-      if (element.life <= 0) {
-        element.destroy();
-        this.numPlayers--;
-        this.turno = this.turno % this.numPlayers;
-        if (this.numPlayers === 1) {
-          this.PlayerWin();
+
+    var bool = false;
+    var j = 0;
+    while (!bool && j < this.numPlayers) {
+      if (this.playerGroup.children[j].life <= 0) {
+
+        var PlayerActual = this.playerGroup.children[this.turno];
+        bool = true;
+        this.PlayerTurno[j] = -1;
+        //ordena el array deja los -1 a la izquierda
+        this.ordenaPlayerTurno();
+
+        for (var i = 0; i < this.playerGroup.length; i++) {
+          console.log("grupo Player ANTES: " + this.playerGroup.children[i].numeroPos);
         }
+
+        //this.playerGroup.children[j].numeroPos = 5;
+        this.playerGroup.children[j].alive = false;
+
+
+        //ordena el grupo según los valores de playerPos
+        this.playerGroup.sort('alive', Phaser.Group.SORT_DESCENDING);
+
+        this.numPlayers--;
+
+          
+        for (var i = 0; i < this.playerGroup.length; i++) {
+          console.log("grupo Player DESPUES ALIVE: " + this.playerGroup.children[i].numeroPos);
+        }
+
+        this.playerGroup.children[this.numPlayers].destroy();
+
+        for (var i = 0; i < this.numPlayers; i++){
+          this.playerGroup.children[i].numeroPos = i;
+        }
+
+        this.turno  = PlayerActual.numeroPos;
+
+        console.log("TURNO: " + this.turno);
+        for (var i = 0; i < this.playerGroup.length; i++) {
+          console.log("grupo Player DESPUESORDEN: " + this.playerGroup.children[i].numeroPos);
+        }
+  
       }
-    });
+      j++
+    }
+    if (bool){
+      if (this.numPlayers === 1) {
+        this.PlayerWin();
+      }
+  
+    }
   },
 
-  //implementar victoria ¡¡¡¡¡¡¡¡¡¡
+  ordenaPlayerTurno: function () {
+    function comparar(a, b) {
+      return a - b;
+    }
+
+    for (var i = 0; i < this.PlayerTurno.length; i++) {
+      console.log("posNumero: " + this.PlayerTurno[i]);
+    }
+
+    this.PlayerTurno.sort(comparar) //primero deja todos los -1 a la izquierda 
+
+  
+    var m = 0;
+    for (var i = 0; i < this.PlayerTurno.length; i++){
+      if (this.PlayerTurno[i] !== -1 ) {this.PlayerTurno[i] = m;   m++;}
+    
+    }
+
+    for (var i = 0; i < this.PlayerTurno.length; i++) {
+      console.log("posNumero: " + this.PlayerTurno[i]);
+    }
+
+    var bool = false; var j = 0;
+    while (!bool && j < this.PlayerTurno.length) {
+      bool = this.PlayerTurno[j] !== -1;
+      if (bool) { this.auxTurno = this.PlayerTurno[j]; }
+      j++;
+    }
+    console.log("auxTurno: " + this.auxTurno);
+
+  },
+
   PlayerWin: function () {
     this.MusicaFondo.stop();
     this.game.state.start("VictoryScene");
