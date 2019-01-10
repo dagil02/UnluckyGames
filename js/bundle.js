@@ -35,7 +35,7 @@ function Armas(game, x, y, sprite) {
 	this.Tipo_De_Arma = function () {
 		if (this.tipoArma === "GUN") { this.alcance = 5; this.weaponDamage = 10; this.balas_image = 'b_Gun'; this.walk_WeaponScale = 1;}
 		else if (this.tipoArma === "SUBFUSIL") { this.alcance = 10; this.weaponDamage = 25; this.balas_image = 'b_Sf'; this.walk_WeaponScale = 3;}
-		else if (this.tipoArma === "SNIPER") { this.alcance = 20; this.weaponDamage = 50; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6;}
+		else if (this.tipoArma === "SNIPER") { this.alcance = 20; this.weaponDamage = 35; this.balas_image = 'b_Sn'; this.walk_WeaponScale = 6;}
 	}
 
 }
@@ -43,8 +43,13 @@ Armas.prototype = Object.create(objeto.prototype);
 Armas.prototype.constructor = Armas;
 
 Armas.prototype.generate = function () {
-	//la función random la herda de la clase Objeto.
-	this.asignaValores(this.RandomItem(10));
+  //la función random la herda de la clase Objeto.
+  if(this.tipoArma === "SNIPER"){
+    this.asignaValores(this.RandomItem(5));
+  }else{
+    this.asignaValores(this.RandomItem(10));
+  }
+	
 	this.game.physics.enable(this, Phaser.Physics.ARCADE);
 	this.body.collideWorldBounds = true;
 	this.body.immovable = true;
@@ -1622,8 +1627,8 @@ var PlayScene = {
 
     this.playerGroup = this.game.add.group();
     //contador de pasos y vida. CONSTANTE
-    this.playerWalkCont = 50;
-    this.playerLife = 25;
+    this.playerWalkCont = 40;
+    this.playerLife = 200;
     //desierto; niveve; praderaTop; praderaButton
     this.playerPos = [
       { x: 128, y: 96, 'name': 'player_1'},
@@ -1884,9 +1889,6 @@ var PlayScene = {
         //ordena el array deja los -1 a la izquierda
         this.ordenaPlayerTurno();
 
-        for (var i = 0; i < this.playerGroup.length; i++) {
-          console.log("grupo Player ANTES: " + this.playerGroup.children[i].numeroPos);
-        }
 
         //this.playerGroup.children[j].numeroPos = 5;
         this.playerGroup.children[j].alive = false;
@@ -1897,11 +1899,6 @@ var PlayScene = {
 
         this.numPlayers--;
 
-          
-        for (var i = 0; i < this.playerGroup.length; i++) {
-          console.log("grupo Player DESPUES ALIVE: " + this.playerGroup.children[i].numeroPos);
-        }
-
         this.playerGroup.children[this.numPlayers].destroy();
 
         for (var i = 0; i < this.numPlayers; i++){
@@ -1909,12 +1906,6 @@ var PlayScene = {
         }
 
         this.turno  = PlayerActual.numeroPos;
-
-        console.log("TURNO: " + this.turno);
-        for (var i = 0; i < this.playerGroup.length; i++) {
-          console.log("grupo Player DESPUESORDEN: " + this.playerGroup.children[i].numeroPos);
-        }
-  
       }
       j++
     }
@@ -1931,9 +1922,6 @@ var PlayScene = {
       return a - b;
     }
 
-    for (var i = 0; i < this.PlayerTurno.length; i++) {
-      console.log("posNumero: " + this.PlayerTurno[i]);
-    }
 
     this.PlayerTurno.sort(comparar) //primero deja todos los -1 a la izquierda 
 
@@ -1944,17 +1932,12 @@ var PlayScene = {
     
     }
 
-    for (var i = 0; i < this.PlayerTurno.length; i++) {
-      console.log("posNumero: " + this.PlayerTurno[i]);
-    }
-
     var bool = false; var j = 0;
     while (!bool && j < this.PlayerTurno.length) {
       bool = this.PlayerTurno[j] !== -1;
       if (bool) { this.auxTurno = this.PlayerTurno[j]; }
       j++;
     }
-    console.log("auxTurno: " + this.auxTurno);
 
   },
 
