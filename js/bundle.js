@@ -2021,7 +2021,7 @@ var PlayScene = {
       }
     }
     else {
-      aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "Donde alcance tu vista";
+      aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "No haces pupa";
     }
     this.texPlayer.setText(this.turno + 1);
     this.texLife.setText(this.playerGroup.children[this.turno].life);
