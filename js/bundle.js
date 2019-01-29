@@ -1978,7 +1978,7 @@ var PlayScene = {
 
       style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
     }
-    else { aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "No haces pupa"; }
+    else { aux1 = "Hazte un tirachinas"; aux2 = "No haces pupa"; aux3 = "El horizonte"; }
     //plasyer - life
     this.texPlayer = this.game.add.text(this.hudPosPlayer.x, this.hudPosPlayer.y, this.turno + 1, style);
     this.texLife = this.game.add.text(this.hudPosLife.x, this.hudPosLife.y, this.playerGroup.children[this.turno].life, style);
@@ -2021,7 +2021,7 @@ var PlayScene = {
       }
     }
     else {
-      aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "No haces pupa";
+      aux1 = "Hazte un tirachinas"; aux2 = "No haces pupa"; aux3 = "El horizonte";
     }
     this.texPlayer.setText(this.turno + 1);
     this.texLife.setText(this.playerGroup.children[this.turno].life);
