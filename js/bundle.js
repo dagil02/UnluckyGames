@@ -1978,7 +1978,7 @@ var PlayScene = {
 
       style2 = { font: "24px Calibri", fill: "#fff", tabs: [164, 120] };
     }
-    else { aux1 = "Hazte un tirachinas"; aux2 = "Fulminalo con la mirada"; aux3 = "El horizonte"; }
+    else { aux1 = "Hazte un tirachinas"; aux2 = "El horizonte"; aux3 = "No haces pupa"; }
     //plasyer - life
     this.texPlayer = this.game.add.text(this.hudPosPlayer.x, this.hudPosPlayer.y, this.turno + 1, style);
     this.texLife = this.game.add.text(this.hudPosLife.x, this.hudPosLife.y, this.playerGroup.children[this.turno].life, style);

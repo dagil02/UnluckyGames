@@ -126,6 +126,8 @@ var PreloaderScene = {
       "assets/sprites/button/Tutorial.png"
     );
 
+    this.game.load.spritesheet('tutorial','assets/sprites/menus/TutorialAnimado.png', 800, 800, 3);
+
     this.game.load.image(
       "tutorial_animation",
       "assets/sprites/button/tutorial_animation.png"
